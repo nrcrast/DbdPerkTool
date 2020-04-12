@@ -6,9 +6,9 @@ import routes from '../constants/routes.json';
 
 export default function TopNav() {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark" className="rounded shadow">
       <Navbar.Brand>DBD Perk Tool</Navbar.Brand>
-      <Nav className="mr-auto">
+      <Nav>
         <Nav.Link as={Link} to={routes.HOME}>
           About
         </Nav.Link>

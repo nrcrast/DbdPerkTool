@@ -567,6 +567,7 @@ declare const styles: {
   readonly "list-group-item-action": string;
   readonly "list-group-item-danger": string;
   readonly "list-group-item-dark": string;
+  readonly "list-group-item-heading": string;
   readonly "list-group-item-info": string;
   readonly "list-group-item-light": string;
   readonly "list-group-item-primary": string;
@@ -1035,8 +1036,6 @@ declare const styles: {
   readonly "navbar-expand-md": string;
   readonly "navbar-expand-sm": string;
   readonly "navbar-expand-xl": string;
-  readonly "navbar-fixed-bottom": string;
-  readonly "navbar-fixed-top": string;
   readonly "navbar-light": string;
   readonly "navbar-nav": string;
   readonly "navbar-text": string;
@@ -1102,6 +1101,7 @@ declare const styles: {
   readonly "offset-xl-7": string;
   readonly "offset-xl-8": string;
   readonly "offset-xl-9": string;
+  readonly "open": string;
   readonly "order-0": string;
   readonly "order-1": string;
   readonly "order-10": string;

@@ -10,6 +10,9 @@ import routes from '../constants/routes.json';
 import TopNav from '../components/TopNav';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 type Props = {
   store: Store;
@@ -19,8 +22,12 @@ type Props = {
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <TopNav />
-      <Routes />
+    <TopNav />
+      <Container fluid>
+        <Row className="bg-secondary rounded shadow p-3 m-3 justify-content-center">
+          <Routes />
+        </Row>
+      </Container>
     </ConnectedRouter>
   </Provider>
 );
