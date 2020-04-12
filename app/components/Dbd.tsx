@@ -1,40 +1,70 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-// import styles from './Counter.css';
-import routes from '../constants/routes.json';
-import DeadByDaylight from '../steam/DeadByDaylight';
+import settingsUtil from '../settings/Settings';
+import PerkPack from './PerkPack';
 
 type MyProps = {};
-type MyState = { installPath: string };
+type MyState = { installedPack: string };
 
 export default class Dbd extends Component<MyProps, MyState> {
   constructor(params: {}) {
     super(params);
-    console.log('Constructor time boi');
     this.state = {
-      installPath: ''
+      installedPack: ''
     };
   }
 
   async componentDidMount() {
-    const dbd = new DeadByDaylight();
-    const installPath = await dbd.getInstallPath();
+    const installedPack = settingsUtil.settings.installedPack || '';
     this.setState({
-      installPath
+      installedPack
     });
   }
 
+  async installPack(id: string) {
+    settingsUtil.settings.installedPack = id;
+    await settingsUtil.save();
+    this.setState({
+      installedPack: id
+    });
+  }
+
+  chunkArray(myArray: Array<any>, chunkSize: number) {
+    const arrayLength = myArray.length;
+    const tempArray = [];
+
+    for (let index = 0; index < arrayLength; index += chunkSize) {
+      const myChunk = myArray.slice(index, index + chunkSize);
+      // Do something if you want with the group
+      tempArray.push(myChunk);
+    }
+
+    return tempArray;
+  }
+
   render() {
-    const { installPath } = this.state;
-    return (
-      <div>
-        <button type="button" className="btn btn-outline-dark">
-          <Link to={routes.HOME}>
-            <h2>Home</h2>
-          </Link>
-        </button>
-        <h3>Install Path: {installPath}</h3>
-      </div>
-    );
+    const cards = [];
+    for (let i = 0; i < 20; i++) {
+      let id = `perk_pack_${i}`;
+      let installed = false;
+      if (id === this.state.installedPack) {
+        installed = true;
+      }
+
+      cards.push(
+        <div>
+          <PerkPack
+            id={id}
+            name="Nick's Pack"
+            installPack={this.installPack.bind(this)}
+            author="Nick"
+            headerImg="./img/testperk-lg.png"
+            installed={installed}
+            downloads={1234}
+            popularity="44/1234"
+          />
+        </div>
+      );
+    }
+    return cards;
   }
 }
