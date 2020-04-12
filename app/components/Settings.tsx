@@ -39,7 +39,7 @@ export default class Settings extends Component<MyProps, MyState> {
     });
   }
 
-  handleDbdPathChanged() {
+  handleDbdPathChanged(event) {
     this.setState({
       settings: {
         dbdInstallPath: event.target.value
@@ -62,6 +62,7 @@ export default class Settings extends Component<MyProps, MyState> {
   }
 
   render() {
+    const saveButtonValue='Save' + (this.state.unsaved ? '*' : '');
     return (
       <Col className="col-8">
         <Form onSubmit={this.doSave.bind(this)} onChange={this.handleFormChanged.bind(this)}>
@@ -74,7 +75,7 @@ export default class Settings extends Component<MyProps, MyState> {
             />
           </Form.Group>
           <Button variant="dark" type="submit">
-            Save{this.state.unsaved ? '*' : ''}
+          {saveButtonValue}
           </Button>
           <Button
             variant="dark"
