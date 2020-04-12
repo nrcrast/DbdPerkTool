@@ -6,21 +6,25 @@ const fs = fsWithCallbacks.promises;
 
 class Settings {
   settingsPath: string;
-  settings: Object;
+  settings: {
+    dbdInstallPath: string;
+    installedPack: string;
+  };
   constructor() {
     this.settingsPath = path.resolve(
       (electron.app || electron.remote.app).getPath('userData'),
       'dbdPerkToolSettings.json'
     );
-    this.settings = {};
+    this.settings = {
+		dbdInstallPath: '',
+		installedPack: '',
+	};
   }
 
   async setDefaultSettings() {
-	const dbd = new DeadByDaylight();
+    const dbd = new DeadByDaylight();
 	const dbdPath = await dbd.getInstallPath();
-    this.settings = {
-      dbdInstallPath: dbdPath,
-    };
+	this.settings.dbdInstallPath = dbdPath;
   }
 
   async read() {
