@@ -8,17 +8,18 @@ import settingsUtil from '../settings/Settings';
 import { settings } from 'cluster';
 
 type MyProps = {};
-type MyState = { settings: Object };
+type MyState = { settings: Object, unsaved: boolean };
 
 export default class Settings extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
     super(params);
     this.state = {
-      settings: {}
+      settings: {},
+      unsaved: false,
     };
   }
 
-  async syncSettings() {
+  syncSettings() {
     this.setState({
       settings: settingsUtil.settings
     });
@@ -33,7 +34,10 @@ export default class Settings extends Component<MyProps, MyState> {
     e.preventDefault();
     console.log(this);
     settingsUtil.settings.dbdInstallPath = this.state.settings.dbdInstallPath;
-    return settingsUtil.save();
+    await settingsUtil.save();
+    this.setState({
+      unsaved: false,
+    });
   }
 
   handleDbdPathChanged() {
@@ -46,31 +50,39 @@ export default class Settings extends Component<MyProps, MyState> {
 
   async setDefaultSettings() {
     await settingsUtil.setDefaultSettings();
-    await this.syncSettings();
+    this.syncSettings();
+    this.setState({
+      unsaved: true,
+    });
+  }
+
+  handleFormChanged() {
+    this.setState({
+      unsaved: true,
+    });
   }
 
   render() {
-    const { installPath } = this.state;
     return (
-      <Col className="col-4">
-        <Form onSubmit={this.doSave.bind(this)}>
+      <Col className="col-8">
+        <Form onSubmit={this.doSave.bind(this)} onChange={this.handleFormChanged.bind(this)}>
           <Form.Group controlId="settingsForm.dbdInstallPath">
             <Form.Label>Dead By Daylight Install Path</Form.Label>
             <Form.Control
               type="text"
-              defaultValue={this.state.settings.dbdInstallPath}
+              value={this.state.settings.dbdInstallPath}
               onChange={this.handleDbdPathChanged.bind(this)}
             />
           </Form.Group>
           <Button variant="dark" type="submit">
-            Save
+            Save{this.state.unsaved ? '*' : ''}
           </Button>
           <Button
             variant="dark"
             className="float-right"
             onClick={this.setDefaultSettings.bind(this)}
           >
-            Default
+            Reset to Default
           </Button>
         </Form>
       </Col>

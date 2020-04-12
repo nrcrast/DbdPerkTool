@@ -16,9 +16,10 @@ class Settings {
   }
 
   async setDefaultSettings() {
-    const dbd = new DeadByDaylight();
+	const dbd = new DeadByDaylight();
+	const dbdPath = await dbd.getInstallPath();
     this.settings = {
-      dbdInstallPath: await dbd.getInstallPath()
+      dbdInstallPath: dbdPath,
     };
   }
 
