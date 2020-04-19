@@ -274,6 +274,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@hot-loader/react-dom": "^16.13.0",
+    "@sindresorhus/slugify": "^0.11.0",
+    "archiver": "^4.0.1",
     "connected-react-router": "^6.6.1",
     "core-js": "^3.6.4",
     "devtron": "^1.4.0",
@@ -281,6 +283,7 @@
     "electron-log": "^4.0.6",
     "electron-updater": "^4.2.0",
     "history": "^4.10.1",
+    "merge-images": "^2.0.0",
     "node-vdf": "^0.0.3",
     "react": "^16.12.0",
     "react-bootstrap": "^1.0.0",

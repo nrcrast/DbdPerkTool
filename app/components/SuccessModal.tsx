@@ -14,11 +14,11 @@ export default function SuccessModal(props: MyProps) {
 	  >
 		<Modal.Header closeButton>
 		  <Modal.Title id="contained-modal-title-vcenter">
-			Success
+			{props.title}
 		  </Modal.Title>
 		</Modal.Header>
 		<Modal.Body>
-		  <h4>{props.title}</h4>
+		  <h4>{props.text}</h4>
 		</Modal.Body>
 		<Modal.Footer>
 		  <Button onClick={props.onHide}>Close</Button>

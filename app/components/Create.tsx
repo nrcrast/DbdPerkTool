@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
+import PackDir from '../packdir/PackDir';
+import PackGenerator from '../packgenerator/PackGenerator';
 import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
 import ErrorModal from './ErrorModal';
@@ -22,6 +24,9 @@ type MyState = {
   author: string;
   email: string;
   saving: boolean;
+  errorText: string;
+  description: string;
+  successText: string;
 };
 
 export default class Create extends Component<MyProps, MyState> {
@@ -35,53 +40,54 @@ export default class Create extends Component<MyProps, MyState> {
       title: '',
       author: '',
       email: '',
-      saving: false
+      saving: false,
+      description: '',
+      errorText: '',
+      successText: ''
     };
-  }
-
-  async dirExists(dir: string) {
-    try {
-      const stats = await fs.lstat(dir);
-      return stats.isDirectory();
-    } catch (e) {
-      return false;
-    }
-  }
-
-  async verifyPackDir() {
-    const perksDirExists = await this.dirExists(
-      path.resolve(this.state.packDir, 'Perks')
-    );
-    return perksDirExists;
   }
 
   async doCreate(e) {
     e.preventDefault();
-    const packDirIsValid = await this.verifyPackDir();
+    const packDir = new PackDir(this.state.packDir);
 
     console.log(this.state);
 
-    if (!packDirIsValid) {
+    if (!(await packDir.validate())) {
       this.setState({
         errorModalShow: true
       });
       return;
     }
 
+    console.log(`Contents: `, await packDir.getMeta());
+
     this.setState({
       saving: true
     });
 
-    const packSettings = {
-      title: this.state.title,
-      author: this.state.author,
-      email: this.state.email
-    };
+    const generator = new PackGenerator(
+      packDir,
+      undefined,
+      this.state.title,
+      this.state.author,
+      this.state.desc
+    );
 
-    this.setState({
-      saving: false,
-      successModalShow: true
-    });
+    try {
+      const outputZip = await generator.generate();
+      this.setState({
+        saving: false,
+        successText: `Your pack has been generated at ${outputZip}`,
+        successModalShow: true
+      });
+    } catch (e) {
+      this.setState({
+        saving: false,
+        errorText: `Error generating Pack: ${e}`,
+        errorModalShow: true
+      });
+    }
   }
 
   async handleFormChanged() {}
@@ -105,10 +111,9 @@ export default class Create extends Component<MyProps, MyState> {
   }
 
   render() {
-    const errorModalTitle = 'Invalid Pack Directory';
-    const errorModalText =
-      'This typically means you are missing the Perks directory inside your Pack directory.';
-    const successModalTitle = 'Your pack has been successfully generated!';
+    const errorModalTitle = 'Error generating pack';
+    const errorModalText = this.state.errorText;
+    const successModalTitle = 'Success';
     return (
       <Col className="col-8">
         <Form
@@ -118,6 +123,7 @@ export default class Create extends Component<MyProps, MyState> {
           <Form.Group controlId="createForm.title">
             <Form.Label>Title</Form.Label>
             <Form.Control
+              required
               type="text"
               placeholder="My awesome pack"
               onChange={e => {
@@ -125,9 +131,21 @@ export default class Create extends Component<MyProps, MyState> {
               }}
             />
           </Form.Group>
+          <Form.Group controlId="createForm.desc">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="This is probably the best pack around"
+              onChange={e => {
+                this.setState({ description: e.target.value });
+              }}
+            />
+          </Form.Group>
           <Form.Group controlId="createForm.author">
             <Form.Label>Author</Form.Label>
             <Form.Control
+              required
               type="text"
               placeholder="Max Thompson Jr."
               onChange={e => {
@@ -138,6 +156,7 @@ export default class Create extends Component<MyProps, MyState> {
           <Form.Group controlId="createForm.email">
             <Form.Label>Email</Form.Label>
             <Form.Control
+              required
               type="email"
               placeholder="hillbilly@yahoo.com"
               onChange={e => {
@@ -150,6 +169,7 @@ export default class Create extends Component<MyProps, MyState> {
             <Row>
               <Col>
                 <Form.Control
+                  required
                   type="text"
                   value={this.state.packDir}
                   onChange={this.handlePackDirChanged.bind(this)}
@@ -181,6 +201,7 @@ export default class Create extends Component<MyProps, MyState> {
         />
         <SuccessModal
           title={successModalTitle}
+          text={this.state.successText}
           show={this.state.successModalShow}
           onHide={() => this.setState({ successModalShow: false })}
         />

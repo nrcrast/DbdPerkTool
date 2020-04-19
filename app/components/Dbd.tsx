@@ -42,6 +42,15 @@ export default class Dbd extends Component<MyProps, MyState> {
   }
 
   render() {
+    const meta = {
+      name: 'nicks hot pack',
+      author: 'ksdopsdkf',
+      latestChapter: 'Chapter XIII: Stranger Things',
+      hasPortraits: true,
+      hasPowers: false,
+      hasItems: true,
+      hasStatusEffects: true
+    };
     const cards = [];
     for (let i = 0; i < 20; i++) {
       let id = `perk_pack_${i}`;
@@ -54,9 +63,8 @@ export default class Dbd extends Component<MyProps, MyState> {
         <div>
           <PerkPack
             id={id}
-            name="Nick's Pack"
             installPack={this.installPack.bind(this)}
-            author="Nick"
+            meta={meta}
             headerImg="./img/testperk-lg.png"
             installed={installed}
             downloads={1234}
