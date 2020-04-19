@@ -14,5 +14,8 @@
     "postinstall": "yarn electron-rebuild"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "sharp": "^0.25.2"
+  }
 }
