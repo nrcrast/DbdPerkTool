@@ -71,7 +71,7 @@ export default class Create extends Component<MyProps, MyState> {
       undefined,
       this.state.title,
       this.state.author,
-      this.state.desc
+      this.state.description,
     );
 
     try {

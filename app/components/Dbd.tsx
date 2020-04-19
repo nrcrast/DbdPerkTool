@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import settingsUtil from '../settings/Settings';
 import PerkPack from './PerkPack';
+import fs from 'fs-extra';
+import tmp from 'tmp';
+import path from 'path';
+import Progress from 'node-fetch-progress';
+import fetch from 'node-fetch';
+import axios from 'axios';
 
 type MyProps = {};
 type MyState = { installedPack: string };
@@ -20,9 +26,51 @@ export default class Dbd extends Component<MyProps, MyState> {
     });
   }
 
+  async downloadPack(url: string, onProgress: Function) {
+    // const writer = Fs.createWriteStream(path)
+
+    const response = await axios({
+      url,
+      method: 'GET',
+      responseType: 'stream',
+      onDownloadProgress: progressEvent => {
+        onProgress(
+          Math.floor((progressEvent.loaded / progressEvent.total) * 100)
+        );
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      const file = tmp.fileSync({ keep: true });
+      fs.writeFile(file.name, response.data, err => {
+        if (err) {
+          reject();
+        } else {
+          resolve();
+        }
+      });
+    });
+
+    // response.data.pipe(writer)
+
+    // return new Promise((resolve, reject) => {
+    //   writer.on('finish', resolve)
+    //   writer.on('error', reject)
+    // })
+  }
+
   async installPack(id: string) {
     settingsUtil.settings.installedPack = id;
     await settingsUtil.save();
+    await this.downloadPack(
+      'https://developer.atmosphereiot.com/files/clientAgent/atmosphereiotagent-latest%20Setup.exe',
+      progress => {
+        console.log(`Progress: ${progress}%`);
+      }
+    );
+    console.log('Download complete');
+    //await fs.copy();
+
     this.setState({
       installedPack: id
     });
