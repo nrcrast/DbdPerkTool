@@ -1,0 +1,19 @@
+body {
+  background-image: url('./img/bg.jpg');
+  background-attachment: fixed;
+  background-color: black;
+  background-size: cover; /* <------ */
+  background-repeat: no-repeat;
+}
+
+.main-content {
+  background: rgba(48, 48, 48, 0.5);
+}
+
+.main-navbar {
+  background: rgba(48, 48, 48, 0.5);
+}
+
+.perk-card {
+  background: rgba(48, 48, 48, 0.7);
+}

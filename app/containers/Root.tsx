@@ -24,7 +24,7 @@ const Root = ({ store, history }: Props) => (
     <ConnectedRouter history={history}>
     <TopNav />
       <Container fluid>
-        <Row className="bg-secondary rounded shadow p-3 m-3 justify-content-center">
+        <Row className="main-content rounded shadow p-3 m-3 justify-content-center">
           <Routes />
         </Row>
       </Container>

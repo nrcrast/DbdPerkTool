@@ -36,7 +36,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
 		installBtn = <Button variant="primary" onClick={this.installPack.bind(this)}>Install</Button>
 	  }
     return (
-      <Card className="mb-3 text-center shadow">
+      <Card className="mb-3 text-center shadow perk-card border-0">
         <Card.Img variant="top" src={this.props.headerImg} />
 
         <Card.Title>{this.props.name}</Card.Title>
