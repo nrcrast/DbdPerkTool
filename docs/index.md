@@ -19,11 +19,11 @@ This software is essentially in Beta right now, as I've not done much testing an
 You can report any isses to me on Discord or through the [issue tracker](https://github.com/nrcrast/DbdPerkTool/issues) on GitHub. 
 
 ## Screenshots
-![About](images/about.PNG)
+![About](images/about.png)
 
-![Perk Browser](images/screenshot_icons.PNG)
+![Perk Browser](images/screenshot_icons.png)
 
-![Create A Pack](images/create.PNG)
+![Create A Pack](images/create.png)
 
 ## Limitations/Future Dev
 * No Char Portrait only packs right now. Those will be added as a new tab in the future. If you have Char Portraits included with your Perk Pack, that's OK though.
