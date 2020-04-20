@@ -1,10 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Link } from 'react-router-dom';
-import routes from '../constants/routes.json';
-import styles from './Home.css';
-import DeadByDaylight from '../steam/DeadByDaylight';
-import Button from 'react-bootstrap/Button';
-import Nav from 'react-bootstrap/Nav';
+import electron from 'electron';
 import { shell } from 'electron';
 
 type MyProps = {};
@@ -15,7 +10,7 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="text-center">Dead By Daylight Icon Toolbox</h1>
+      <h1 className="text-center">Dead By Daylight Icon Toolbox v{(electron.app || electron.remote.app).getVersion()}</h1>
       <p>
         This is a tool designed to help you browse and install Perks and Icon
         sets with the click of a button!
@@ -67,7 +62,7 @@ export default function Home() {
 
       <h3 className="text-center">Help</h3>
       <p>
-        You can get help at the Dead By Daylight Perk{' '}
+        You can get help at the Dead By Daylight Icon Toolbox{' '}
         <a
           href="#"
           onClick={function (e) {
