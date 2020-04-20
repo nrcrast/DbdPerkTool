@@ -31,7 +31,7 @@ export default class Dbd extends Component<MyProps, MyState> {
 
   async componentDidMount() {
     // Get packs
-    const packs = await axios.get('http://192.168.1.137:1338/packs');
+    const packs = await axios.get('http://crast.ddns.net:1338/packs');
     const installedPack = settingsUtil.settings.installedPack || '';
     this.setState({
       installedPack,
@@ -84,7 +84,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     settingsUtil.settings.installedPack = id;
     await settingsUtil.save();
     const packDir = await this.downloadPack(
-      'http://192.168.1.137:1338/packs/' + id,
+      'http://crast.ddns.net:1338/packs/' + id,
       progress => {
         console.log(`Progress: ${progress}%`);
       }
