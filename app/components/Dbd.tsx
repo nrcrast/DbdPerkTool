@@ -6,7 +6,10 @@ import tmp from 'tmp';
 import path from 'path';
 import Progress from 'node-fetch-progress';
 import fetch from 'node-fetch';
+import unzipper from 'unzipper';
 import axios from 'axios';
+
+axios.defaults.adapter = require('axios/lib/adapters/http');
 
 type MyProps = {};
 type MyState = { installedPack: string };
@@ -32,44 +35,49 @@ export default class Dbd extends Component<MyProps, MyState> {
     const response = await axios({
       url,
       method: 'GET',
-      responseType: 'stream',
-      onDownloadProgress: progressEvent => {
-        onProgress(
-          Math.floor((progressEvent.loaded / progressEvent.total) * 100)
-        );
-      }
+      onDownloadProgress: (progressEvent) => {
+        onProgress(Math.floor(((progressEvent.loaded / progressEvent.total) * 100)))
+      },
+      responseType: 'arraybuffer'
     });
 
     return new Promise((resolve, reject) => {
-      const file = tmp.fileSync({ keep: true });
-      fs.writeFile(file.name, response.data, err => {
-        if (err) {
-          reject();
+      const tmpFile = tmp.fileSync();
+      fs.writeFile(tmpFile.name, Buffer.from(response.data), (err) => {
+        console.log(response.data.length);
+        console.log(tmpFile.name);
+        if(err) {
+          reject(err);
         } else {
-          resolve();
+          const tmpDir = tmp.dirSync({ keep: true });
+          fs.createReadStream(tmpFile.name)
+            .pipe(unzipper.Extract({ path: tmpDir.name }))
+            .on('close', () => {
+              resolve(tmpDir);
+            })
+            .on('error', e => {
+              reject(e);
+            });
         }
       });
     });
-
-    // response.data.pipe(writer)
-
-    // return new Promise((resolve, reject) => {
-    //   writer.on('finish', resolve)
-    //   writer.on('error', reject)
-    // })
   }
 
   async installPack(id: string) {
     settingsUtil.settings.installedPack = id;
     await settingsUtil.save();
-    await this.downloadPack(
-      'https://developer.atmosphereiot.com/files/clientAgent/atmosphereiotagent-latest%20Setup.exe',
+    const packDir = await this.downloadPack(
+      'http://127.0.0.1:3000/testpack2.zip',
       progress => {
         console.log(`Progress: ${progress}%`);
       }
     );
-    console.log('Download complete');
-    //await fs.copy();
+    console.log('Download complete: ' + packDir.name);
+    const dbdLocation = settingsUtil.settings.dbdInstallPath;
+    const packLocation = path.resolve(dbdLocation, 'DeadByDaylight', 'Content', 'UI', 'Icons');
+    console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
+    await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
+    console.log('Installation complete!');
 
     this.setState({
       installedPack: id

@@ -303,6 +303,7 @@
     "source-map-support": "^0.5.16",
     "stream": "^0.0.2",
     "tmp": "^0.1.0",
+    "unzipper": "^0.10.10",
     "winreg": "^1.2.4"
   },
   "devEngines": {
