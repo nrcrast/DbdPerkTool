@@ -1,10 +1,8 @@
 import React, { Component, useState } from 'react';
 
 import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
 import Card from 'react-bootstrap/Card';
-import ListGroup from 'react-bootstrap/ListGroup';
-import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import PerkPackMeta from './PerkPack/PerkPackMeta';
 import PerkPackHas from './PerkPack/PerkPackHas';
 
@@ -17,15 +15,25 @@ type MyProps = {
   installPack: any;
   meta: any;
 };
-type MyState = { installed: boolean };
+type MyState = { installed: boolean; saving: boolean };
 
 export default class PerkPack extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
     super(params);
+    this.state = {
+      installed: false,
+      saving: false
+    };
   }
 
   async installPack() {
-    return this.props.installPack(this.props.id);
+    this.setState({
+      saving: true
+    });
+    await this.props.installPack(this.props.id);
+    this.setState({
+      saving: false
+    });
   }
 
   render() {
@@ -40,20 +48,30 @@ export default class PerkPack extends Component<MyProps, MyState> {
     } else {
       installBtn = (
         <Button variant="primary" onClick={this.installPack.bind(this)}>
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+            className="mr-2"
+            hidden={!this.state.saving}
+          />
           Install
         </Button>
       );
     }
 
+    const imgSrc = 'data:image/png;base64, ' + this.props.headerImg;
+
     return (
       <Card className="mb-3 text-center shadow perk-card border-0">
-        <Card.Img variant="top" src={this.props.headerImg} />
+        <Card.Img variant="top" src={imgSrc} />
 
         <Card.Title>{this.props.meta.name}</Card.Title>
 
         <Card.Text>
-          <i>Some quick example text to build on the card title and make up the
-          bulk of the card's content.</i>
+          <i>{this.props.meta.description}</i>
         </Card.Text>
         <PerkPackMeta
           latestChapter={this.props.meta.latestChapter}

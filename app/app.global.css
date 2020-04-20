@@ -3,4 +3,6 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import '~@fortawesome/fontawesome-free/css/all.css';
+@import 'app.bootstrap.min.css';
+@import 'app.custom.css';
 

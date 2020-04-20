@@ -8,45 +8,55 @@ import Progress from 'node-fetch-progress';
 import fetch from 'node-fetch';
 import unzipper from 'unzipper';
 import axios from 'axios';
+import ErrorModal from './ErrorModal';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
 type MyProps = {};
-type MyState = { installedPack: string };
+type MyState = {
+  installedPack: string;
+  packs: Array<any>;
+  errorModalShow: boolean;
+};
 
 export default class Dbd extends Component<MyProps, MyState> {
   constructor(params: {}) {
     super(params);
     this.state = {
-      installedPack: ''
+      installedPack: '',
+      packs: [],
+      errorModalShow: false
     };
   }
 
   async componentDidMount() {
+    // Get packs
+    const packs = await axios.get('http://192.168.1.137:1338/packs');
     const installedPack = settingsUtil.settings.installedPack || '';
     this.setState({
-      installedPack
+      installedPack,
+      packs: packs.data
     });
   }
 
   async downloadPack(url: string, onProgress: Function) {
-    // const writer = Fs.createWriteStream(path)
-
     const response = await axios({
       url,
       method: 'GET',
-      onDownloadProgress: (progressEvent) => {
-        onProgress(Math.floor(((progressEvent.loaded / progressEvent.total) * 100)))
+      onDownloadProgress: progressEvent => {
+        onProgress(
+          Math.floor((progressEvent.loaded / progressEvent.total) * 100)
+        );
       },
       responseType: 'arraybuffer'
     });
 
     return new Promise((resolve, reject) => {
       const tmpFile = tmp.fileSync();
-      fs.writeFile(tmpFile.name, Buffer.from(response.data), (err) => {
+      fs.writeFile(tmpFile.name, Buffer.from(response.data), err => {
         console.log(response.data.length);
         console.log(tmpFile.name);
-        if(err) {
+        if (err) {
           reject(err);
         } else {
           const tmpDir = tmp.dirSync({ keep: true });
@@ -64,17 +74,29 @@ export default class Dbd extends Component<MyProps, MyState> {
   }
 
   async installPack(id: string) {
+    const dbdLocation = settingsUtil.settings.dbdInstallPath;
+    if (dbdLocation === '') {
+      this.setState({
+        errorModalShow: true
+      });
+      return;
+    }
     settingsUtil.settings.installedPack = id;
     await settingsUtil.save();
     const packDir = await this.downloadPack(
-      'http://127.0.0.1:3000/testpack2.zip',
+      'http://192.168.1.137:1338/packs/' + id,
       progress => {
         console.log(`Progress: ${progress}%`);
       }
     );
     console.log('Download complete: ' + packDir.name);
-    const dbdLocation = settingsUtil.settings.dbdInstallPath;
-    const packLocation = path.resolve(dbdLocation, 'DeadByDaylight', 'Content', 'UI', 'Icons');
+    const packLocation = path.resolve(
+      dbdLocation,
+      'DeadByDaylight',
+      'Content',
+      'UI',
+      'Icons'
+    );
     console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
     await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
     console.log('Installation complete!');
@@ -98,37 +120,37 @@ export default class Dbd extends Component<MyProps, MyState> {
   }
 
   render() {
-    const meta = {
-      name: 'nicks hot pack',
-      author: 'ksdopsdkf',
-      latestChapter: 'Chapter XIII: Stranger Things',
-      hasPortraits: true,
-      hasPowers: false,
-      hasItems: true,
-      hasStatusEffects: true
-    };
+    const errorModalTitle = 'Error';
+    const errorModalText =
+      'Dead By Daylight Installation not found. Please set your installation directory in the Settings tab.';
     const cards = [];
-    for (let i = 0; i < 20; i++) {
-      let id = `perk_pack_${i}`;
-      let installed = false;
-      if (id === this.state.installedPack) {
-        installed = true;
-      }
-
+    this.state.packs.forEach((pack, index) => {
+      let installed = this.state.installedPack === pack.id;
+      let popularity = `${index + 1}/${this.state.packs.length}`;
       cards.push(
         <div>
           <PerkPack
-            id={id}
+            id={pack.id}
             installPack={this.installPack.bind(this)}
-            meta={meta}
-            headerImg="./img/testperk-lg.png"
+            meta={pack}
+            headerImg={pack.headerImg}
             installed={installed}
-            downloads={1234}
-            popularity="44/1234"
+            downloads={pack.downloads}
+            popularity={popularity}
           />
         </div>
       );
-    }
+    });
+
+    cards.push(
+      <ErrorModal
+        title={errorModalTitle}
+        text={errorModalText}
+        show={this.state.errorModalShow}
+        onHide={() => this.setState({ errorModalShow: false })}
+      />
+    );
+
     return cards;
   }
 }

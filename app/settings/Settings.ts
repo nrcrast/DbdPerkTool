@@ -16,15 +16,22 @@ class Settings {
       'dbdPerkToolSettings.json'
     );
     this.settings = {
-		dbdInstallPath: '',
-		installedPack: '',
-	};
+      dbdInstallPath: '',
+      installedPack: ''
+    };
   }
 
   async setDefaultSettings() {
     const dbd = new DeadByDaylight();
-	const dbdPath = await dbd.getInstallPath();
-	this.settings.dbdInstallPath = dbdPath;
+    let dbdPath = '';
+    
+    try {
+      dbdPath = await dbd.getInstallPath();
+    } catch (e) {
+      dbdPath = '';
+    }
+
+    this.settings.dbdInstallPath = dbdPath;
   }
 
   async read() {
