@@ -34,7 +34,8 @@
     "test-all": "yarn lint && yarn ts && yarn build && yarn test && yarn build-e2e && yarn test-e2e",
     "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./app ./test/e2e/HomePage.e2e.ts",
-    "test-watch": "yarn test --watch"
+    "test-watch": "yarn test --watch",
+    "docs:serve": "cd docs && bundle exec jekyll serve"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
