@@ -65,7 +65,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
     const imgSrc = 'data:image/png;base64, ' + this.props.headerImg;
 
     return (
-      <Card className="mb-3 text-center shadow perk-card border-0">
+      <Card className="m-3 text-center shadow perk-card border-0">
         <Card.Img variant="top" src={imgSrc} />
 
         <Card.Title>{this.props.meta.name}</Card.Title>

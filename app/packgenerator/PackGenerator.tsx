@@ -6,7 +6,7 @@ import { promisify } from 'util';
 import fs from 'fs';
 import mergeImages from 'merge-images';
 import sharp from 'sharp';
-import {Canvas, Image} from 'canvas';
+import { Canvas, Image } from 'canvas';
 
 const readdirAsync = promisify(fs.readdir);
 
@@ -66,13 +66,17 @@ export default class PackGenerator {
       'iconPerks_BBQAndChili.png'
     );
     const blPath = path.resolve(
-		this.packDir.dir,
+      this.packDir.dir,
       'Perks',
       'iconPerks_balancedLanding.png'
     );
-    const sbPath = path.resolve(this.packDir.dir, 'Perks', 'iconPerks_sprintBurst.png');
+    const sbPath = path.resolve(
+      this.packDir.dir,
+      'Perks',
+      'iconPerks_sprintBurst.png'
+    );
     const enduringPath = path.resolve(
-		this.packDir.dir,
+      this.packDir.dir,
       'Perks',
       'iconPerks_enduring.png'
     );
@@ -98,18 +102,20 @@ export default class PackGenerator {
       });
       currentX += perkWidthHeight + spacingInBetween;
     }
-	console.log(mergeOpts);
-	const b64Txt = await mergeImages(mergeOpts, {
-		width: imgWidth,
-		height: imgHeight,
-		Canvas: Canvas,
-		Image: Image
-	  });
+    console.log(mergeOpts);
+    const b64Txt = await mergeImages(mergeOpts, {
+      width: imgWidth,
+      height: imgHeight,
+      Canvas: Canvas,
+      Image: Image
+    });
 
-	let base64Image = b64Txt.split(';base64,').pop();
-	const imgBuf = Buffer.from(base64Image, 'base64');
-	const resizedImgBuf = await sharp(imgBuf).resize(1100).toBuffer();
-	return resizedImgBuf;
+    let base64Image = b64Txt.split(';base64,').pop();
+    const imgBuf = Buffer.from(base64Image, 'base64');
+    const resizedImgBuf = await sharp(imgBuf)
+      .resize(900)
+      .toBuffer();
+    return resizedImgBuf;
   }
 
   async generate() {
@@ -164,9 +170,9 @@ export default class PackGenerator {
         console.log(file);
         console.log(`Adding ${pathInZip}`);
         archive.append(fs.createReadStream(file), { name: pathInZip });
-	  });
-	
-	  archive.append(await currentGen.generateHeader(), {name: 'header.png'});
+      });
+
+      archive.append(await currentGen.generateHeader(), { name: 'header.png' });
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'

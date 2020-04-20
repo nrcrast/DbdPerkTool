@@ -58,7 +58,9 @@ export default class PackDir {
       .filter(item => item.isDirectory())
       .map(dirent => dirent.name);
 
-    if (dirs.includes('Sweden')) {
+    if(dirs.includes('Ukraine')) {
+      return 'Chapter XV: Chains of Hate';
+    } else if (dirs.includes('Sweden')) {
       return 'Chapter XIV: Cursed Legacy';
     } else if (dirs.includes('Qatar')) {
       return 'Chapter XIII: Stranger Things';
