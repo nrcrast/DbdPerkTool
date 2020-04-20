@@ -7,6 +7,9 @@ The Dead By Daylight Perk Tool is a desktop Windows application designed to make
 
 If you've installed Dead By Daylight from the Windows Store (why?), then you will have to set the path manually via the Settings tab.
 
+## Icon Credits
+Credit for Application Icons and the icon at the top of this page goes to HappyClown + Yoinks. Please don't hesistate to reach out if my use of your beautiful icons is an issue!
+
 ## Why does this exist?
 This exists for two reasons: I am an Embedded Developer by trade, and this was a fun opportunity to learn some webbier development while still making a useful Desktop application. That's why I chose bloated Electron over something like C#/WPF or JavaFx. The second reason is that I'm tired of unzipping Perk packs and dragging them over. It's nice to have them all in one place.
 
