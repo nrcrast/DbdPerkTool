@@ -1,7 +1,8 @@
 ---
-layout: page
+layout: default
 title: Download
 permalink: /download/
 ---
 
-# Download here
+# Instructions
+Download the latest release here.

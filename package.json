@@ -1,7 +1,7 @@
 {
   "name": "electron-react-boilerplate",
   "productName": "DbdPerkTool",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "Dead By Daylight Perk Tool",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
