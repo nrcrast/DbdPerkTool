@@ -13,6 +13,8 @@ const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 
 const mainWindow = remote.getCurrentWindow();
 
+mainWindow.removeMenu();
+
 mainWindow.on('resize', () => {
   const [width] = mainWindow.getSize();
   const aspectRatio = 16 / 9;
