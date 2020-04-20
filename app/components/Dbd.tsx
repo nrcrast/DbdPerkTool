@@ -9,6 +9,7 @@ import fetch from 'node-fetch';
 import unzipper from 'unzipper';
 import axios from 'axios';
 import ErrorModal from './ErrorModal';
+import Spinner from 'react-bootstrap/Spinner';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -17,6 +18,7 @@ type MyState = {
   installedPack: string;
   packs: Array<any>;
   errorModalShow: boolean;
+  isLoading: boolean;
 };
 
 export default class Dbd extends Component<MyProps, MyState> {
@@ -25,7 +27,8 @@ export default class Dbd extends Component<MyProps, MyState> {
     this.state = {
       installedPack: '',
       packs: [],
-      errorModalShow: false
+      errorModalShow: false,
+      isLoading: true
     };
   }
 
@@ -35,7 +38,8 @@ export default class Dbd extends Component<MyProps, MyState> {
     const installedPack = settingsUtil.settings.installedPack || '';
     this.setState({
       installedPack,
-      packs: packs.data
+      packs: packs.data,
+      isLoading: false
     });
   }
 
@@ -120,6 +124,18 @@ export default class Dbd extends Component<MyProps, MyState> {
   }
 
   render() {
+    if (this.state.isLoading) {
+      return (
+        <Spinner
+          as="span"
+          animation="border"
+          role="status"
+          aria-hidden="true"
+          className="mr-2"
+          hidden={!this.state.isLoading}
+        />
+      );
+    }
     const errorModalTitle = 'Error';
     const errorModalText =
       'Dead By Daylight Installation not found. Please set your installation directory in the Settings tab.';
@@ -150,7 +166,6 @@ export default class Dbd extends Component<MyProps, MyState> {
         onHide={() => this.setState({ errorModalShow: false })}
       />
     );
-
     return cards;
   }
 }

@@ -6,6 +6,7 @@ import DeadByDaylight from '../steam/DeadByDaylight';
 import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 
+
 type MyProps = {};
 type MyState = { installPath: string };
 
