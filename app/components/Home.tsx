@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="text-center">Dead By Daylight Perk Tool</h1>
+      <h1 className="text-center">Dead By Daylight Icon Toolbox</h1>
       <p>
         This is a tool designed to help you browse and install Perks and Icon
         sets with the click of a button!

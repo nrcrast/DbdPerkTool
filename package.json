@@ -1,8 +1,8 @@
 {
   "name": "electron-react-boilerplate",
-  "productName": "DbdPerkTool",
+  "productName": "DbdIconToolbox",
   "version": "1.0.0",
-  "description": "Dead By Daylight Perk Tool",
+  "description": "Dead By Daylight Icon Toolbox",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -53,8 +53,8 @@
     ]
   },
   "build": {
-    "productName": "DbdPerkTool",
-    "appId": "org.nrcrast.DbdPerkTool",
+    "productName": "DbdIconToolbox",
+    "appId": "org.nrcrast.DbdIconToolbox",
     "files": [
       "dist/",
       "node_modules/",

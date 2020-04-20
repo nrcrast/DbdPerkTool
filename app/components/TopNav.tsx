@@ -7,7 +7,7 @@ import routes from '../constants/routes.json';
 export default function TopNav() {
   return (
     <Navbar variant="dark" className="rounded shadow main-navbar">
-      <Navbar.Brand>DBD Perk Tool</Navbar.Brand>
+      <Navbar.Brand>Icon Toolbox</Navbar.Brand>
       <Nav>
         <Nav.Link as={Link} to={routes.HOME}>
           About
