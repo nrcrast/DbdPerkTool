@@ -14,6 +14,7 @@ const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
 const mainWindow = remote.getCurrentWindow();
 
 mainWindow.removeMenu();
+// mainWindow.setIcon(__dirname + '/img/icon.ico');
 
 mainWindow.on('resize', () => {
   const [width] = mainWindow.getSize();
