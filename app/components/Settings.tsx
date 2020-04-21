@@ -72,8 +72,8 @@ export default class Settings extends Component<MyProps, MyState> {
         >
           <MDBInput
             label="Dead By Daylight Install Path"
-            className="text-white"
-            labelClass="pink-text"
+            className="text-white dbd-input-field"
+            labelClass="field-label-text"
             value={this.state.settings.dbdInstallPath}
             onChange={this.handleDbdPathChanged.bind(this)}
           />

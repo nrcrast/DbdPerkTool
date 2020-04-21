@@ -27,3 +27,24 @@ body {
   font-size: 0.8rem;
 }
 
+code {
+  color: #23a4a4;
+}
+
+a {
+  color: #23a4a4;
+}
+
+a:hover {
+  color: #478694;
+  text-decoration: none;
+}
+
+.field-label-text {
+  color: #23a4a4 !important;
+}
+
+.dbd-input-field:focus {
+  border-bottom: 1px solid #23a4a4 !important;
+  box-shadow: 0 1px 0 0 #23a4a4 !important;
+}

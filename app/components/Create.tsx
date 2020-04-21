@@ -124,8 +124,8 @@ export default class Create extends Component<MyProps, MyState> {
         >
           <MDBInput
             label="Title"
-            className="text-white"
-            labelClass="pink-text"
+            className="text-white dbd-input-field"
+            labelClass="field-label-text"
             required
             onChange={e => {
               this.setState({ title: e.target.value });
@@ -133,8 +133,8 @@ export default class Create extends Component<MyProps, MyState> {
           />
           <MDBInput
             label="Description"
-            className="text-white"
-            labelClass="pink-text"
+            className="text-white dbd-input-field"
+            labelClass="field-label-text"
             required
             onChange={e => {
               this.setState({ description: e.target.value });
@@ -142,8 +142,8 @@ export default class Create extends Component<MyProps, MyState> {
           />
           <MDBInput
             label="Author"
-            className="text-white"
-            labelClass="pink-text"
+            className="text-white dbd-input-field"
+            labelClass="field-label-text"
             required
             onChange={e => {
               this.setState({ author: e.target.value });
@@ -151,8 +151,8 @@ export default class Create extends Component<MyProps, MyState> {
           />
           <MDBInput
             label="Email Address"
-            className="text-white"
-            labelClass="pink-text"
+            className="text-white dbd-input-field"
+            labelClass="field-label-text"
             required
             onChange={e => {
               this.setState({ email: e.target.value });
@@ -161,7 +161,7 @@ export default class Create extends Component<MyProps, MyState> {
           <MDBInputGroup
             material
             hint="Pack Directory"
-            className="text-white"
+            className="text-white dbd-input-field"
             value={this.state.packDir}
             onChange={this.handlePackDirChanged.bind(this)}
             append={

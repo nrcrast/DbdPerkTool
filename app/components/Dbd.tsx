@@ -148,7 +148,6 @@ export default class Dbd extends Component<MyProps, MyState> {
       let installed = this.state.installedPack === pack.id;
       let popularity = `${index + 1}/${this.state.packs.length}`;
       cards.push(
-        <div>
           <PerkPack
             id={pack.id}
             installPack={this.installPack.bind(this)}
@@ -158,25 +157,16 @@ export default class Dbd extends Component<MyProps, MyState> {
             downloads={pack.downloads}
             popularity={popularity}
           />
-        </div>
       );
     });
 
-    cards.push(
-      <ErrorModal
-        title={errorModalTitle}
-        text={errorModalText}
-        show={this.state.errorModalShow}
-        onHide={() => this.setState({ errorModalShow: false })}
-      />
-    );
     return (
       <div>
-        <Row className="justify-content-center">
-          <Col className="col-3">
+        <Row className="d-flex flex-row-reverse">
+          <Col className="col-4">
           <InputGroup className="md-form mb-3">
             <FormControl
-              className="white-text"
+              className="white-text dbd-input-field"
             />
             <InputGroup.Append>
               <Button variant="dark" className="white-text">
@@ -187,6 +177,12 @@ export default class Dbd extends Component<MyProps, MyState> {
           </Col>
         </Row>
         <Row className="justify-content-center">{cards}</Row>
+        <ErrorModal
+        title={errorModalTitle}
+        text={errorModalText}
+        show={this.state.errorModalShow}
+        onHide={() => this.setState({ errorModalShow: false })}
+      />
       </div>
     );
   }
