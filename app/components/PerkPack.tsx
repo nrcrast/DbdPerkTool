@@ -41,13 +41,13 @@ export default class PerkPack extends Component<MyProps, MyState> {
 
     if (this.props.installed) {
       installBtn = (
-        <Button variant="secondary" disabled>
+        <Button variant="dark" disabled>
           Installed
         </Button>
       );
     } else {
       installBtn = (
-        <Button variant="primary" onClick={this.installPack.bind(this)}>
+        <Button variant="dark" onClick={this.installPack.bind(this)}>
           <Spinner
             as="span"
             animation="border"
@@ -66,7 +66,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
 
     return (
       <Card className="m-3 text-center shadow perk-card border-0">
-        <Card.Img variant="top" src={imgSrc} />
+        <Card.Img variant="top" src={imgSrc} className="perk-header-img" />
 
         <Card.Title>{this.props.meta.name}</Card.Title>
 

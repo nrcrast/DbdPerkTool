@@ -17,3 +17,13 @@ body {
 .perk-card {
   background: rgba(48, 48, 48, 0.7);
 }
+
+.perk-header-img {
+  width:800px;
+  height: auto;
+}
+
+.perk-pack-data {
+  font-size: 0.8rem;
+}
+

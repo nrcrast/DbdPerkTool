@@ -4,8 +4,11 @@ import PerkPack from './PerkPack';
 import fs from 'fs-extra';
 import tmp from 'tmp';
 import path from 'path';
-import Progress from 'node-fetch-progress';
-import fetch from 'node-fetch';
+import Row from 'react-bootstrap/Row';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import FormControl from 'react-bootstrap/FormControl';
 import unzipper from 'unzipper';
 import axios from 'axios';
 import ErrorModal from './ErrorModal';
@@ -103,6 +106,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     );
     console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
     await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
+    packDir.removeCallback();
     console.log('Installation complete!');
 
     this.setState({
@@ -166,6 +170,24 @@ export default class Dbd extends Component<MyProps, MyState> {
         onHide={() => this.setState({ errorModalShow: false })}
       />
     );
-    return cards;
+    return (
+      <div>
+        <Row className="justify-content-center">
+          <Col className="col-3">
+          <InputGroup className="md-form mb-3">
+            <FormControl
+              className="white-text"
+            />
+            <InputGroup.Append>
+              <Button variant="dark" className="white-text">
+                Search
+              </Button>
+            </InputGroup.Append>
+          </InputGroup>
+          </Col>
+        </Row>
+        <Row className="justify-content-center">{cards}</Row>
+      </div>
+    );
   }
 }

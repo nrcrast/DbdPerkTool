@@ -10,6 +10,7 @@ import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
+import { MDBContainer, MDBInputGroup, MDBBtn, MDBInput } from 'mdbreact';
 const fs = fsWithCallbacks.promises;
 
 const { dialog } = require('electron').remote;
@@ -71,7 +72,7 @@ export default class Create extends Component<MyProps, MyState> {
       undefined,
       this.state.title,
       this.state.author,
-      this.state.description,
+      this.state.description
     );
 
     try {
@@ -117,69 +118,60 @@ export default class Create extends Component<MyProps, MyState> {
     return (
       <Col className="col-8">
         <Form
+          className="md-form"
           onSubmit={this.doCreate.bind(this)}
           onChange={this.handleFormChanged.bind(this)}
         >
-          <Form.Group controlId="createForm.title">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="My awesome pack"
-              onChange={e => {
-                this.setState({ title: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.desc">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="This is probably the best pack around"
-              onChange={e => {
-                this.setState({ description: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.author">
-            <Form.Label>Author</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="Max Thompson Jr."
-              onChange={e => {
-                this.setState({ author: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              required
-              type="email"
-              placeholder="hillbilly@yahoo.com"
-              onChange={e => {
-                this.setState({ email: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.packDirectory">
-            <Form.Label>Pack Directory</Form.Label>
-            <Row>
-              <Col>
-                <Form.Control
-                  required
-                  type="text"
-                  value={this.state.packDir}
-                  onChange={this.handlePackDirChanged.bind(this)}
-                />
-              </Col>
-              <Col>
-                <Button onClick={this.pickPackDir.bind(this)}>Browse</Button>
-              </Col>
-            </Row>
-          </Form.Group>
+          <MDBInput
+            label="Title"
+            className="text-white"
+            labelClass="pink-text"
+            required
+            onChange={e => {
+              this.setState({ title: e.target.value });
+            }}
+          />
+          <MDBInput
+            label="Description"
+            className="text-white"
+            labelClass="pink-text"
+            required
+            onChange={e => {
+              this.setState({ description: e.target.value });
+            }}
+          />
+          <MDBInput
+            label="Author"
+            className="text-white"
+            labelClass="pink-text"
+            required
+            onChange={e => {
+              this.setState({ author: e.target.value });
+            }}
+          />
+          <MDBInput
+            label="Email Address"
+            className="text-white"
+            labelClass="pink-text"
+            required
+            onChange={e => {
+              this.setState({ email: e.target.value });
+            }}
+          />
+          <MDBInputGroup
+            material
+            hint="Pack Directory"
+            className="text-white"
+            value={this.state.packDir}
+            onChange={this.handlePackDirChanged.bind(this)}
+            append={
+              <Button variant="dark" onClick={this.pickPackDir.bind(this)}>
+                Browse
+              </Button>
+            }
+          />
+
+
           <Button variant="dark" type="submit">
             <Spinner
               as="span"

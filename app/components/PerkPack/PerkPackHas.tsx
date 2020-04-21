@@ -15,7 +15,7 @@ type MyState = {};
 export default function PerkPackHas(props: MyProps) {
   return (
     <Row className="justify-content-center">
-      <ListGroup horizontal className="shadow">
+      <ListGroup horizontal className="shadow perk-pack-data">
         <HasItem label="Portraits" has={props.portraits} />
         <HasItem label="Powers" has={props.powers} />
         <HasItem label="Items" has={props.items} />

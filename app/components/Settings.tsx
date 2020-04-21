@@ -5,16 +5,17 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import settingsUtil from '../settings/Settings';
+import { MDBInput } from 'mdbreact';
 
 type MyProps = {};
-type MyState = { settings: Object, unsaved: boolean };
+type MyState = { settings: Object; unsaved: boolean };
 
 export default class Settings extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
     super(params);
     this.state = {
       settings: {},
-      unsaved: false,
+      unsaved: false
     };
   }
 
@@ -35,7 +36,7 @@ export default class Settings extends Component<MyProps, MyState> {
     settingsUtil.settings.dbdInstallPath = this.state.settings.dbdInstallPath;
     await settingsUtil.save();
     this.setState({
-      unsaved: false,
+      unsaved: false
     });
   }
 
@@ -51,31 +52,33 @@ export default class Settings extends Component<MyProps, MyState> {
     await settingsUtil.setDefaultSettings();
     this.syncSettings();
     this.setState({
-      unsaved: true,
+      unsaved: true
     });
   }
 
   handleFormChanged() {
     this.setState({
-      unsaved: true,
+      unsaved: true
     });
   }
 
   render() {
-    const saveButtonValue='Save' + (this.state.unsaved ? '*' : '');
+    const saveButtonValue = 'Save' + (this.state.unsaved ? '*' : '');
     return (
       <Col className="col-8">
-        <Form onSubmit={this.doSave.bind(this)} onChange={this.handleFormChanged.bind(this)}>
-          <Form.Group controlId="settingsForm.dbdInstallPath">
-            <Form.Label>Dead By Daylight Install Path</Form.Label>
-            <Form.Control
-              type="text"
-              value={this.state.settings.dbdInstallPath}
-              onChange={this.handleDbdPathChanged.bind(this)}
-            />
-          </Form.Group>
+        <Form
+          onSubmit={this.doSave.bind(this)}
+          onChange={this.handleFormChanged.bind(this)}
+        >
+          <MDBInput
+            label="Dead By Daylight Install Path"
+            className="text-white"
+            labelClass="pink-text"
+            value={this.state.settings.dbdInstallPath}
+            onChange={this.handleDbdPathChanged.bind(this)}
+          />
           <Button variant="dark" type="submit">
-          {saveButtonValue}
+            {saveButtonValue}
           </Button>
           <Button
             variant="dark"

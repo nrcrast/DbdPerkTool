@@ -14,7 +14,7 @@ type MyState = {};
 export default function PerkPackMeta(props: MyProps) {
   return (
     <Row className="justify-content-center mb-1">
-      <ListGroup horizontal className="shadow">
+      <ListGroup horizontal className="shadow perk-pack-data">
         <ListGroupItem>
           <b>Latest Chapter:</b> {props.latestChapter}
         </ListGroupItem>
