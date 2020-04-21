@@ -3,6 +3,7 @@ import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
 import PerkPackMeta from './PerkPack/PerkPackMeta';
 import PerkPackHas from './PerkPack/PerkPackHas';
 
@@ -65,8 +66,8 @@ export default class PerkPack extends Component<MyProps, MyState> {
     const imgSrc = 'data:image/png;base64, ' + this.props.headerImg;
 
     return (
-      <Card className="m-3 text-center shadow perk-card border-0">
-        <Card.Img variant="top" src={imgSrc} className="perk-header-img" />
+      <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
+        <Card.Img variant="top" src={imgSrc} className="perk-header-img text-center" />
 
         <Card.Title>{this.props.meta.name}</Card.Title>
 

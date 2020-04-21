@@ -16,6 +16,8 @@ body {
 
 .perk-card {
   background: rgba(48, 48, 48, 0.7);
+  min-width: 800px;
+  max-width: 800px;
 }
 
 .perk-header-img {

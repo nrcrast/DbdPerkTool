@@ -5,10 +5,23 @@ import fs from 'fs-extra';
 import tmp from 'tmp';
 import path from 'path';
 import Row from 'react-bootstrap/Row';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
+import CardDeck from 'react-bootstrap/CardDeck';
+import {
+  MDBNavbar,
+  MDBNavbarBrand,
+  MDBNavbarNav,
+  MDBNavItem,
+  MDBNavLink,
+  MDBNavbarToggler,
+  MDBCollapse,
+  MDBFormInline,
+  MDBDropdown,
+  MDBDropdownToggle,
+  MDBDropdownMenu,
+  MDBInput,
+  MDBDropdownItem
+} from 'mdbreact';
 import unzipper from 'unzipper';
 import axios from 'axios';
 import ErrorModal from './ErrorModal';
@@ -22,6 +35,8 @@ type MyState = {
   packs: Array<any>;
   errorModalShow: boolean;
   isLoading: boolean;
+  searchFilter: string;
+  sortKey: string;
 };
 
 export default class Dbd extends Component<MyProps, MyState> {
@@ -31,7 +46,9 @@ export default class Dbd extends Component<MyProps, MyState> {
       installedPack: '',
       packs: [],
       errorModalShow: false,
-      isLoading: true
+      isLoading: true,
+      searchFilter: '',
+      sortKey: 'Popularity'
     };
   }
 
@@ -127,6 +144,42 @@ export default class Dbd extends Component<MyProps, MyState> {
     return tempArray;
   }
 
+  searchFilter(text: string) {
+    return text.search(new RegExp(this.state.searchFilter, 'i')) >= 0;
+  }
+
+  isPackIncluded(pack) {
+    if (this.state.searchFilter === '') {
+      return true;
+    } else if (
+      this.searchFilter(pack.name) ||
+      this.searchFilter(pack.author) ||
+      this.searchFilter(pack.description) ||
+      this.searchFilter(pack.latestChapter)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  strcmpIgnoreCase(a, b) {
+    return a.toUpperCase().localeCompare(b.toUpperCase());
+  }
+
+  packSortComparator(a, b) {
+    const key = this.state.sortKey;
+
+    if (key === 'Name') {
+      return this.strcmpIgnoreCase(a.name, b.name);
+    } else if (key === 'Author') {
+      return this.strcmpIgnoreCase(a.author, b.author);
+    }
+
+    const aDate = new Date(a.createdAt);
+    const bDate = new Date(b.createdAt);
+    return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+  }
+
   render() {
     if (this.state.isLoading) {
       return (
@@ -144,10 +197,17 @@ export default class Dbd extends Component<MyProps, MyState> {
     const errorModalText =
       'Dead By Daylight Installation not found. Please set your installation directory in the Settings tab.';
     const cards = [];
-    this.state.packs.forEach((pack, index) => {
+    let packs = [...this.state.packs];
+    console.log('unsorted');
+    console.log(packs.map(pack => pack.name));
+    packs.sort(this.packSortComparator.bind(this));
+    console.log('sorted');
+    console.log(packs.map(pack => pack.name));
+    packs.forEach((pack, index) => {
       let installed = this.state.installedPack === pack.id;
       let popularity = `${index + 1}/${this.state.packs.length}`;
-      cards.push(
+      if (this.isPackIncluded(pack)) {
+        cards.push(
           <PerkPack
             id={pack.id}
             installPack={this.installPack.bind(this)}
@@ -157,32 +217,100 @@ export default class Dbd extends Component<MyProps, MyState> {
             downloads={pack.downloads}
             popularity={popularity}
           />
-      );
+        );
+      }
     });
 
     return (
       <div>
-        <Row className="d-flex flex-row-reverse">
-          <Col className="col-4">
-          <InputGroup className="md-form mb-3">
-            <FormControl
-              className="white-text dbd-input-field"
-            />
-            <InputGroup.Append>
-              <Button variant="dark" className="white-text">
-                Search
-              </Button>
-            </InputGroup.Append>
-          </InputGroup>
+        {/* <Row className="justify-content-end">
+          <Col className="col-4 mr-3">
+            
           </Col>
+          <Col className="col-6 mr-3">
+            <MDBInput
+              label="Search"
+              className="text-white dbd-input-field"
+              labelClass="field-label-text"
+              required
+              onChange={e => {
+                this.setState({ searchFilter: e.target.value });
+              }}
+            />
+          </Col>
+        </Row> */}
+        <MDBNavbar dark className="shadow-none">
+          <MDBNavbarNav left>
+            <MDBNavItem>
+              <MDBDropdown>
+                <MDBDropdownToggle nav>
+                  <span className="mr-2">
+                    <i className="fas fa-sort-amount-down"></i>Sort (
+                    {this.state.sortKey})
+                  </span>
+                </MDBDropdownToggle>
+                <MDBDropdownMenu>
+                  <MDBDropdownItem
+                    className="field-label-text"
+                    href="#"
+                    onClick={e => {
+                      e.preventDefault();
+                      this.setState({ sortKey: 'Name' });
+                    }}
+                  >
+                    Name (A-Z)
+                  </MDBDropdownItem>
+                  <MDBDropdownItem
+                    className="field-label-text"
+                    href="#"
+                    onClick={e => {
+                      e.preventDefault();
+                      this.setState({ sortKey: 'Author' });
+                    }}
+                  >
+                    Author
+                  </MDBDropdownItem>
+                  <MDBDropdownItem
+                    className="field-label-text"
+                    href="#"
+                    onClick={e => {
+                      e.preventDefault();
+                      this.setState({ sortKey: 'Date' });
+                    }}
+                  >
+                    Date Added (Newest First)
+                  </MDBDropdownItem>
+                </MDBDropdownMenu>
+              </MDBDropdown>
+            </MDBNavItem>
+          </MDBNavbarNav>
+          <MDBNavbarNav right>
+            <MDBNavItem>
+              <MDBFormInline waves>
+                <div className="md-form my-0">
+                  <input
+                    className="form-control mr-sm-2 dbd-input-field"
+                    type="text"
+                    placeholder="Search"
+                    aria-label="Search"
+                    onChange={e => {
+                      this.setState({ searchFilter: e.target.value });
+                    }}
+                  />
+                </div>
+              </MDBFormInline>
+            </MDBNavItem>
+          </MDBNavbarNav>
+        </MDBNavbar>
+        <Row className="justify-content-center">
+        {cards}
         </Row>
-        <Row className="justify-content-center">{cards}</Row>
         <ErrorModal
-        title={errorModalTitle}
-        text={errorModalText}
-        show={this.state.errorModalShow}
-        onHide={() => this.setState({ errorModalShow: false })}
-      />
+          title={errorModalTitle}
+          text={errorModalText}
+          show={this.state.errorModalShow}
+          onHide={() => this.setState({ errorModalShow: false })}
+        />
       </div>
     );
   }
