@@ -8,20 +8,38 @@ type MyProps = {
   author: string;
   downloads: number;
   popularity: string;
+  onAuthorClick: any;
 };
 type MyState = {};
 
 export default function PerkPackMeta(props: MyProps) {
   return (
-    <Row className="justify-content-center mb-1">
-      <ListGroup horizontal className="shadow">
-        <ListGroupItem>
+    <div>
+      <Row className="justify-content-center">
+        <p>
           <b>Latest Chapter:</b> {props.latestChapter}
-        </ListGroupItem>
-        <ListGroupItem><b>Author:</b> {props.author}</ListGroupItem>
-        <ListGroupItem><b>Downloads:</b> {props.downloads}</ListGroupItem>
-        <ListGroupItem><b>Popularity:</b> {props.popularity}</ListGroupItem>
-      </ListGroup>
-    </Row>
+        </p>
+      </Row>
+
+      <Row className="justify-content-center">
+        <p>
+          <b>Author:</b>{' '}
+          <a href="#" onClick={props.onAuthorClick}>
+            {props.author}
+          </a>
+        </p>
+      </Row>
+
+      <Row className="justify-content-center">
+        <p>
+          <b>Downloads:</b> {props.downloads}
+        </p>
+      </Row>
+      <Row className="justify-content-center">
+        <p>
+          <b>Popularity:</b> {props.popularity}
+        </p>
+      </Row>
+    </div>
   );
 }

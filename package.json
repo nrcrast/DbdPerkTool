@@ -1,7 +1,7 @@
 {
   "name": "electron-react-boilerplate",
-  "productName": "DbdIconToolbox",
-  "version": "1.0.0",
+  "productName": "Dead By Daylight Icon Toolbox",
+  "version": "1.0.1",
   "description": "Dead By Daylight Icon Toolbox",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -53,7 +53,7 @@
     ]
   },
   "build": {
-    "productName": "DbdIconToolbox",
+    "productName": "Dead By Daylight Icon Toolbox",
     "appId": "org.nrcrast.DbdIconToolbox",
     "files": [
       "dist/",

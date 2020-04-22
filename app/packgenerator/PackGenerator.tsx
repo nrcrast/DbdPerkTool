@@ -113,7 +113,7 @@ export default class PackGenerator {
     let base64Image = b64Txt.split(';base64,').pop();
     const imgBuf = Buffer.from(base64Image, 'base64');
     const resizedImgBuf = await sharp(imgBuf)
-      .resize(900)
+      .resize(800)
       .toBuffer();
     return resizedImgBuf;
   }

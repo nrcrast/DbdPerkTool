@@ -4,12 +4,16 @@ import PerkPack from './PerkPack';
 import fs from 'fs-extra';
 import tmp from 'tmp';
 import path from 'path';
-import Progress from 'node-fetch-progress';
-import fetch from 'node-fetch';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import unzipper from 'unzipper';
 import axios from 'axios';
 import ErrorModal from './ErrorModal';
 import Spinner from 'react-bootstrap/Spinner';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Form from 'react-bootstrap/Form';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import CardDeck from 'react-bootstrap/CardDeck';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -19,6 +23,8 @@ type MyState = {
   packs: Array<any>;
   errorModalShow: boolean;
   isLoading: boolean;
+  searchFilter: string;
+  sortKey: string;
 };
 
 export default class Dbd extends Component<MyProps, MyState> {
@@ -28,7 +34,9 @@ export default class Dbd extends Component<MyProps, MyState> {
       installedPack: '',
       packs: [],
       errorModalShow: false,
-      isLoading: true
+      isLoading: true,
+      searchFilter: '',
+      sortKey: 'Popularity'
     };
   }
 
@@ -103,6 +111,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     );
     console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
     await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
+    packDir.removeCallback();
     console.log('Installation complete!');
 
     this.setState({
@@ -123,6 +132,91 @@ export default class Dbd extends Component<MyProps, MyState> {
     return tempArray;
   }
 
+  searchFilter(text: string) {
+    return text.search(new RegExp(this.state.searchFilter, 'i')) >= 0;
+  }
+
+  isPackIncluded(pack) {
+    if (this.state.searchFilter === '') {
+      return true;
+    } else if (
+      this.searchFilter(pack.name) ||
+      this.searchFilter(pack.author) ||
+      this.searchFilter(pack.description) ||
+      this.searchFilter(pack.latestChapter)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  strcmpIgnoreCase(a, b) {
+    return a.toUpperCase().localeCompare(b.toUpperCase());
+  }
+
+  packSortComparator(a, b) {
+    const key = this.state.sortKey;
+
+    if (key === 'Name') {
+      return this.strcmpIgnoreCase(a.name, b.name);
+    } else if (key === 'Author') {
+      return this.strcmpIgnoreCase(a.author, b.author);
+    } else if (key === 'Popularity') {
+      return a.downloads > b.downloads;
+    }
+
+    const aDate = new Date(a.createdAt);
+    const bDate = new Date(b.createdAt);
+    return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+  }
+
+  fromPacksBuildCards(packs) {
+    return packs
+      .filter(pack => this.isPackIncluded(pack))
+      .map((pack, index) => {
+        let installed = this.state.installedPack === pack.id;
+        let popularity = `${index + 1}/${this.state.packs.length}`;
+        return (
+          <PerkPack
+            id={pack.id}
+            installPack={this.installPack.bind(this)}
+            meta={pack}
+            headerImg={pack.headerImg}
+            installed={installed}
+            downloads={pack.downloads}
+            popularity={popularity}
+            onAuthorClick={e => {
+              e.preventDefault();
+              this.setState({ searchFilter: pack.author });
+            }}
+          />
+        );
+      });
+  }
+
+  fromCardsBuildDeck(cards) {
+    const decks = [];
+    for (let i = 0; i < cards.length; i += 2) {
+      if (i + 1 >= cards.length) {
+        decks.push(<Row >{cards[i]}</Row>);
+      } else {
+        decks.push(
+          <Row>
+            <Col class='col-sm'>
+            {cards[i]}
+            </Col>
+            <Col class='col-sm'>
+            {cards[i + 1]}
+            </Col>
+            
+          </Row>
+        );
+      }
+    }
+
+    return decks;
+  }
+
   render() {
     if (this.state.isLoading) {
       return (
@@ -139,33 +233,90 @@ export default class Dbd extends Component<MyProps, MyState> {
     const errorModalTitle = 'Error';
     const errorModalText =
       'Dead By Daylight Installation not found. Please set your installation directory in the Settings tab.';
-    const cards = [];
-    this.state.packs.forEach((pack, index) => {
-      let installed = this.state.installedPack === pack.id;
-      let popularity = `${index + 1}/${this.state.packs.length}`;
-      cards.push(
-        <div>
-          <PerkPack
-            id={pack.id}
-            installPack={this.installPack.bind(this)}
-            meta={pack}
-            headerImg={pack.headerImg}
-            installed={installed}
-            downloads={pack.downloads}
-            popularity={popularity}
-          />
-        </div>
-      );
-    });
 
-    cards.push(
-      <ErrorModal
-        title={errorModalTitle}
-        text={errorModalText}
-        show={this.state.errorModalShow}
-        onHide={() => this.setState({ errorModalShow: false })}
-      />
+    let packs = [...this.state.packs];
+    packs.sort(this.packSortComparator.bind(this));
+    const cards = this.fromPacksBuildCards(packs);
+    const deck = this.fromCardsBuildDeck(cards);
+
+    return (
+      <div>
+        <Form.Group>
+          <Form.Row className="justify-content-center">
+            <Col>
+              <DropdownButton
+                variant="dark"
+                id="sortDropDown"
+                title={
+                  <span>
+                    <i className="fas fa-sort-amount-down"></i> Sort (
+                    {this.state.sortKey})
+                  </span>
+                }
+              >
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Name' });
+                  }}
+                >
+                  Name (A-Z)
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Popularity' });
+                  }}
+                >
+                  Popularity
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Author' });
+                  }}
+                >
+                  Author (A-Z)
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Date' });
+                  }}
+                >
+                  Date (newest first)
+                </NavDropdown.Item>
+              </DropdownButton>
+            </Col>
+            <Col>
+              <Form.Control
+                type="text"
+                placeholder="Search"
+                className="mr-sm-2 dbd-input-field"
+                onChange={e => {
+                  this.setState({ searchFilter: e.target.value });
+                }}
+                value={this.state.searchFilter}
+              />
+            </Col>
+          </Form.Row>
+        </Form.Group>
+        {deck}
+        <ErrorModal
+          title={errorModalTitle}
+          text={errorModalText}
+          show={this.state.errorModalShow}
+          onHide={() => this.setState({ errorModalShow: false })}
+        />
+      </div>
     );
-    return cards;
   }
 }

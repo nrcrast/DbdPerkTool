@@ -3,11 +3,14 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
 import Spinner from 'react-bootstrap/Spinner';
 import PackDir from '../packdir/PackDir';
 import PackGenerator from '../packgenerator/PackGenerator';
 import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
+import PlainTextInput from './Form/PlainTextInput';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
 const fs = fsWithCallbacks.promises;
@@ -71,7 +74,7 @@ export default class Create extends Component<MyProps, MyState> {
       undefined,
       this.state.title,
       this.state.author,
-      this.state.description,
+      this.state.description
     );
 
     try {
@@ -117,69 +120,58 @@ export default class Create extends Component<MyProps, MyState> {
     return (
       <Col className="col-8">
         <Form
+          className="md-form"
           onSubmit={this.doCreate.bind(this)}
           onChange={this.handleFormChanged.bind(this)}
         >
-          <Form.Group controlId="createForm.title">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="My awesome pack"
-              onChange={e => {
-                this.setState({ title: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.desc">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="This is probably the best pack around"
-              onChange={e => {
-                this.setState({ description: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.author">
-            <Form.Label>Author</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              placeholder="Max Thompson Jr."
-              onChange={e => {
-                this.setState({ author: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              required
-              type="email"
-              placeholder="hillbilly@yahoo.com"
-              onChange={e => {
-                this.setState({ email: e.target.value });
-              }}
-            />
-          </Form.Group>
-          <Form.Group controlId="createForm.packDirectory">
-            <Form.Label>Pack Directory</Form.Label>
-            <Row>
-              <Col>
+          <PlainTextInput
+            label="Title"
+            onChange={e => {
+              this.setState({ title: e.target.value });
+            }}
+          />
+          <PlainTextInput
+            label="Description"
+            onChange={e => {
+              this.setState({ description: e.target.value });
+            }}
+          />
+          <PlainTextInput
+            label="Author"
+            onChange={e => {
+              this.setState({ author: e.target.value });
+            }}
+          />
+          <PlainTextInput
+            label="Email"
+            onChange={e => {
+              this.setState({ email: e.target.value });
+            }}
+          />
+
+          <Form.Group>
+            <Form.Row>
+              <Form.Label column sm="5" className="field-label-text">
+                Pack Directory Location
+              </Form.Label>
+            </Form.Row>
+            <Form.Row>
+              <Col sm="10">
                 <Form.Control
-                  required
-                  type="text"
+                  type="plaintext"
                   value={this.state.packDir}
+                  className="dbd-input-field"
                   onChange={this.handlePackDirChanged.bind(this)}
                 />
               </Col>
               <Col>
-                <Button onClick={this.pickPackDir.bind(this)}>Browse</Button>
+                <Button variant="dark" onClick={this.pickPackDir.bind(this)}>
+                  Browse
+                </Button>
               </Col>
-            </Row>
+            </Form.Row>
           </Form.Group>
+
           <Button variant="dark" type="submit">
             <Spinner
               as="span"

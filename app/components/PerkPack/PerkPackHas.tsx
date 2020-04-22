@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import HasItem from './HasItem';
@@ -14,13 +15,19 @@ type MyState = {};
 
 export default function PerkPackHas(props: MyProps) {
   return (
-    <Row className="justify-content-center">
-      <ListGroup horizontal className="shadow">
-        <HasItem label="Portraits" has={props.portraits} />
-        <HasItem label="Powers" has={props.powers} />
-        <HasItem label="Items" has={props.items} />
-        <HasItem label="Status Effects" has={props.statusEffects} />
-      </ListGroup>
+    <Row className="justify-content-center no-gutters">
+      <Col className='col-md'>
+      <HasItem label="Portraits" has={props.portraits} />
+      </Col>
+      <Col className='col-md'>
+      <HasItem label="Powers" has={props.powers} />
+      </Col>
+      <Col className='col-md'>
+      <HasItem label="Items" has={props.items} />
+      </Col>
+      <Col className='col-md'>
+      <HasItem label="Status Effects" has={props.statusEffects} />
+      </Col>
     </Row>
   );
 }
