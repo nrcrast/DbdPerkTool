@@ -70,7 +70,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
       );
     }
 
-    const imgSrc = 'data:image/png;base64, ' + this.props.headerImg;
+    const imgSrc = 'http://crast.ddns.net:1338/' + this.props.headerImg;
 
     const expandArrow = this.state.isExpanded ? <i className="fas fa-arrow-up"></i> : <i className="fas fa-arrow-down"></i>;
 

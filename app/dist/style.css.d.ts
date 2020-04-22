@@ -3026,6 +3026,9 @@ declare const styles: {
   readonly "perk-header-img": string;
   readonly "perk-pack-data": string;
   readonly "field-label-text": string;
+  readonly "perk-pack-expand-btn": string;
+  readonly "has-item-check": string;
+  readonly "no-item-check": string;
   readonly "dbd-input-field": string;
 };
 export = styles;
