@@ -27,10 +27,7 @@ You can report any isses to me on Discord or through the [issue tracker](https:/
 
 ## Limitations/Future Dev
 * No Char Portrait only packs right now. Those will be added as a new tab in the future. If you have Char Portraits included with your icon pack, that's OK though.
-* Add search/filtering to pack page
-* Add sorting to pack page. Currently packs are only sorted by popularity.
 * Create fancier header images to show status/items as well.
-* Expand/Contract Icon Packs to save space
 
 Feel free to fork and hit me with a PR!
 
