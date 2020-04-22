@@ -9,13 +9,13 @@ type MyState = {};
 
 export default function HasItem(props: MyProps) {
   return (
-    <ListGroupItem>
-      {props.label}:{'  '}
+    <p>
+      <b>{props.label}</b>:{'  '}
       {props.has ? (
-        <i className="fas fa-check ml-2" />
+        <i className="has-item-check fas fa-check ml-2" />
       ) : (
-        <i className="fas fa-times ml-2" />
+        <i className="no-item-check  fas fa-times ml-2" />
       )}
-    </ListGroupItem>
+    </p>
   );
 }

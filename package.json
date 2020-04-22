@@ -286,7 +286,6 @@
     "electron-updater": "^4.2.0",
     "fs-extra": "^9.0.0",
     "history": "^4.10.1",
-    "mdbreact": "^4.25.6",
     "merge-images": "^2.0.0",
     "node-fetch": "^2.6.0",
     "node-fetch-progress": "^1.0.2",

@@ -3023,6 +3023,10 @@ declare const styles: {
   readonly "main-content": string;
   readonly "main-navbar": string;
   readonly "perk-card": string;
+  readonly "perk-header-img": string;
+  readonly "perk-pack-data": string;
+  readonly "field-label-text": string;
+  readonly "dbd-input-field": string;
 };
 export = styles;
 

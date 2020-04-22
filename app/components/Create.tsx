@@ -3,14 +3,16 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
 import Spinner from 'react-bootstrap/Spinner';
 import PackDir from '../packdir/PackDir';
 import PackGenerator from '../packgenerator/PackGenerator';
 import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
+import PlainTextInput from './Form/PlainTextInput';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
-import { MDBContainer, MDBInputGroup, MDBBtn, MDBInput } from 'mdbreact';
 const fs = fsWithCallbacks.promises;
 
 const { dialog } = require('electron').remote;
@@ -122,55 +124,53 @@ export default class Create extends Component<MyProps, MyState> {
           onSubmit={this.doCreate.bind(this)}
           onChange={this.handleFormChanged.bind(this)}
         >
-          <MDBInput
+          <PlainTextInput
             label="Title"
-            className="text-white dbd-input-field"
-            labelClass="field-label-text"
-            required
             onChange={e => {
               this.setState({ title: e.target.value });
             }}
           />
-          <MDBInput
+          <PlainTextInput
             label="Description"
-            className="text-white dbd-input-field"
-            labelClass="field-label-text"
-            required
             onChange={e => {
               this.setState({ description: e.target.value });
             }}
           />
-          <MDBInput
+          <PlainTextInput
             label="Author"
-            className="text-white dbd-input-field"
-            labelClass="field-label-text"
-            required
             onChange={e => {
               this.setState({ author: e.target.value });
             }}
           />
-          <MDBInput
-            label="Email Address"
-            className="text-white dbd-input-field"
-            labelClass="field-label-text"
-            required
+          <PlainTextInput
+            label="Email"
             onChange={e => {
               this.setState({ email: e.target.value });
             }}
           />
-          <MDBInputGroup
-            material
-            hint="Pack Directory"
-            className="text-white dbd-input-field"
-            value={this.state.packDir}
-            onChange={this.handlePackDirChanged.bind(this)}
-            append={
-              <Button variant="dark" onClick={this.pickPackDir.bind(this)}>
-                Browse
-              </Button>
-            }
-          />
 
+          <Form.Group>
+            <Form.Row>
+              <Form.Label column sm="5" className="field-label-text">
+                Pack Directory Location
+              </Form.Label>
+            </Form.Row>
+            <Form.Row>
+              <Col sm="10">
+                <Form.Control
+                  type="plaintext"
+                  value={this.state.packDir}
+                  className="dbd-input-field"
+                  onChange={this.handlePackDirChanged.bind(this)}
+                />
+              </Col>
+              <Col>
+                <Button variant="dark" onClick={this.pickPackDir.bind(this)}>
+                  Browse
+                </Button>
+              </Col>
+            </Form.Row>
+          </Form.Group>
 
           <Button variant="dark" type="submit">
             <Spinner

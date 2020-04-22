@@ -4,8 +4,9 @@ import routes from '../constants/routes.json';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import settingsUtil from '../settings/Settings';
-import { MDBInput } from 'mdbreact';
+import PlainTextInput from './Form/PlainTextInput';
 
 type MyProps = {};
 type MyState = { settings: Object; unsaved: boolean };
@@ -70,13 +71,7 @@ export default class Settings extends Component<MyProps, MyState> {
           onSubmit={this.doSave.bind(this)}
           onChange={this.handleFormChanged.bind(this)}
         >
-          <MDBInput
-            label="Dead By Daylight Install Path"
-            className="text-white dbd-input-field"
-            labelClass="field-label-text"
-            value={this.state.settings.dbdInstallPath}
-            onChange={this.handleDbdPathChanged.bind(this)}
-          />
+          <PlainTextInput label="Dead By Daylight Install Path" value={this.state.settings.dbdInstallPath} onChange={this.handleDbdPathChanged.bind(this)}/>
           <Button variant="dark" type="submit">
             {saveButtonValue}
           </Button>

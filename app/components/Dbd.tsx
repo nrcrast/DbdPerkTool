@@ -6,26 +6,14 @@ import tmp from 'tmp';
 import path from 'path';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import CardDeck from 'react-bootstrap/CardDeck';
-import {
-  MDBNavbar,
-  MDBNavbarBrand,
-  MDBNavbarNav,
-  MDBNavItem,
-  MDBNavLink,
-  MDBNavbarToggler,
-  MDBCollapse,
-  MDBFormInline,
-  MDBDropdown,
-  MDBDropdownToggle,
-  MDBDropdownMenu,
-  MDBInput,
-  MDBDropdownItem
-} from 'mdbreact';
 import unzipper from 'unzipper';
 import axios from 'axios';
 import ErrorModal from './ErrorModal';
 import Spinner from 'react-bootstrap/Spinner';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Form from 'react-bootstrap/Form';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import CardDeck from 'react-bootstrap/CardDeck';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -173,11 +161,60 @@ export default class Dbd extends Component<MyProps, MyState> {
       return this.strcmpIgnoreCase(a.name, b.name);
     } else if (key === 'Author') {
       return this.strcmpIgnoreCase(a.author, b.author);
+    } else if (key === 'Popularity') {
+      return a.downloads > b.downloads;
     }
 
     const aDate = new Date(a.createdAt);
     const bDate = new Date(b.createdAt);
     return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+  }
+
+  fromPacksBuildCards(packs) {
+    return packs
+      .filter(pack => this.isPackIncluded(pack))
+      .map((pack, index) => {
+        let installed = this.state.installedPack === pack.id;
+        let popularity = `${index + 1}/${this.state.packs.length}`;
+        return (
+          <PerkPack
+            id={pack.id}
+            installPack={this.installPack.bind(this)}
+            meta={pack}
+            headerImg={pack.headerImg}
+            installed={installed}
+            downloads={pack.downloads}
+            popularity={popularity}
+            onAuthorClick={e => {
+              e.preventDefault();
+              this.setState({ searchFilter: pack.author });
+            }}
+          />
+        );
+      });
+  }
+
+  fromCardsBuildDeck(cards) {
+    const decks = [];
+    for (let i = 0; i < cards.length; i += 2) {
+      if (i + 1 >= cards.length) {
+        decks.push(<Row >{cards[i]}</Row>);
+      } else {
+        decks.push(
+          <Row>
+            <Col class='col-sm'>
+            {cards[i]}
+            </Col>
+            <Col class='col-sm'>
+            {cards[i + 1]}
+            </Col>
+            
+          </Row>
+        );
+      }
+    }
+
+    return decks;
   }
 
   render() {
@@ -196,115 +233,83 @@ export default class Dbd extends Component<MyProps, MyState> {
     const errorModalTitle = 'Error';
     const errorModalText =
       'Dead By Daylight Installation not found. Please set your installation directory in the Settings tab.';
-    const cards = [];
+
     let packs = [...this.state.packs];
-    console.log('unsorted');
-    console.log(packs.map(pack => pack.name));
     packs.sort(this.packSortComparator.bind(this));
-    console.log('sorted');
-    console.log(packs.map(pack => pack.name));
-    packs.forEach((pack, index) => {
-      let installed = this.state.installedPack === pack.id;
-      let popularity = `${index + 1}/${this.state.packs.length}`;
-      if (this.isPackIncluded(pack)) {
-        cards.push(
-          <PerkPack
-            id={pack.id}
-            installPack={this.installPack.bind(this)}
-            meta={pack}
-            headerImg={pack.headerImg}
-            installed={installed}
-            downloads={pack.downloads}
-            popularity={popularity}
-          />
-        );
-      }
-    });
+    const cards = this.fromPacksBuildCards(packs);
+    const deck = this.fromCardsBuildDeck(cards);
 
     return (
       <div>
-        {/* <Row className="justify-content-end">
-          <Col className="col-4 mr-3">
-            
-          </Col>
-          <Col className="col-6 mr-3">
-            <MDBInput
-              label="Search"
-              className="text-white dbd-input-field"
-              labelClass="field-label-text"
-              required
-              onChange={e => {
-                this.setState({ searchFilter: e.target.value });
-              }}
-            />
-          </Col>
-        </Row> */}
-        <MDBNavbar dark className="shadow-none">
-          <MDBNavbarNav left>
-            <MDBNavItem>
-              <MDBDropdown>
-                <MDBDropdownToggle nav>
-                  <span className="mr-2">
-                    <i className="fas fa-sort-amount-down"></i>Sort (
+        <Form.Group>
+          <Form.Row className="justify-content-center">
+            <Col>
+              <DropdownButton
+                variant="dark"
+                id="sortDropDown"
+                title={
+                  <span>
+                    <i className="fas fa-sort-amount-down"></i> Sort (
                     {this.state.sortKey})
                   </span>
-                </MDBDropdownToggle>
-                <MDBDropdownMenu>
-                  <MDBDropdownItem
-                    className="field-label-text"
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault();
-                      this.setState({ sortKey: 'Name' });
-                    }}
-                  >
-                    Name (A-Z)
-                  </MDBDropdownItem>
-                  <MDBDropdownItem
-                    className="field-label-text"
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault();
-                      this.setState({ sortKey: 'Author' });
-                    }}
-                  >
-                    Author
-                  </MDBDropdownItem>
-                  <MDBDropdownItem
-                    className="field-label-text"
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault();
-                      this.setState({ sortKey: 'Date' });
-                    }}
-                  >
-                    Date Added (Newest First)
-                  </MDBDropdownItem>
-                </MDBDropdownMenu>
-              </MDBDropdown>
-            </MDBNavItem>
-          </MDBNavbarNav>
-          <MDBNavbarNav right>
-            <MDBNavItem>
-              <MDBFormInline waves>
-                <div className="md-form my-0">
-                  <input
-                    className="form-control mr-sm-2 dbd-input-field"
-                    type="text"
-                    placeholder="Search"
-                    aria-label="Search"
-                    onChange={e => {
-                      this.setState({ searchFilter: e.target.value });
-                    }}
-                  />
-                </div>
-              </MDBFormInline>
-            </MDBNavItem>
-          </MDBNavbarNav>
-        </MDBNavbar>
-        <Row className="justify-content-center">
-        {cards}
-        </Row>
+                }
+              >
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Name' });
+                  }}
+                >
+                  Name (A-Z)
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Popularity' });
+                  }}
+                >
+                  Popularity
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Author' });
+                  }}
+                >
+                  Author (A-Z)
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Date' });
+                  }}
+                >
+                  Date (newest first)
+                </NavDropdown.Item>
+              </DropdownButton>
+            </Col>
+            <Col>
+              <Form.Control
+                type="text"
+                placeholder="Search"
+                className="mr-sm-2 dbd-input-field"
+                onChange={e => {
+                  this.setState({ searchFilter: e.target.value });
+                }}
+                value={this.state.searchFilter}
+              />
+            </Col>
+          </Form.Row>
+        </Form.Group>
+        {deck}
         <ErrorModal
           title={errorModalTitle}
           text={errorModalText}
