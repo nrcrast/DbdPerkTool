@@ -35,7 +35,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
     this.setState({
       saving: true
     });
-    await this.props.installPack(this.props.id);
+    await this.props.installPack(this.props.id, this.props.meta.packZip);
     this.setState({
       saving: false
     });
@@ -70,7 +70,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
       );
     }
 
-    const imgSrc = 'http://crast.ddns.net:1338/' + this.props.headerImg;
+    const imgSrc = this.props.headerImg;
 
     const expandArrow = this.state.isExpanded ? <i className="fas fa-arrow-up"></i> : <i className="fas fa-arrow-down"></i>;
 

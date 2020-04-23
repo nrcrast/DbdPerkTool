@@ -42,7 +42,7 @@ export default class Dbd extends Component<MyProps, MyState> {
 
   async componentDidMount() {
     // Get packs
-    const packs = await axios.get('http://crast.ddns.net:1338/packs');
+    const packs = await axios.get('https://dead-by-daylight-icon-toolbox.herokuapp.com/packs');
     const installedPack = settingsUtil.settings.installedPack || '';
     this.setState({
       installedPack,
@@ -85,7 +85,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     });
   }
 
-  async installPack(id: string) {
+  async installPack(id:string, url: string) {
     const dbdLocation = settingsUtil.settings.dbdInstallPath;
     if (dbdLocation === '') {
       this.setState({
@@ -96,7 +96,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     settingsUtil.settings.installedPack = id;
     await settingsUtil.save();
     const packDir = await this.downloadPack(
-      'http://crast.ddns.net:1338/packs/' + id,
+      url,
       progress => {
         console.log(`Progress: ${progress}%`);
       }
