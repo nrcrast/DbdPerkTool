@@ -85,7 +85,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     });
   }
 
-  async installPack(id:string, url: string) {
+  async installPack(id:string) {
     const dbdLocation = settingsUtil.settings.dbdInstallPath;
     if (dbdLocation === '') {
       this.setState({
@@ -93,10 +93,11 @@ export default class Dbd extends Component<MyProps, MyState> {
       });
       return;
     }
+    const url = await axios.get('https://dead-by-daylight-icon-toolbox.herokuapp.com/pack?packId=' + id);
     settingsUtil.settings.installedPack = id;
     await settingsUtil.save();
     const packDir = await this.downloadPack(
-      url,
+      url.data,
       progress => {
         console.log(`Progress: ${progress}%`);
       }

@@ -35,7 +35,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
     this.setState({
       saving: true
     });
-    await this.props.installPack(this.props.id, this.props.meta.packZip);
+    await this.props.installPack(this.props.id);
     this.setState({
       saving: false
     });
