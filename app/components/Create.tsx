@@ -13,6 +13,7 @@ import { default as fsWithCallbacks } from 'fs';
 import PlainTextInput from './Form/PlainTextInput';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
+import logger from 'electron-log';
 const fs = fsWithCallbacks.promises;
 
 const { dialog } = require('electron').remote;
@@ -54,7 +55,7 @@ export default class Create extends Component<MyProps, MyState> {
     e.preventDefault();
     const packDir = new PackDir(this.state.packDir);
 
-    console.log(this.state);
+    logger.info(this.state);
 
     if (!(await packDir.validate())) {
       this.setState({
@@ -63,7 +64,7 @@ export default class Create extends Component<MyProps, MyState> {
       return;
     }
 
-    console.log(`Contents: `, await packDir.getMeta());
+    logger.info(`Contents: `, await packDir.getMeta());
 
     this.setState({
       saving: true

@@ -1,7 +1,7 @@
 {
-  "name": "electron-react-boilerplate",
+  "name": "dbd-icon-toolbox",
   "productName": "Dead By Daylight Icon Toolbox",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Dead By Daylight Icon Toolbox",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -282,7 +282,7 @@
     "core-js": "^3.6.4",
     "devtron": "^1.4.0",
     "electron-debug": "^3.0.1",
-    "electron-log": "^4.0.6",
+    "electron-log": "^4.1.1",
     "electron-updater": "^4.2.0",
     "fs-extra": "^9.0.0",
     "history": "^4.10.1",

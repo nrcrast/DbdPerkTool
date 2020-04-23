@@ -7,6 +7,7 @@ import fs from 'fs';
 import mergeImages from 'merge-images';
 import sharp from 'sharp';
 import { Canvas, Image } from 'canvas';
+import logger from 'electron-log';
 
 const readdirAsync = promisify(fs.readdir);
 
@@ -102,7 +103,7 @@ export default class PackGenerator {
       });
       currentX += perkWidthHeight + spacingInBetween;
     }
-    console.log(mergeOpts);
+
     const b64Txt = await mergeImages(mergeOpts, {
       width: imgWidth,
       height: imgHeight,
@@ -122,7 +123,7 @@ export default class PackGenerator {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
-      console.log(
+      logger.info(
         'Building archive ' + path.resolve(this.outputPath, this.packZipFile)
       );
       const output = fs.createWriteStream(
@@ -134,8 +135,8 @@ export default class PackGenerator {
       });
 
       output.on('close', function() {
-        console.log(archive.pointer() + ' total bytes');
-        console.log(
+        logger.info(archive.pointer() + ' total bytes');
+        logger.info(
           'archiver has been finalized and the output file descriptor has closed.'
         );
         resolve(currentGen.outputZip);
@@ -148,7 +149,7 @@ export default class PackGenerator {
 
       archive.pipe(output);
 
-      console.log('Making dir...');
+      logger.info('Making dir...');
 
       const packMeta = Object.assign(
         {
@@ -159,7 +160,7 @@ export default class PackGenerator {
         await this.packDir.getMeta()
       );
 
-      console.log('Pack Meta: ' + JSON.stringify(packMeta));
+      logger.info('Pack Meta: ' + JSON.stringify(packMeta));
 
       const files = await currentGen.getFiles(undefined, this.packDir.dir);
 
@@ -167,8 +168,8 @@ export default class PackGenerator {
         const pathInZip = (
           'Pack' + file.split(currentGen.packDir.dir)[1]
         ).replace(/\\/g, '/');
-        console.log(file);
-        console.log(`Adding ${pathInZip}`);
+        logger.info(file);
+        logger.info(`Adding ${pathInZip}`);
         archive.append(fs.createReadStream(file), { name: pathInZip });
       });
 
@@ -178,7 +179,7 @@ export default class PackGenerator {
         name: 'meta.json'
       });
 
-      console.log('Finalizing');
+      logger.info('Finalizing');
       archive.finalize();
     });
   }

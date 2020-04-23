@@ -1,8 +1,10 @@
 import DeadByDaylight from '../steam/DeadByDaylight';
 import electron from 'electron';
 import path from 'path';
+import logger from 'electron-log';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
+
 
 class Settings {
   settingsPath: string;
@@ -39,7 +41,7 @@ class Settings {
       const settings = await fs.readFile(this.settingsPath, 'utf8');
       this.settings = JSON.parse(settings);
     } catch (e) {
-      console.log(e);
+      logger.info(e);
       await this.setDefaultSettings();
       await this.save();
     }

@@ -3,6 +3,7 @@ import fs from 'fs';
 import vdf from 'node-vdf';
 import path from 'path';
 import Steam from './Steam';
+import logger from 'electron-log';
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -15,7 +16,7 @@ export default class SteamApp {
 
   async getInstallPath() {
     const gameFolders = await Steam.getLibraryFolders();
-    console.log(gameFolders);
+    logger.info(gameFolders);
     for (let i = 0; i < gameFolders.length; i += 1) {
       const gameFilePath = path.resolve(
         `${gameFolders[i]}`,

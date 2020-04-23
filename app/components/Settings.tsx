@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import settingsUtil from '../settings/Settings';
 import PlainTextInput from './Form/PlainTextInput';
+import logger from 'electron-log';
 
 type MyProps = {};
 type MyState = { settings: Object; unsaved: boolean };
@@ -33,7 +34,7 @@ export default class Settings extends Component<MyProps, MyState> {
 
   async doSave(e) {
     e.preventDefault();
-    console.log(this);
+    logger.info(this);
     settingsUtil.settings.dbdInstallPath = this.state.settings.dbdInstallPath;
     await settingsUtil.save();
     this.setState({

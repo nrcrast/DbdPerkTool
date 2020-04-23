@@ -13,7 +13,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import CardDeck from 'react-bootstrap/CardDeck';
+import logger from 'electron-log';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -66,8 +66,8 @@ export default class Dbd extends Component<MyProps, MyState> {
     return new Promise((resolve, reject) => {
       const tmpFile = tmp.fileSync();
       fs.writeFile(tmpFile.name, Buffer.from(response.data), err => {
-        console.log(response.data.length);
-        console.log(tmpFile.name);
+        logger.info(response.data.length);
+        logger.info(tmpFile.name);
         if (err) {
           reject(err);
         } else {
@@ -98,10 +98,10 @@ export default class Dbd extends Component<MyProps, MyState> {
     const packDir = await this.downloadPack(
       url,
       progress => {
-        console.log(`Progress: ${progress}%`);
+        logger.info(`Progress: ${progress}%`);
       }
     );
-    console.log('Download complete: ' + packDir.name);
+    logger.info('Download complete: ' + packDir.name);
     const packLocation = path.resolve(
       dbdLocation,
       'DeadByDaylight',
@@ -109,10 +109,10 @@ export default class Dbd extends Component<MyProps, MyState> {
       'UI',
       'Icons'
     );
-    console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
+    logger.info(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
     await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
     packDir.removeCallback();
-    console.log('Installation complete!');
+    logger.info('Installation complete!');
 
     this.setState({
       installedPack: id
