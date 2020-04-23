@@ -7,6 +7,11 @@ import { configureStore, history } from './store/configureStore';
 import settingsUtil from './settings/Settings';
 import './app.global.css';
 
+const _setImmediate = setImmediate;
+process.once('loaded', function() {
+  global.setImmediate = _setImmediate;
+});
+
 const store = configureStore();
 
 const AppContainer = process.env.PLAIN_HMR ? Fragment : ReactHotAppContainer;
