@@ -25,6 +25,7 @@ type MyState = {
   isLoading: boolean;
   searchFilter: string;
   sortKey: string;
+  errorText: string;
 };
 
 export default class Dbd extends Component<MyProps, MyState> {
@@ -36,13 +37,16 @@ export default class Dbd extends Component<MyProps, MyState> {
       errorModalShow: false,
       isLoading: true,
       searchFilter: '',
-      sortKey: 'Popularity'
+      sortKey: 'Popularity',
+      errorText: ''
     };
   }
 
   async componentDidMount() {
     // Get packs
-    const packs = await axios.get('https://dead-by-daylight-icon-toolbox.herokuapp.com/packs');
+    const packs = await axios.get(
+      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs'
+    );
     const installedPack = settingsUtil.settings.installedPack || '';
     this.setState({
       installedPack,
@@ -85,39 +89,51 @@ export default class Dbd extends Component<MyProps, MyState> {
     });
   }
 
-  async installPack(id:string) {
+  async installPack(id: string) {
     const dbdLocation = settingsUtil.settings.dbdInstallPath;
     if (dbdLocation === '') {
       this.setState({
+        errorText: 'Dead By Daylight installation not found. Please set your installation location via the Settings tab.',
         errorModalShow: true
       });
       return;
     }
-    const url = await axios.get('https://dead-by-daylight-icon-toolbox.herokuapp.com/pack?packId=' + id);
-    settingsUtil.settings.installedPack = id;
-    await settingsUtil.save();
-    const packDir = await this.downloadPack(
-      url.data,
-      progress => {
+    try {
+      const url = await axios.get(
+        'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
+        {
+          params: {
+            packId: id
+          }
+        }
+      );
+      settingsUtil.settings.installedPack = id;
+      await settingsUtil.save();
+      const packDir = await this.downloadPack(url.data, progress => {
         console.log(`Progress: ${progress}%`);
-      }
-    );
-    console.log('Download complete: ' + packDir.name);
-    const packLocation = path.resolve(
-      dbdLocation,
-      'DeadByDaylight',
-      'Content',
-      'UI',
-      'Icons'
-    );
-    console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
-    await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
-    packDir.removeCallback();
-    console.log('Installation complete!');
+      });
+      console.log('Download complete: ' + packDir.name);
+      const packLocation = path.resolve(
+        dbdLocation,
+        'DeadByDaylight',
+        'Content',
+        'UI',
+        'Icons'
+      );
+      console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
+      await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
+      packDir.removeCallback();
+      console.log('Installation complete!');
 
-    this.setState({
-      installedPack: id
-    });
+      this.setState({
+        installedPack: id
+      });
+    } catch (e) {
+      this.setState({
+        errorText: `Error installing pack ${id}: ${e}`,
+        errorModalShow: true
+      });
+    }
   }
 
   chunkArray(myArray: Array<any>, chunkSize: number) {
@@ -199,17 +215,12 @@ export default class Dbd extends Component<MyProps, MyState> {
     const decks = [];
     for (let i = 0; i < cards.length; i += 2) {
       if (i + 1 >= cards.length) {
-        decks.push(<Row >{cards[i]}</Row>);
+        decks.push(<Row>{cards[i]}</Row>);
       } else {
         decks.push(
           <Row>
-            <Col class='col-sm'>
-            {cards[i]}
-            </Col>
-            <Col class='col-sm'>
-            {cards[i + 1]}
-            </Col>
-            
+            <Col class="col-sm">{cards[i]}</Col>
+            <Col class="col-sm">{cards[i + 1]}</Col>
           </Row>
         );
       }
@@ -232,8 +243,7 @@ export default class Dbd extends Component<MyProps, MyState> {
       );
     }
     const errorModalTitle = 'Error';
-    const errorModalText =
-      'Dead By Daylight Installation not found. Please set your installation directory in the Settings tab.';
+    const errorModalText = this.state.errorText;
 
     let packs = [...this.state.packs];
     packs.sort(this.packSortComparator.bind(this));
