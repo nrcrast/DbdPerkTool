@@ -2,18 +2,14 @@ import React, { Component, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
 import Spinner from 'react-bootstrap/Spinner';
 import PackDir from '../packdir/PackDir';
 import PackGenerator from '../packgenerator/PackGenerator';
-import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
 import PlainTextInput from './Form/PlainTextInput';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
-const fs = fsWithCallbacks.promises;
+import log from 'electron-log';
 
 const { dialog } = require('electron').remote;
 
@@ -54,16 +50,19 @@ export default class Create extends Component<MyProps, MyState> {
     e.preventDefault();
     const packDir = new PackDir(this.state.packDir);
 
-    console.log(this.state);
+    log.info(this.state);
 
-    if (!(await packDir.validate())) {
+    const validationStatus = await packDir.validate();
+
+    if (validationStatus.isValid === false) {
       this.setState({
-        errorModalShow: true
+        errorModalShow: true,
+        errorText: validationStatus.failReason
       });
       return;
     }
 
-    console.log(`Contents: `, await packDir.getMeta());
+    log.info(`Contents: `, await packDir.getMeta());
 
     this.setState({
       saving: true
@@ -74,7 +73,8 @@ export default class Create extends Component<MyProps, MyState> {
       undefined,
       this.state.title,
       this.state.author,
-      this.state.description
+      this.state.description,
+      validationStatus.skipFiles
     );
 
     try {

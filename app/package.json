@@ -1,7 +1,7 @@
 {
   "name": "dbdicontoolbox",
   "productName": "Dead By Daylight Icon Toolbox",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Dead By Daylight Icon Toolbox",
   "main": "./main.prod.js",
   "author": {
@@ -15,7 +15,5 @@
   },
   "license": "MIT",
   "dependencies": {
-    "canvas": "^2.6.1",
-    "sharp": "^0.25.2"
   }
 }

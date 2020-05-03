@@ -1,4 +1,8 @@
 import path from 'path';
+import slash from 'slash';
+import recursiveRead from 'recursive-readdir';
+import log from 'electron-log';
+import expectedFiles from '../constants/expectedfiles.json';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
 
@@ -8,6 +12,7 @@ type metaSchema = {
   hasPowers: boolean;
   hasItems: boolean;
   hasStatusEffects: boolean;
+  hasPerks: boolean;
 };
 export default class PackDir {
   dir: string;
@@ -21,7 +26,8 @@ export default class PackDir {
       hasPortraits: false,
       hasPowers: false,
       hasItems: false,
-      hasStatusEffects: false
+      hasStatusEffects: false,
+      hasPerks: false
     };
     this.metaFilled = false;
   }
@@ -35,22 +41,56 @@ export default class PackDir {
     }
   }
 
+  async getUnexpectedFiles() {
+    const currentPackDir = this;
+    log.info(process.cwd());
+    const userFilesRaw = await recursiveRead(this.dir);
+    const normalizedFiles = userFilesRaw.map((file) => {
+      return slash(path.relative(currentPackDir.dir, file));
+    });
+    const unexpectedFiles = normalizedFiles.filter((file: string) => {
+      return !expectedFiles.includes(file);
+    });
+
+    log.info(unexpectedFiles);
+
+    return unexpectedFiles;
+  }
+
   async validate() {
     const perksDirExists = await this.dirExists(
       path.resolve(this.dir, 'Perks')
     );
-    if (perksDirExists) {
-      this.meta.latestChapter = await this.getLatestChapter();
-      this.meta.hasPortraits = await this.hasPortraits();
+    const portraitsDirExists = await this.dirExists(
+      path.resolve(this.dir, 'CharPortraits')
+    );
+    if (perksDirExists || portraitsDirExists) {
+      this.meta.latestChapter = await this.getLatestChapter(perksDirExists ? 'Perks' : 'CharPortraits');
+      this.meta.hasPortraits = portraitsDirExists;
+      this.meta.hasPerks = perksDirExists;
       this.meta.hasPowers = await this.hasPowers();
       this.meta.hasItems = await this.hasItems();
       this.meta.hasStatusEffects = await this.hasStatusEffects();
     }
-    return perksDirExists;
+
+    if (!perksDirExists && !portraitsDirExists) {
+      return {
+        isValid: false,
+        failReason:
+          'Must have either Perks directory or CharPortraits directory'
+      };
+    }
+
+    const unexpectedFiles = await this.getUnexpectedFiles();
+
+    return {
+      isValid: true,
+      skipFiles: unexpectedFiles
+    };
   }
 
-  async getLatestChapter() {
-    const contents = await fs.readdir(path.resolve(this.dir, 'Perks'), {
+  async getLatestChapter(scanDir) {
+    const contents = await fs.readdir(path.resolve(this.dir, scanDir), {
       withFileTypes: true
     });
 
@@ -58,7 +98,7 @@ export default class PackDir {
       .filter(item => item.isDirectory())
       .map(dirent => dirent.name);
 
-    if(dirs.includes('Ukraine')) {
+    if (dirs.includes('Ukraine')) {
       return 'Chapter XV: Chains of Hate';
     } else if (dirs.includes('Sweden')) {
       return 'Chapter XIV: Cursed Legacy';
@@ -87,8 +127,8 @@ export default class PackDir {
 
   async getMeta() {
     if (!this.metaFilled) {
-	  await this.validate();
-	  this.metaFilled = true;
+      await this.validate();
+      this.metaFilled = true;
     }
     return this.meta;
   }

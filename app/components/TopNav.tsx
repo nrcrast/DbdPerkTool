@@ -18,6 +18,9 @@ export default function TopNav() {
         <Nav.Link as={Link} to={routes.DBD}>
           Icon Packs
         </Nav.Link>
+        <Nav.Link as={Link} to={routes.PORTRAITS}>
+          Portrait Packs
+        </Nav.Link>
         <Nav.Link as={Link} to={routes.CREATE}>
           Create
         </Nav.Link>

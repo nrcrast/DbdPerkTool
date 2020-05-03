@@ -3,10 +3,9 @@ import PackDir from '../packdir/PackDir';
 import archiver from 'archiver';
 import slugify from '@sindresorhus/slugify';
 import { promisify } from 'util';
+import slash from 'slash';
 import fs from 'fs';
-import mergeImages from 'merge-images';
-import sharp from 'sharp';
-import { Canvas, Image } from 'canvas';
+import log from 'electron-log';
 
 const readdirAsync = promisify(fs.readdir);
 
@@ -18,12 +17,14 @@ export default class PackGenerator {
   packDescription: string;
   packZipFile: string;
   outputZip: string;
+  skipFiles: Array<string>;
   constructor(
     packDir: PackDir,
     outputPath: string = '',
     packName: string,
     packAuthor: string,
-    packDescription: string
+    packDescription: string,
+    skipFiles: Array<string>
   ) {
     this.packDir = packDir;
     if (outputPath.length === 0) {
@@ -37,6 +38,7 @@ export default class PackGenerator {
     this.packName = packName;
     this.packAuthor = packAuthor;
     this.packDescription = packDescription;
+    this.skipFiles = skipFiles;
   }
 
   async getFiles(files: Array<string> = [], dir: string) {
@@ -58,71 +60,11 @@ export default class PackGenerator {
     return files;
   }
 
-  async generateHeader() {
-    const bbqPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'Cannibal',
-      'iconPerks_BBQAndChili.png'
-    );
-    const blPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'iconPerks_balancedLanding.png'
-    );
-    const sbPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'iconPerks_sprintBurst.png'
-    );
-    const enduringPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'iconPerks_enduring.png'
-    );
-
-    const spacingInBetween = 50;
-    const marginEnds = 50;
-    const perkWidthHeight = 256;
-
-    const imgWidth =
-      marginEnds * 2 + spacingInBetween * 3 + perkWidthHeight * 4;
-    const imgHeight = 256 + 32;
-    const yPadding = (imgHeight - 256) / 2;
-
-    const images = [bbqPath, blPath, sbPath, enduringPath];
-    const mergeOpts = [];
-
-    let currentX = marginEnds;
-    for (let i = 0; i < images.length; i++) {
-      mergeOpts.push({
-        src: images[i],
-        x: currentX,
-        y: yPadding
-      });
-      currentX += perkWidthHeight + spacingInBetween;
-    }
-    console.log(mergeOpts);
-    const b64Txt = await mergeImages(mergeOpts, {
-      width: imgWidth,
-      height: imgHeight,
-      Canvas: Canvas,
-      Image: Image
-    });
-
-    let base64Image = b64Txt.split(';base64,').pop();
-    const imgBuf = Buffer.from(base64Image, 'base64');
-    const resizedImgBuf = await sharp(imgBuf)
-      .resize(800)
-      .toBuffer();
-    return resizedImgBuf;
-  }
-
   async generate() {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
-      console.log(
+      log.info(
         'Building archive ' + path.resolve(this.outputPath, this.packZipFile)
       );
       const output = fs.createWriteStream(
@@ -134,8 +76,8 @@ export default class PackGenerator {
       });
 
       output.on('close', function() {
-        console.log(archive.pointer() + ' total bytes');
-        console.log(
+        log.info(archive.pointer() + ' total bytes');
+        log.info(
           'archiver has been finalized and the output file descriptor has closed.'
         );
         resolve(currentGen.outputZip);
@@ -148,7 +90,7 @@ export default class PackGenerator {
 
       archive.pipe(output);
 
-      console.log('Making dir...');
+      log.info('Making dir...');
 
       const packMeta = Object.assign(
         {
@@ -159,26 +101,24 @@ export default class PackGenerator {
         await this.packDir.getMeta()
       );
 
-      console.log('Pack Meta: ' + JSON.stringify(packMeta));
+      log.info('Pack Meta: ' + JSON.stringify(packMeta));
 
       const files = await currentGen.getFiles(undefined, this.packDir.dir);
 
       files.forEach(file => {
-        const pathInZip = (
-          'Pack' + file.split(currentGen.packDir.dir)[1]
-        ).replace(/\\/g, '/');
-        console.log(file);
-        console.log(`Adding ${pathInZip}`);
-        archive.append(fs.createReadStream(file), { name: pathInZip });
+        const pathInZip = slash(path.relative(currentGen.packDir.dir, file));
+        if(currentGen.skipFiles.includes(pathInZip)) {
+          log.warn(`Skipping ${pathInZip}`);
+        } else {
+          archive.append(fs.createReadStream(file), { name: 'Pack/' + pathInZip });
+        }
       });
-
-      archive.append(await currentGen.generateHeader(), { name: 'header.png' });
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'
       });
 
-      console.log('Finalizing');
+      log.info('Finalizing');
       archive.finalize();
     });
   }

@@ -2,5 +2,6 @@
   "HOME": "/",
   "SETTINGS": "/settings",
   "DBD": "/dbd",
-  "CREATE": "/create"
+  "CREATE": "/create",
+  "PORTRAITS": "/portraits"
 }

@@ -9,6 +9,7 @@ class Settings {
   settings: {
     dbdInstallPath: string;
     installedPack: string;
+    installedPortraitPack: string;
   };
   constructor() {
     this.settingsPath = path.resolve(
@@ -17,7 +18,8 @@ class Settings {
     );
     this.settings = {
       dbdInstallPath: '',
-      installedPack: ''
+      installedPack: '',
+      installedPortraitPack: ''
     };
   }
 
