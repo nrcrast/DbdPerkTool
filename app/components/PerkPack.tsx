@@ -10,6 +10,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import PerkPackMeta from './PerkPack/PerkPackMeta';
 import PerkPackHas from './PerkPack/PerkPackHas';
 import PerkPackDetails from './PerkPack/PerkPackDetails';
+import log from 'electron-log';
 
 type MyProps = {
   id: string;
@@ -20,7 +21,12 @@ type MyProps = {
   meta: any;
   onAuthorClick: any;
 };
-type MyState = { installed: boolean; saving: boolean; isExpanded: boolean };
+type MyState = {
+  installed: boolean;
+  saving: boolean;
+  isExpanded: boolean;
+  saveProgress: number;
+};
 
 export default class PerkPack extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
@@ -28,23 +34,33 @@ export default class PerkPack extends Component<MyProps, MyState> {
     this.state = {
       installed: false,
       saving: false,
+      saveProgress: 0,
       isExpanded: false
     };
   }
 
+  installProgressCb(progress: number) {
+    this.setState({ saveProgress: progress });
+  }
+
   async installPack() {
     this.setState({
-      saving: true
+      saving: true,
+      saveProgress: 0
     });
-    await this.props.installPack(this.props.id);
+    await this.props.installPack(
+      this.props.id,
+      this.installProgressCb.bind(this)
+    );
     this.setState({
-      saving: false
+      saving: false,
+      saveProgress: 0
     });
   }
 
   render() {
     let installBtn;
-
+  
     if (this.props.installed) {
       installBtn = (
         <Button variant="dark" disabled>
@@ -63,7 +79,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
             className="mr-2"
             hidden={!this.state.saving}
           />
-          Install
+          Install {this.state.saving ? `${this.state.saveProgress}%` : ''}
         </Button>
       );
     }
@@ -90,9 +106,9 @@ export default class PerkPack extends Component<MyProps, MyState> {
     return (
       <Accordion>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
-          <Card.Text>{headerImg}</Card.Text>
+          <Card.Body>{headerImg}</Card.Body>
           <Card.Title>{this.props.meta.name}</Card.Title>
-          <Card.Text className="mb-0">
+          <Card.Body className="mb-0">
             <Row className="mb-0 mt-0">
               <Col className="col-sm">
                 <p>
@@ -117,7 +133,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
               items={this.props.meta.hasItems}
               statusEffects={this.props.meta.hasStatusEffects}
             />
-          </Card.Text>
+          </Card.Body>
           {installBtn}
           <Card.Header>
             <Accordion.Toggle

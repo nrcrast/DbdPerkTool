@@ -5,6 +5,7 @@ import slugify from '@sindresorhus/slugify';
 import { promisify } from 'util';
 import slash from 'slash';
 import fs from 'fs';
+import log from 'electron-log';
 
 const readdirAsync = promisify(fs.readdir);
 
@@ -63,7 +64,7 @@ export default class PackGenerator {
     const currentGen = this;
     return new Promise(async (resolve, reject) => {
       // Start building archive
-      console.log(
+      log.info(
         'Building archive ' + path.resolve(this.outputPath, this.packZipFile)
       );
       const output = fs.createWriteStream(
@@ -75,8 +76,8 @@ export default class PackGenerator {
       });
 
       output.on('close', function() {
-        console.log(archive.pointer() + ' total bytes');
-        console.log(
+        log.info(archive.pointer() + ' total bytes');
+        log.info(
           'archiver has been finalized and the output file descriptor has closed.'
         );
         resolve(currentGen.outputZip);
@@ -89,7 +90,7 @@ export default class PackGenerator {
 
       archive.pipe(output);
 
-      console.log('Making dir...');
+      log.info('Making dir...');
 
       const packMeta = Object.assign(
         {
@@ -100,17 +101,16 @@ export default class PackGenerator {
         await this.packDir.getMeta()
       );
 
-      console.log('Pack Meta: ' + JSON.stringify(packMeta));
+      log.info('Pack Meta: ' + JSON.stringify(packMeta));
 
       const files = await currentGen.getFiles(undefined, this.packDir.dir);
 
       files.forEach(file => {
         const pathInZip = slash(path.relative(currentGen.packDir.dir, file));
-        console.log(file);
         if(currentGen.skipFiles.includes(pathInZip)) {
-          console.warn(`Skipping ${pathInZip}`);
+          log.warn(`Skipping ${pathInZip}`);
         } else {
-          archive.append(fs.createReadStream(file), { name: pathInZip });
+          archive.append(fs.createReadStream(file), { name: 'Pack/' + pathInZip });
         }
       });
 
@@ -118,7 +118,7 @@ export default class PackGenerator {
         name: 'meta.json'
       });
 
-      console.log('Finalizing');
+      log.info('Finalizing');
       archive.finalize();
     });
   }

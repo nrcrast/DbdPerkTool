@@ -1,6 +1,8 @@
 import path from 'path';
 import slash from 'slash';
 import recursiveRead from 'recursive-readdir';
+import log from 'electron-log';
+import expectedFiles from '../constants/expectedfiles.json';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
 
@@ -41,9 +43,7 @@ export default class PackDir {
 
   async getUnexpectedFiles() {
     const currentPackDir = this;
-    const expectedFiles = await JSON.parse(
-      await fs.readFile('./app/expectedfiles.json', 'utf8')
-    );
+    log.info(process.cwd());
     const userFilesRaw = await recursiveRead(this.dir);
     const normalizedFiles = userFilesRaw.map((file) => {
       return slash(path.relative(currentPackDir.dir, file));
@@ -52,7 +52,7 @@ export default class PackDir {
       return !expectedFiles.includes(file);
     });
 
-    console.log(unexpectedFiles);
+    log.info(unexpectedFiles);
 
     return unexpectedFiles;
   }
@@ -65,7 +65,7 @@ export default class PackDir {
       path.resolve(this.dir, 'CharPortraits')
     );
     if (perksDirExists || portraitsDirExists) {
-      this.meta.latestChapter = await this.getLatestChapter();
+      this.meta.latestChapter = await this.getLatestChapter(perksDirExists ? 'Perks' : 'CharPortraits');
       this.meta.hasPortraits = portraitsDirExists;
       this.meta.hasPerks = perksDirExists;
       this.meta.hasPowers = await this.hasPowers();
@@ -73,7 +73,7 @@ export default class PackDir {
       this.meta.hasStatusEffects = await this.hasStatusEffects();
     }
 
-    if (!perksDirExists || !portraitsDirExists) {
+    if (!perksDirExists && !portraitsDirExists) {
       return {
         isValid: false,
         failReason:
@@ -89,8 +89,8 @@ export default class PackDir {
     };
   }
 
-  async getLatestChapter() {
-    const contents = await fs.readdir(path.resolve(this.dir, 'Perks'), {
+  async getLatestChapter(scanDir) {
+    const contents = await fs.readdir(path.resolve(this.dir, scanDir), {
       withFileTypes: true
     });
 

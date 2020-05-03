@@ -18,7 +18,12 @@ type MyProps = {
   meta: any;
   onAuthorClick: any;
 };
-type MyState = { installed: boolean; saving: boolean; isExpanded: boolean };
+type MyState = {
+  installed: boolean;
+  saving: boolean;
+  isExpanded: boolean;
+  saveProgress: number;
+};
 
 export default class PortraitPack extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
@@ -26,17 +31,27 @@ export default class PortraitPack extends Component<MyProps, MyState> {
     this.state = {
       installed: false,
       saving: false,
-      isExpanded: false
+      isExpanded: false,
+      saveProgress: 0
     };
+  }
+
+  installProgressCb(progress: number) {
+    this.setState({ saveProgress: progress });
   }
 
   async installPack() {
     this.setState({
-      saving: true
+      saving: true,
+      saveProgress: 0
     });
-    await this.props.installPack(this.props.id);
+    await this.props.installPack(
+      this.props.id,
+      this.installProgressCb.bind(this)
+    );
     this.setState({
-      saving: false
+      saving: false,
+      saveProgress: 0
     });
   }
 
@@ -61,7 +76,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             className="mr-2"
             hidden={!this.state.saving}
           />
-          Install
+          Install {this.state.saving ? `${this.state.saveProgress}%` : ''}
         </Button>
       );
     }
@@ -88,9 +103,9 @@ export default class PortraitPack extends Component<MyProps, MyState> {
     return (
       <Accordion>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
-          <Card.Text className="pt-3">{headerImg}</Card.Text>
+          <Card.Body className="p-2">{headerImg}</Card.Body>
           <Card.Title>{this.props.meta.name}</Card.Title>
-          <Card.Text className="mb-0">
+          <Card.Body className="mb-0">
             <Row className="mb-0 mt-0">
               <Col className="col-sm">
                 <p>
@@ -108,7 +123,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
                 </p>
               </Col>
             </Row>
-          </Card.Text>
+          </Card.Body>
           {installBtn}
           <Card.Header>
             <Accordion.Toggle

@@ -13,7 +13,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import CardDeck from 'react-bootstrap/CardDeck';
+import log from 'electron-log';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -70,8 +70,8 @@ export default class Dbd extends Component<MyProps, MyState> {
     return new Promise((resolve, reject) => {
       const tmpFile = tmp.fileSync();
       fs.writeFile(tmpFile.name, Buffer.from(response.data), err => {
-        console.log(response.data.length);
-        console.log(tmpFile.name);
+        log.info(response.data.length);
+        log.info(tmpFile.name);
         if (err) {
           reject(err);
         } else {
@@ -89,7 +89,7 @@ export default class Dbd extends Component<MyProps, MyState> {
     });
   }
 
-  async installPack(id: string) {
+  async installPack(id: string, progressCb: any) {
     const dbdLocation = settingsUtil.settings.dbdInstallPath;
     if (dbdLocation === '') {
       this.setState({
@@ -111,9 +111,10 @@ export default class Dbd extends Component<MyProps, MyState> {
       settingsUtil.settings.installedPack = id;
       await settingsUtil.save();
       const packDir = await this.downloadPack(url.data, progress => {
-        console.log(`Progress: ${progress}%`);
+        log.info(`Progresssss: ${progress}%`);
+        progressCb(progress);
       });
-      console.log('Download complete: ' + packDir.name);
+      log.info('Download complete: ' + packDir.name);
       const packLocation = path.resolve(
         dbdLocation,
         'DeadByDaylight',
@@ -121,10 +122,10 @@ export default class Dbd extends Component<MyProps, MyState> {
         'UI',
         'Icons'
       );
-      console.log(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
+      log.info(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
       await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
       packDir.removeCallback();
-      console.log('Installation complete!');
+      log.info('Installation complete!');
 
       this.setState({
         installedPack: id
@@ -223,8 +224,8 @@ export default class Dbd extends Component<MyProps, MyState> {
       } else {
         decks.push(
           <Row>
-            <Col class="col-sm">{cards[i]}</Col>
-            <Col class="col-sm">{cards[i + 1]}</Col>
+            <Col className="col-sm">{cards[i]}</Col>
+            <Col className="col-sm">{cards[i + 1]}</Col>
           </Row>
         );
       }
