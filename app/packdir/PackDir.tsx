@@ -43,7 +43,6 @@ export default class PackDir {
 
   async getUnexpectedFiles() {
     const currentPackDir = this;
-    log.info(process.cwd());
     const userFilesRaw = await recursiveRead(this.dir);
     const normalizedFiles = userFilesRaw.map((file) => {
       return slash(path.relative(currentPackDir.dir, file));

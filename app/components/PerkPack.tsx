@@ -79,7 +79,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
             className="mr-2"
             hidden={!this.state.saving}
           />
-          Install {this.state.saving ? `${this.state.saveProgress}%` : ''}
+          Install
         </Button>
       );
     }
