@@ -4,9 +4,6 @@ import archiver from 'archiver';
 import slugify from '@sindresorhus/slugify';
 import { promisify } from 'util';
 import fs from 'fs';
-import mergeImages from 'merge-images';
-import sharp from 'sharp';
-import { Canvas, Image } from 'canvas';
 
 const readdirAsync = promisify(fs.readdir);
 
@@ -56,66 +53,6 @@ export default class PackGenerator {
     await Promise.all(dirPromises);
 
     return files;
-  }
-
-  async generateHeader() {
-    const bbqPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'Cannibal',
-      'iconPerks_BBQAndChili.png'
-    );
-    const blPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'iconPerks_balancedLanding.png'
-    );
-    const sbPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'iconPerks_sprintBurst.png'
-    );
-    const enduringPath = path.resolve(
-      this.packDir.dir,
-      'Perks',
-      'iconPerks_enduring.png'
-    );
-
-    const spacingInBetween = 50;
-    const marginEnds = 50;
-    const perkWidthHeight = 256;
-
-    const imgWidth =
-      marginEnds * 2 + spacingInBetween * 3 + perkWidthHeight * 4;
-    const imgHeight = 256 + 32;
-    const yPadding = (imgHeight - 256) / 2;
-
-    const images = [bbqPath, blPath, sbPath, enduringPath];
-    const mergeOpts = [];
-
-    let currentX = marginEnds;
-    for (let i = 0; i < images.length; i++) {
-      mergeOpts.push({
-        src: images[i],
-        x: currentX,
-        y: yPadding
-      });
-      currentX += perkWidthHeight + spacingInBetween;
-    }
-    console.log(mergeOpts);
-    const b64Txt = await mergeImages(mergeOpts, {
-      width: imgWidth,
-      height: imgHeight,
-      Canvas: Canvas,
-      Image: Image
-    });
-
-    let base64Image = b64Txt.split(';base64,').pop();
-    const imgBuf = Buffer.from(base64Image, 'base64');
-    const resizedImgBuf = await sharp(imgBuf)
-      .resize(800)
-      .toBuffer();
-    return resizedImgBuf;
   }
 
   async generate() {
@@ -171,8 +108,6 @@ export default class PackGenerator {
         console.log(`Adding ${pathInZip}`);
         archive.append(fs.createReadStream(file), { name: pathInZip });
       });
-
-      archive.append(await currentGen.generateHeader(), { name: 'header.png' });
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'

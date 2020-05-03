@@ -15,7 +15,5 @@
   },
   "license": "MIT",
   "dependencies": {
-    "canvas": "^2.6.1",
-    "sharp": "^0.25.2"
   }
 }
