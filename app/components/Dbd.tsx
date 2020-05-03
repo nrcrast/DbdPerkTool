@@ -93,7 +93,8 @@ export default class Dbd extends Component<MyProps, MyState> {
     const dbdLocation = settingsUtil.settings.dbdInstallPath;
     if (dbdLocation === '') {
       this.setState({
-        errorText: 'Dead By Daylight installation not found. Please set your installation location via the Settings tab.',
+        errorText:
+          'Dead By Daylight installation not found. Please set your installation location via the Settings tab.',
         errorModalShow: true
       });
       return;
@@ -150,7 +151,11 @@ export default class Dbd extends Component<MyProps, MyState> {
   }
 
   searchFilter(text: string) {
-    return text.search(new RegExp(this.state.searchFilter, 'i')) >= 0;
+    const escapedRegex = this.state.searchFilter.replace(
+      /[-\/\\^$*+?.()|[\]{}]/g,
+      '\\$&'
+    );
+    return text.search(new RegExp(escapedRegex, 'i')) >= 0;
   }
 
   isPackIncluded(pack) {
@@ -188,27 +193,26 @@ export default class Dbd extends Component<MyProps, MyState> {
   }
 
   fromPacksBuildCards(packs) {
-    return packs
-      .filter(pack => this.isPackIncluded(pack))
-      .map((pack, index) => {
-        let installed = this.state.installedPack === pack.id;
-        let popularity = `${index + 1}/${this.state.packs.length}`;
-        return (
-          <PerkPack
-            id={pack.id}
-            installPack={this.installPack.bind(this)}
-            meta={pack}
-            headerImg={pack.headerImg}
-            installed={installed}
-            downloads={pack.downloads}
-            popularity={popularity}
-            onAuthorClick={e => {
-              e.preventDefault();
-              this.setState({ searchFilter: pack.author });
-            }}
-          />
-        );
-      });
+    const filteredPacks = packs.filter(pack => this.isPackIncluded(pack));
+    return filteredPacks.map((pack, index) => {
+      let installed = this.state.installedPack === pack.id;
+      let popularity = `${index + 1}/${filteredPacks.length}`;
+      return (
+        <PerkPack
+          id={pack.id}
+          installPack={this.installPack.bind(this)}
+          meta={pack}
+          headerImg={pack.headerImg}
+          installed={installed}
+          downloads={pack.downloads}
+          popularity={popularity}
+          onAuthorClick={e => {
+            e.preventDefault();
+            this.setState({ searchFilter: pack.author });
+          }}
+        />
+      );
+    });
   }
 
   fromCardsBuildDeck(cards) {

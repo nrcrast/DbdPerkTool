@@ -3,6 +3,7 @@ import PackDir from '../packdir/PackDir';
 import archiver from 'archiver';
 import slugify from '@sindresorhus/slugify';
 import { promisify } from 'util';
+import slash from 'slash';
 import fs from 'fs';
 
 const readdirAsync = promisify(fs.readdir);
@@ -15,12 +16,14 @@ export default class PackGenerator {
   packDescription: string;
   packZipFile: string;
   outputZip: string;
+  skipFiles: Array<string>;
   constructor(
     packDir: PackDir,
     outputPath: string = '',
     packName: string,
     packAuthor: string,
-    packDescription: string
+    packDescription: string,
+    skipFiles: Array<string>
   ) {
     this.packDir = packDir;
     if (outputPath.length === 0) {
@@ -34,6 +37,7 @@ export default class PackGenerator {
     this.packName = packName;
     this.packAuthor = packAuthor;
     this.packDescription = packDescription;
+    this.skipFiles = skipFiles;
   }
 
   async getFiles(files: Array<string> = [], dir: string) {
@@ -101,12 +105,13 @@ export default class PackGenerator {
       const files = await currentGen.getFiles(undefined, this.packDir.dir);
 
       files.forEach(file => {
-        const pathInZip = (
-          'Pack' + file.split(currentGen.packDir.dir)[1]
-        ).replace(/\\/g, '/');
+        const pathInZip = slash(path.relative(currentGen.packDir.dir, file));
         console.log(file);
-        console.log(`Adding ${pathInZip}`);
-        archive.append(fs.createReadStream(file), { name: pathInZip });
+        if(currentGen.skipFiles.includes(pathInZip)) {
+          console.warn(`Skipping ${pathInZip}`);
+        } else {
+          archive.append(fs.createReadStream(file), { name: pathInZip });
+        }
       });
 
       archive.append(JSON.stringify(packMeta, null, 2), {

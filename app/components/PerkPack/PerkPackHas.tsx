@@ -26,7 +26,7 @@ export default function PerkPackHas(props: MyProps) {
       <HasItem label="Items" has={props.items} />
       </Col>
       <Col className='col-md'>
-      <HasItem label="Status Effects" has={props.statusEffects} />
+      <HasItem label="Status" has={props.statusEffects} />
       </Col>
     </Row>
   );

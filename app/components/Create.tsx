@@ -56,9 +56,12 @@ export default class Create extends Component<MyProps, MyState> {
 
     console.log(this.state);
 
-    if (!(await packDir.validate())) {
+    const validationStatus = await packDir.validate();
+
+    if (validationStatus.isValid === false) {
       this.setState({
-        errorModalShow: true
+        errorModalShow: true,
+        errorText: validationStatus.failReason
       });
       return;
     }
@@ -74,7 +77,8 @@ export default class Create extends Component<MyProps, MyState> {
       undefined,
       this.state.title,
       this.state.author,
-      this.state.description
+      this.state.description,
+      validationStatus.skipFiles
     );
 
     try {
