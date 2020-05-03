@@ -26,7 +26,7 @@ You can report any isses to me on Discord or through the [issue tracker](https:/
 
 ![Perk Browser](images/screenshot_icons.png)
 
-![Perk Browser](images/screenshot_portraits.png)
+![Portrait Browser](images/screenshot_portraits.png)
 
 ![Create A Pack](images/create.png)
 
