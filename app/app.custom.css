@@ -77,3 +77,18 @@ a:hover {
   box-shadow: 0 1px 0 0 #23a4a4 !important;
   color: white;
 }
+
+.btn-secondary {
+  background-color: #23a4a4;
+  border: none;
+}
+
+.btn-secondary:focus {
+  background-color: #23a4a4;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #478694;
+  border: none;
+}

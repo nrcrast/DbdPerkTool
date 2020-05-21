@@ -4,23 +4,27 @@ import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
 
+type SettingSchema = {
+  dbdInstallPath: string;
+  installedPack: string;
+  installedPortraitPack: string;
+};
+
 class Settings {
   settingsPath: string;
-  settings: {
-    dbdInstallPath: string;
-    installedPack: string;
-    installedPortraitPack: string;
-  };
+  settings: SettingSchema;
+  defaultSettings: SettingSchema;
   constructor() {
     this.settingsPath = path.resolve(
       (electron.app || electron.remote.app).getPath('userData'),
       'dbdPerkToolSettings.json'
     );
-    this.settings = {
+    this.defaultSettings = {
       dbdInstallPath: '',
       installedPack: '',
       installedPortraitPack: ''
     };
+    this.settings = {...this.defaultSettings};
   }
 
   async setDefaultSettings() {
@@ -32,7 +36,7 @@ class Settings {
     } catch (e) {
       dbdPath = '';
     }
-
+    this.settings = {...this.defaultSettings};
     this.settings.dbdInstallPath = dbdPath;
   }
 

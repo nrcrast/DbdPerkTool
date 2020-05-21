@@ -16,7 +16,6 @@ type MyProps = {
   id: string;
   installed: boolean;
   downloads: number;
-  popularity: string;
   installPack: any;
   meta: any;
   onAuthorClick: any;
@@ -59,30 +58,24 @@ export default class PerkPack extends Component<MyProps, MyState> {
   }
 
   render() {
-    let installBtn;
-  
-    if (this.props.installed) {
-      installBtn = (
-        <Button variant="dark" disabled>
-          Installed
-        </Button>
-      );
-    } else {
-      installBtn = (
-        <Button variant="dark" onClick={this.installPack.bind(this)}>
-          <Spinner
-            as="span"
-            animation="border"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-            className="mr-2"
-            hidden={!this.state.saving}
-          />
-          Install
-        </Button>
-      );
-    }
+    const installBtn = (
+      <Button
+        variant={this.props.installed ? 'secondary' : 'dark'}
+        onClick={this.installPack.bind(this)}
+        className="m-1"
+      >
+        <Spinner
+          as="span"
+          animation="border"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+          className="mr-2"
+          hidden={!this.state.saving}
+        />
+        {this.props.installed ? 'Installed' : 'Install'}
+      </Button>
+    );
 
     const images = [];
     const baseUrl = `https://dbd-perk-packs.s3.amazonaws.com/${encodeURIComponent(
@@ -113,11 +106,6 @@ export default class PerkPack extends Component<MyProps, MyState> {
               <Col className="col-sm">
                 <p>
                   <b>Author:</b> {this.props.meta.author}
-                </p>
-              </Col>
-              <Col className="col-sm">
-                <p>
-                  <b>Popularity:</b> {this.props.popularity}
                 </p>
               </Col>
               <Col className="col-sm">
@@ -155,7 +143,6 @@ export default class PerkPack extends Component<MyProps, MyState> {
               baseUrl={baseUrl}
               meta={this.props.meta}
               downloads={this.props.downloads}
-              popularity={this.props.popularity}
               onAuthorClick={this.props.onAuthorClick}
             />
           </Accordion.Collapse>

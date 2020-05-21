@@ -45,13 +45,14 @@ export default class PackDir {
     const currentPackDir = this;
     const userFilesRaw = await recursiveRead(this.dir);
     const normalizedFiles = userFilesRaw.map((file) => {
-      return slash(path.relative(currentPackDir.dir, file));
+      return slash(path.relative(currentPackDir.dir, file)).toLowerCase();
     });
+    const expectedLower = expectedFiles.map((file) => file.toLowerCase());
     const unexpectedFiles = normalizedFiles.filter((file: string) => {
-      return !expectedFiles.includes(file);
+      return !expectedLower.includes(file);
     });
 
-    log.info(unexpectedFiles);
+    log.info('Unexpected Files', unexpectedFiles);
 
     return unexpectedFiles;
   }

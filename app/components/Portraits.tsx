@@ -37,7 +37,7 @@ export default class Dbd extends Component<MyProps, MyState> {
       errorModalShow: false,
       isLoading: true,
       searchFilter: '',
-      sortKey: 'Popularity',
+      sortKey: 'Downloads',
       errorText: ''
     };
   }
@@ -188,7 +188,7 @@ export default class Dbd extends Component<MyProps, MyState> {
       return this.strcmpIgnoreCase(a.name, b.name);
     } else if (key === 'Author') {
       return this.strcmpIgnoreCase(a.author, b.author);
-    } else if (key === 'Popularity') {
+    } else if (key === 'Downloads') {
       return a.downloads > b.downloads;
     }
 
@@ -201,7 +201,6 @@ export default class Dbd extends Component<MyProps, MyState> {
     const filteredPacks = packs.filter(pack => this.isPackIncluded(pack));
     return filteredPacks.map((pack, index) => {
       let installed = this.state.installedPack === pack.id;
-      let popularity = `${index + 1}/${filteredPacks.length}`;
       return (
         <PortraitPack
           meta={pack}
@@ -209,7 +208,6 @@ export default class Dbd extends Component<MyProps, MyState> {
           installPack={this.installPack.bind(this)}
           installed={installed}
           downloads={pack.downloads}
-          popularity={popularity}
           onAuthorClick={e => {
             e.preventDefault();
             this.setState({ searchFilter: pack.author });
@@ -288,10 +286,10 @@ export default class Dbd extends Component<MyProps, MyState> {
                   href="#"
                   onClick={e => {
                     e.preventDefault();
-                    this.setState({ sortKey: 'Popularity' });
+                    this.setState({ sortKey: 'Downloads' });
                   }}
                 >
-                  Popularity
+                  Downloads
                 </NavDropdown.Item>
                 <NavDropdown.Item
                   className="field-label-text"

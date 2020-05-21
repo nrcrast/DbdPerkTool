@@ -8,7 +8,6 @@ import PerkPackMeta from './PerkPackMeta';
 type MyProps = {
   meta: any;
   downloads: number;
-  popularity: string;
   onAuthorClick: any;
   baseUrl: string;
 };
@@ -86,7 +85,6 @@ export default function PerkPackDetails(props: MyProps) {
         latestChapter={props.meta.latestChapter}
         author={props.meta.author}
         downloads={props.downloads}
-        popularity={props.popularity}
         onAuthorClick={props.onAuthorClick}
       />
     </div>

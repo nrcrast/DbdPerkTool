@@ -37,7 +37,7 @@ export default class Dbd extends Component<MyProps, MyState> {
       errorModalShow: false,
       isLoading: true,
       searchFilter: '',
-      sortKey: 'Popularity',
+      sortKey: 'Downloads',
       errorText: ''
     };
   }
@@ -122,7 +122,7 @@ export default class Dbd extends Component<MyProps, MyState> {
         'UI',
         'Icons'
       );
-      log.info(`Copying fro ${packDir.name}/Pack to ${packLocation}`);
+      log.info(`Copying from ${packDir.name}/Pack to ${packLocation}`);
       await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
       packDir.removeCallback();
       log.info('Installation complete!');
@@ -184,7 +184,7 @@ export default class Dbd extends Component<MyProps, MyState> {
       return this.strcmpIgnoreCase(a.name, b.name);
     } else if (key === 'Author') {
       return this.strcmpIgnoreCase(a.author, b.author);
-    } else if (key === 'Popularity') {
+    } else if (key === 'Downloads') {
       return a.downloads > b.downloads;
     }
 
@@ -197,7 +197,6 @@ export default class Dbd extends Component<MyProps, MyState> {
     const filteredPacks = packs.filter(pack => this.isPackIncluded(pack));
     return filteredPacks.map((pack, index) => {
       let installed = this.state.installedPack === pack.id;
-      let popularity = `${index + 1}/${filteredPacks.length}`;
       return (
         <PerkPack
           id={pack.id}
@@ -206,7 +205,6 @@ export default class Dbd extends Component<MyProps, MyState> {
           headerImg={pack.headerImg}
           installed={installed}
           downloads={pack.downloads}
-          popularity={popularity}
           onAuthorClick={e => {
             e.preventDefault();
             this.setState({ searchFilter: pack.author });
@@ -285,10 +283,10 @@ export default class Dbd extends Component<MyProps, MyState> {
                   href="#"
                   onClick={e => {
                     e.preventDefault();
-                    this.setState({ sortKey: 'Popularity' });
+                    this.setState({ sortKey: 'Downloads' });
                   }}
                 >
-                  Popularity
+                  Downloads
                 </NavDropdown.Item>
                 <NavDropdown.Item
                   className="field-label-text"
