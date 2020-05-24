@@ -9,20 +9,42 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
+import ProgressBar from 'electron-progressbar';
+import { EventEmitter } from 'events';
 
 let mainWindow: BrowserWindow | null = null;
+
+export default class AppUpdater {
+  constructor(win) {
+    const currentUpdater = this;
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.autoDownload = false;
+    autoUpdater.checkForUpdates();
+    autoUpdater.on('checking-for-update', () => {});
+    autoUpdater.on('update-available', info => {
+      ipcMain.on('update-available-resp', (event, doUpdate) => {
+        if(doUpdate === true) {
+          autoUpdater.downloadUpdate();
+        }
+      });
+      win.webContents.send('update-available', info);
+    });
+    autoUpdater.on('update-not-available', info => {});
+    autoUpdater.on('error', err => {});
+    autoUpdater.signals.progress((progressObj) => {
+      log.info('Progress: ', progressObj);
+      win.webContents.send('update-progress', progressObj);
+    });
+    autoUpdater.on('update-downloaded', info => {
+      autoUpdater.quitAndInstall(false, true);
+    });
+  }
+}
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -82,6 +104,10 @@ const createWindow = async () => {
       mainWindow.show();
       mainWindow.focus();
     }
+
+    // Remove this if your app does not use auto updates
+    // eslint-disable-next-line
+    new AppUpdater(mainWindow);
   });
 
   mainWindow.on('closed', () => {
@@ -90,10 +116,6 @@ const createWindow = async () => {
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
 };
 
 /**
