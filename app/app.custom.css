@@ -63,7 +63,7 @@ a:hover {
   color: #a37c5d;
 }
 
-.dbd-input-field {
+.form-control {
   background: rgba(48, 48, 48, 0);
   border: none;
   border-radius: 0;
@@ -71,7 +71,7 @@ a:hover {
   border-bottom: 1px solid #23a4a4 !important;
 }
 
-.dbd-input-field:focus {
+.form-control:focus {
   background: rgba(48, 48, 48, 0.2);
   border-bottom: 1px solid #23a4a4 !important;
   box-shadow: 0 1px 0 0 #23a4a4 !important;

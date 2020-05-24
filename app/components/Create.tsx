@@ -10,6 +10,7 @@ import PlainTextInput from './Form/PlainTextInput';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
 import log from 'electron-log';
+import axios from 'axios';
 
 const { dialog } = require('electron').remote;
 
@@ -26,6 +27,7 @@ type MyState = {
   errorText: string;
   description: string;
   successText: string;
+  packs: Array<Object>;
 };
 
 export default class Create extends Component<MyProps, MyState> {
@@ -42,7 +44,8 @@ export default class Create extends Component<MyProps, MyState> {
       saving: false,
       description: '',
       errorText: '',
-      successText: ''
+      successText: '',
+      packs: []
     };
   }
 
@@ -93,6 +96,13 @@ export default class Create extends Component<MyProps, MyState> {
     }
   }
 
+  async componentDidMount() {
+    const packs = await axios.get(
+      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs'
+    );
+    this.setState({ packs: packs.data });
+  }
+
   async handleFormChanged() {}
 
   async pickPackDir() {
@@ -126,27 +136,48 @@ export default class Create extends Component<MyProps, MyState> {
         >
           <PlainTextInput
             label="Title"
-            onChange={e => {
-              this.setState({ title: e.target.value });
+            onChange={selected => {
+              const data = selected[0] || '';
+              const packName = data.label || data;
+              const targetPack = this.state.packs.find(
+                pack => pack.name === packName
+              );
+
+              console.log(targetPack);
+
+              if (targetPack) {
+                this.setState({
+                  title: packName,
+                  description: targetPack.description,
+                  author: targetPack.author,
+                  email: targetPack.email
+                });
+              } else {
+                this.setState({ title: packName });
+              }
             }}
+            options={this.state.packs.map(pack => pack.name).sort()}
           />
           <PlainTextInput
             label="Description"
             onChange={e => {
               this.setState({ description: e.target.value });
             }}
+            value={this.state.description}
           />
           <PlainTextInput
             label="Author"
             onChange={e => {
               this.setState({ author: e.target.value });
             }}
+            value={this.state.author}
           />
           <PlainTextInput
             label="Email"
             onChange={e => {
               this.setState({ email: e.target.value });
             }}
+            value={this.state.email}
           />
 
           <Form.Group>
