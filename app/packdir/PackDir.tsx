@@ -44,10 +44,10 @@ export default class PackDir {
   async getUnexpectedFiles() {
     const currentPackDir = this;
     const userFilesRaw = await recursiveRead(this.dir);
-    const normalizedFiles = userFilesRaw.map((file) => {
+    const normalizedFiles = userFilesRaw.map(file => {
       return slash(path.relative(currentPackDir.dir, file)).toLowerCase();
     });
-    const expectedLower = expectedFiles.map((file) => file.toLowerCase());
+    const expectedLower = expectedFiles.map(file => file.toLowerCase());
     const unexpectedFiles = normalizedFiles.filter((file: string) => {
       return !expectedLower.includes(file);
     });
@@ -65,7 +65,9 @@ export default class PackDir {
       path.resolve(this.dir, 'CharPortraits')
     );
     if (perksDirExists || portraitsDirExists) {
-      this.meta.latestChapter = await this.getLatestChapter(perksDirExists ? 'Perks' : 'CharPortraits');
+      this.meta.latestChapter = await this.getLatestChapter(
+        perksDirExists ? 'Perks' : 'CharPortraits'
+      );
       this.meta.hasPortraits = portraitsDirExists;
       this.meta.hasPerks = perksDirExists;
       this.meta.hasPowers = await this.hasPowers();
@@ -98,7 +100,9 @@ export default class PackDir {
       .filter(item => item.isDirectory())
       .map(dirent => dirent.name);
 
-    if (dirs.includes('Ukraine')) {
+    if (dirs.includes('Wales')) {
+      return 'Chapter XVI: Silent Hill';
+    } else if (dirs.includes('Ukraine')) {
       return 'Chapter XV: Chains of Hate';
     } else if (dirs.includes('Sweden')) {
       return 'Chapter XIV: Cursed Legacy';
