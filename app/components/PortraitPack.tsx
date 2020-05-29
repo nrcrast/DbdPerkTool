@@ -71,7 +71,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
     );
 
     const images = [];
-    const baseUrl = `https://dbd-perk-packs.s3.amazonaws.com/${encodeURIComponent(
+    const baseUrl = `https://d43kvaebi7up3.cloudfront.net/${encodeURIComponent(
       this.props.id
     )}`;
     for (let i = 0; i < 4; i++) {
