@@ -56,7 +56,11 @@ export default class PortraitPack extends Component<MyProps, MyState> {
 
   render() {
     const installBtn = (
-      <Button variant={this.props.installed ? 'secondary' : 'dark'} onClick={this.installPack.bind(this)} className="m-1">
+      <Button
+        variant={this.props.installed ? 'secondary' : 'dark'}
+        onClick={this.installPack.bind(this)}
+        className="m-1"
+      >
         <Spinner
           as="span"
           animation="border"
@@ -98,7 +102,10 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             <Row className="mb-0 mt-0">
               <Col className="col-sm">
                 <p>
-                  <b>Author:</b> {this.props.meta.author}
+                  <b>Author:</b>{' '}
+                  <a href="#" onClick={this.props.onAuthorClick}>
+                    {this.props.meta.author}
+                  </a>
                 </p>
               </Col>
               <Col className="col-sm">

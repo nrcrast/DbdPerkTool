@@ -105,7 +105,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
             <Row className="mb-0 mt-0">
               <Col className="col-sm">
                 <p>
-                  <b>Author:</b> {this.props.meta.author}
+                  <b>Author:</b> <a href="#" onClick={this.props.onAuthorClick}>{this.props.meta.author}</a>
                 </p>
               </Col>
               <Col className="col-sm">

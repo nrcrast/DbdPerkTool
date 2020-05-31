@@ -13,6 +13,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import AuthorModal from './AuthorModal';
 import log from 'electron-log';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -24,6 +25,8 @@ type MyState = {
   errorModalShow: boolean;
   isLoading: boolean;
   searchFilter: string;
+  currentAuthor: string;
+  showAuthorPage: boolean;
   sortKey: string;
   errorText: string;
 };
@@ -38,7 +41,9 @@ export default class Dbd extends Component<MyProps, MyState> {
       isLoading: true,
       searchFilter: '',
       sortKey: 'Downloads',
-      errorText: ''
+      errorText: '',
+      showAuthorPage: false,
+      currentAuthor: ''
     };
   }
 
@@ -202,12 +207,11 @@ export default class Dbd extends Component<MyProps, MyState> {
           id={pack.id}
           installPack={this.installPack.bind(this)}
           meta={pack}
-          headerImg={pack.headerImg}
           installed={installed}
           downloads={pack.downloads}
           onAuthorClick={e => {
             e.preventDefault();
-            this.setState({ searchFilter: pack.author });
+            this.setState({ showAuthorPage: true, currentAuthor: pack.author });
           }}
         />
       );
@@ -329,6 +333,17 @@ export default class Dbd extends Component<MyProps, MyState> {
           text={errorModalText}
           show={this.state.errorModalShow}
           onHide={() => this.setState({ errorModalShow: false })}
+        />
+        <AuthorModal
+          show={this.state.showAuthorPage}
+          author={this.state.currentAuthor}
+          onHide={() => this.setState({ showAuthorPage: false })}
+          onShowPacks={() => {
+            this.setState({
+              showAuthorPage: false,
+              searchFilter: this.state.currentAuthor
+            });
+          }}
         />
       </div>
     );
