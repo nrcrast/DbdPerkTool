@@ -35,4 +35,4 @@ You can report any isses to me on Discord or through the [issue tracker](https:/
 Feel free to fork and hit me with a PR!
 
 ## Icon Credits
-Credit for Application Icons and the icon at the top of this page goes to [HappyClown](https://steamcommunity.com/groups/HappyClownsColoredIcons) + Yoinks. Please don't hesistate to reach out if my use of your beautiful icons is an issue!
+Credit for Application Icons and the icon at the top of this page goes to [HappyClown](https://steamcommunity.com/groups/HappyClownsColoredIcons) + [Yoinks](https://steamcommunity.com/profiles/76561198148794186/). Please don't hesistate to reach out if my use of your beautiful icons is an issue!
