@@ -230,8 +230,8 @@ export default class Dbd extends Component<MyProps, MyState> {
       } else {
         decks.push(
           <Row>
-            <Col class="col-sm">{cards[i]}</Col>
-            <Col class="col-sm">{cards[i + 1]}</Col>
+            <Col className="col-sm">{cards[i]}</Col>
+            <Col className="col-sm">{cards[i + 1]}</Col>
           </Row>
         );
       }

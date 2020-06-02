@@ -9,6 +9,7 @@ export default function SuccessModal(props: MyProps) {
 	  <Modal
 		show={props.show}
 		size="lg"
+		onHide={props.onHide}
 		aria-labelledby="contained-modal-title-vcenter"
 		centered
 	  >
