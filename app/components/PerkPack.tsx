@@ -106,6 +106,11 @@ export default class PerkPack extends Component<MyProps, MyState> {
       await fs.remove(path.resolve(baseDir, 'StatusEffects'));
     }
 
+    if (!opts.installPerks) {
+      log.info('Not installing Perks');
+      await fs.remove(path.resolve(baseDir, 'Perks'));
+    }
+
     if (!opts.installMisc) {
       const dirs = await fs.readdir(baseDir, { withFileTypes: true });
       const rmDirs = dirs
@@ -241,6 +246,16 @@ export default class PerkPack extends Component<MyProps, MyState> {
       <i className="fas fa-arrow-down"></i>
     );
 
+    // Author isn't a link if it's multiple
+    const author =
+      this.props.meta.author.indexOf('+') >= 0 ? (
+        this.props.meta.author
+      ) : (
+        <a href="#" onClick={this.props.onAuthorClick}>
+          {this.props.meta.author}
+        </a>
+      );
+
     return (
       <Accordion>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
@@ -250,10 +265,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
             <Row className="mb-0 mt-0">
               <Col className="col-sm">
                 <p>
-                  <b>Author:</b>{' '}
-                  <a href="#" onClick={this.props.onAuthorClick}>
-                    {this.props.meta.author}
-                  </a>
+                  <b>Author:</b> {author}
                 </p>
               </Col>
               <Col className="col-sm">
@@ -290,8 +302,6 @@ export default class PerkPack extends Component<MyProps, MyState> {
             <PerkPackDetails
               baseUrl={baseUrl}
               meta={this.props.meta}
-              downloads={this.props.downloads}
-              onAuthorClick={this.props.onAuthorClick}
             />
           </Accordion.Collapse>
         </Card>

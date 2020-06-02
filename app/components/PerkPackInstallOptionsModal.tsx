@@ -11,6 +11,7 @@ type MyState = {
   installItems: boolean;
   installStatus: boolean;
   installMisc: boolean;
+  installPerks: boolean;
 };
 
 export default class PerkPackInstallOptionsModal extends Component<
@@ -24,7 +25,8 @@ export default class PerkPackInstallOptionsModal extends Component<
       installPowers: true,
       installItems: true,
       installStatus: true,
-      installMisc: true
+      installMisc: true,
+      installPerks: true
     };
   }
 
@@ -35,19 +37,14 @@ export default class PerkPackInstallOptionsModal extends Component<
         installPowers: true,
         installItems: true,
         installStatus: true,
-        installMisc: true
+        installMisc: true,
+        installPerks: true
       });
     }
   }
 
   onConfirm() {
-    this.props.onConfirm({
-      installPortraits: this.state.installPortraits,
-      installPowers: this.state.installPowers,
-      installItems: this.state.installItems,
-      installStatus: this.state.installStatus,
-      installMisc: this.state.installMisc
-    });
+    this.props.onConfirm(this.state);
   }
 
   onHide() {
@@ -102,9 +99,18 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     checkboxes.push(
       <PerkPackInstallOption
-        label="Misc (Favors, Emblems, etc...)"
+        label="Misc (Offerings, Favors, Emblems, etc...)"
         onChange={(checked: boolean) => {
           this.setState({ installMisc: checked });
+        }}
+      />
+    );
+
+    checkboxes.push(
+      <PerkPackInstallOption
+        label="Perks"
+        onChange={(checked: boolean) => {
+          this.setState({ installPerks: checked });
         }}
       />
     );

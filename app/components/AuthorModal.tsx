@@ -73,7 +73,7 @@ export default class AuthorModal extends Component<MyProps, MyState> {
 
         links = (
           <div>
-            <h4 className="mt-4">Links</h4> <ListGroup>{linkList}</ListGroup>
+            <h4 className="mt-4">Links</h4> <ListGroup className="shadow">{linkList}</ListGroup>
           </div>
         );
       }
@@ -101,12 +101,12 @@ export default class AuthorModal extends Component<MyProps, MyState> {
           </Row>
         );
       } else {
-        footer = <div className="mt-4">viewPacksButton</div>;
+        footer = <div className="mt-4">{viewPacksButton}</div>;
       }
 
       body = (
         <Modal.Body>
-          <small>{this.state.authorData.blurb}</small>
+          <p>{this.state.authorData.blurb}</p>
           {links}
           {footer}
         </Modal.Body>
