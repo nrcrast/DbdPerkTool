@@ -53,6 +53,16 @@ export default class PerkPackInstallOptionsModal extends Component<
 
   buildCheckboxes() {
     const checkboxes = [];
+
+    checkboxes.push(
+      <PerkPackInstallOption
+        label="Perks"
+        onChange={(checked: boolean) => {
+          this.setState({ installPerks: checked });
+        }}
+      />
+    );
+
     if (this.props.meta.hasPortraits) {
       checkboxes.push(
         <PerkPackInstallOption
@@ -102,15 +112,6 @@ export default class PerkPackInstallOptionsModal extends Component<
         label="Misc (Offerings, Favors, Emblems, etc...)"
         onChange={(checked: boolean) => {
           this.setState({ installMisc: checked });
-        }}
-      />
-    );
-
-    checkboxes.push(
-      <PerkPackInstallOption
-        label="Perks"
-        onChange={(checked: boolean) => {
-          this.setState({ installPerks: checked });
         }}
       />
     );
