@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import settingsUtil from '../settings/Settings';
 import PortraitPack from './PortraitPack';
+import AuthorModal from './AuthorModal';
 import fs from 'fs-extra';
 import tmp from 'tmp';
 import path from 'path';
@@ -24,6 +25,8 @@ type MyState = {
   errorModalShow: boolean;
   isLoading: boolean;
   searchFilter: string;
+  currentAuthor: string;
+  showAuthorPage: boolean;
   sortKey: string;
   errorText: string;
 };
@@ -37,6 +40,8 @@ export default class Dbd extends Component<MyProps, MyState> {
       errorModalShow: false,
       isLoading: true,
       searchFilter: '',
+      currentAuthor: '',
+      showAuthorPage: false,
       sortKey: 'Downloads',
       errorText: ''
     };
@@ -210,7 +215,7 @@ export default class Dbd extends Component<MyProps, MyState> {
           downloads={pack.downloads}
           onAuthorClick={e => {
             e.preventDefault();
-            this.setState({ searchFilter: pack.author });
+            this.setState({ showAuthorPage: true, currentAuthor: pack.author });
           }}
         />
       );
@@ -225,8 +230,8 @@ export default class Dbd extends Component<MyProps, MyState> {
       } else {
         decks.push(
           <Row>
-            <Col class="col-sm">{cards[i]}</Col>
-            <Col class="col-sm">{cards[i + 1]}</Col>
+            <Col className="col-sm">{cards[i]}</Col>
+            <Col className="col-sm">{cards[i + 1]}</Col>
           </Row>
         );
       }
@@ -332,6 +337,17 @@ export default class Dbd extends Component<MyProps, MyState> {
           text={errorModalText}
           show={this.state.errorModalShow}
           onHide={() => this.setState({ errorModalShow: false })}
+        />
+        <AuthorModal
+          show={this.state.showAuthorPage}
+          author={this.state.currentAuthor}
+          onHide={() => this.setState({ showAuthorPage: false })}
+          onShowPacks={() => {
+            this.setState({
+              showAuthorPage: false,
+              searchFilter: this.state.currentAuthor
+            });
+          }}
         />
       </div>
     );

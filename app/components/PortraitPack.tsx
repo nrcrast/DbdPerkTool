@@ -6,8 +6,6 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
-import Accordion from 'react-bootstrap/Accordion';
-import PortraitPackDetails from './PortraitPack/PortraitPackDetails';
 
 type MyProps = {
   id: string;
@@ -56,7 +54,11 @@ export default class PortraitPack extends Component<MyProps, MyState> {
 
   render() {
     const installBtn = (
-      <Button variant={this.props.installed ? 'secondary' : 'dark'} onClick={this.installPack.bind(this)} className="m-1">
+      <Button
+        variant={this.props.installed ? 'secondary' : 'dark'}
+        onClick={this.installPack.bind(this)}
+        className="m-1"
+      >
         <Spinner
           as="span"
           animation="border"
@@ -89,8 +91,17 @@ export default class PortraitPack extends Component<MyProps, MyState> {
       <i className="fas fa-arrow-down"></i>
     );
 
+    // Author isn't a link if it's multiple
+    const author =
+      this.props.meta.author.indexOf('+') >= 0 ? (
+        this.props.meta.author
+      ) : (
+        <a href="#" onClick={this.props.onAuthorClick}>
+          {this.props.meta.author}
+        </a>
+      );
+
     return (
-      <Accordion>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
           <Card.Body className="p-2">{headerImg}</Card.Body>
           <Card.Title>{this.props.meta.name}</Card.Title>
@@ -98,7 +109,8 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             <Row className="mb-0 mt-0">
               <Col className="col-sm">
                 <p>
-                  <b>Author:</b> {this.props.meta.author}
+                  <b>Author:</b>{' '}
+                  {author}
                 </p>
               </Col>
               <Col className="col-sm">
@@ -109,31 +121,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             </Row>
           </Card.Body>
           {installBtn}
-          <Card.Header>
-            <Accordion.Toggle
-              as={Button}
-              variant="link"
-              eventKey="0"
-              className="perk-pack-expand-btn"
-              onClick={e => {
-                this.setState({
-                  isExpanded: !this.state.isExpanded
-                });
-              }}
-            >
-              Details {expandArrow}
-            </Accordion.Toggle>
-          </Card.Header>
-          <Accordion.Collapse eventKey="0">
-            <PortraitPackDetails
-              baseUrl={baseUrl}
-              meta={this.props.meta}
-              downloads={this.props.downloads}
-              onAuthorClick={this.props.onAuthorClick}
-            />
-          </Accordion.Collapse>
         </Card>
-      </Accordion>
     );
   }
 }
