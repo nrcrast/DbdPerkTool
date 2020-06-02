@@ -96,8 +96,8 @@ export default class AuthorModal extends Component<MyProps, MyState> {
       if (donateButton) {
         footer = (
           <Row className="mt-4">
-            <Col>{donateButton}</Col>
-            <Col className="d-flex justify-content-end">{viewPacksButton}</Col>
+            <Col>{viewPacksButton}</Col>
+            <Col className="d-flex justify-content-end">{donateButton}</Col>
           </Row>
         );
       } else {

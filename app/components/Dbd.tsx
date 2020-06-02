@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import settingsUtil from '../settings/Settings';
 import PerkPack from './PerkPack';
-import fs from 'fs-extra';
-import tmp from 'tmp';
-import path from 'path';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import unzipper from 'unzipper';
 import axios from 'axios';
 import ErrorModal from './ErrorModal';
 import Spinner from 'react-bootstrap/Spinner';
@@ -27,6 +23,7 @@ type MyState = {
   searchFilter: string;
   currentAuthor: string;
   showAuthorPage: boolean;
+  showInstallOpts: boolean;
   sortKey: string;
   errorText: string;
 };
@@ -43,7 +40,8 @@ export default class Dbd extends Component<MyProps, MyState> {
       sortKey: 'Downloads',
       errorText: '',
       showAuthorPage: false,
-      currentAuthor: ''
+      currentAuthor: '',
+      showInstallOpts: false
     };
   }
 
@@ -58,89 +56,6 @@ export default class Dbd extends Component<MyProps, MyState> {
       packs: packs.data,
       isLoading: false
     });
-  }
-
-  async downloadPack(url: string, onProgress: Function) {
-    const response = await axios({
-      url,
-      method: 'GET',
-      onDownloadProgress: progressEvent => {
-        onProgress(
-          Math.floor((progressEvent.loaded / progressEvent.total) * 100)
-        );
-      },
-      responseType: 'arraybuffer'
-    });
-
-    return new Promise((resolve, reject) => {
-      const tmpFile = tmp.fileSync();
-      fs.writeFile(tmpFile.name, Buffer.from(response.data), err => {
-        log.info(response.data.length);
-        log.info(tmpFile.name);
-        if (err) {
-          reject(err);
-        } else {
-          const tmpDir = tmp.dirSync({ keep: true });
-          fs.createReadStream(tmpFile.name)
-            .pipe(unzipper.Extract({ path: tmpDir.name }))
-            .on('close', () => {
-              resolve(tmpDir);
-            })
-            .on('error', e => {
-              reject(e);
-            });
-        }
-      });
-    });
-  }
-
-  async installPack(id: string, progressCb: any) {
-    const dbdLocation = settingsUtil.settings.dbdInstallPath;
-    if (dbdLocation === '') {
-      this.setState({
-        errorText:
-          'Dead By Daylight installation not found. Please set your installation location via the Settings tab.',
-        errorModalShow: true
-      });
-      return;
-    }
-    try {
-      const url = await axios.get(
-        'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
-        {
-          params: {
-            packId: id
-          }
-        }
-      );
-      settingsUtil.settings.installedPack = id;
-      await settingsUtil.save();
-      const packDir = await this.downloadPack(url.data, progress => {
-        log.info(`Progresssss: ${progress}%`);
-        progressCb(progress);
-      });
-      log.info('Download complete: ' + packDir.name);
-      const packLocation = path.resolve(
-        dbdLocation,
-        'DeadByDaylight',
-        'Content',
-        'UI',
-        'Icons'
-      );
-      log.info(`Copying from ${packDir.name}/Pack to ${packLocation}`);
-      await fs.copy(path.resolve(packDir.name, 'Pack'), packLocation);
-      packDir.removeCallback();
-      log.info('Installation complete!');
-
-      this.setState({
-        installedPack: id
-      });
-    } catch (e) {
-      this.setState({
-        errorText: `Error installing pack ${id}: ${e}`,
-        errorModalShow: true
-      });
-    }
   }
 
   chunkArray(myArray: Array<any>, chunkSize: number) {
@@ -205,10 +120,15 @@ export default class Dbd extends Component<MyProps, MyState> {
       return (
         <PerkPack
           id={pack.id}
-          installPack={this.installPack.bind(this)}
           meta={pack}
           installed={installed}
           downloads={pack.downloads}
+          onError={(msg: string) => {
+            this.setState({ errorText: msg, errorModalShow: true });
+          }}
+          onInstallComplete={(id: string) => {
+            this.setState({ installedPack: id });
+          }}
           onAuthorClick={e => {
             e.preventDefault();
             this.setState({ showAuthorPage: true, currentAuthor: pack.author });
