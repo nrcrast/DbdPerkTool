@@ -123,6 +123,9 @@ export default class Dbd extends Component<MyProps, MyState> {
           meta={pack}
           installed={installed}
           downloads={pack.downloads}
+          setFilter={(text: string) => {
+            this.setState({ searchFilter: text });
+          }}
           onError={(msg: string) => {
             this.setState({ errorText: msg, errorModalShow: true });
           }}

@@ -12,7 +12,6 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 import Accordion from 'react-bootstrap/Accordion';
-import PerkPackMeta from './PerkPack/PerkPackMeta';
 import PerkPackHas from './PerkPack/PerkPackHas';
 import PerkPackDetails from './PerkPack/PerkPackDetails';
 import PerkPackInstallOptionsModal from './PerkPackInstallOptionsModal';
@@ -26,6 +25,7 @@ type MyProps = {
   downloads: number;
   meta: any;
   onAuthorClick: any;
+  setFilter: any;
   onError: any;
   onInstallComplete: any;
 };
@@ -256,22 +256,39 @@ export default class PerkPack extends Component<MyProps, MyState> {
         </a>
       );
 
+    const latestChapterLink = (
+      <a
+        href="#"
+        onClick={e => {
+          e.preventDefault();
+          this.props.setFilter(this.props.meta.latestChapter);
+        }}
+      >
+        {this.props.meta.latestChapter}
+      </a>
+    );
+
     return (
       <Accordion>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
           <Card.Body>{headerImg}</Card.Body>
           <Card.Title>{this.props.meta.name}</Card.Title>
           <Card.Body className="mb-0">
-            <Row className="mb-0 mt-0">
-              <Col className="col-sm">
+            <Row>
+              <Col>
                 <p>
                   <b>Author:</b> {author}
                 </p>
               </Col>
-              <Col className="col-sm">
+              <Col>
                 <p>
                   <b>Downloads:</b> {this.props.meta.downloads}
                 </p>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                <b>Latest Chapter:</b> {latestChapterLink}
               </Col>
             </Row>
 
@@ -299,10 +316,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
             </Accordion.Toggle>
           </Card.Header>
           <Accordion.Collapse eventKey="0">
-            <PerkPackDetails
-              baseUrl={baseUrl}
-              meta={this.props.meta}
-            />
+            <PerkPackDetails baseUrl={baseUrl} meta={this.props.meta} />
           </Accordion.Collapse>
         </Card>
         <PerkPackInstallOptionsModal

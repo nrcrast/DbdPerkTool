@@ -79,10 +79,6 @@ export default function PerkPackDetails(props: MyProps) {
       {portraitImg}
       {itemImg}
       {statusImg}
-      <PerkPackMeta
-        latestChapter={props.meta.latestChapter}
-        author={props.meta.author}
-      />
     </div>
   );
 }
