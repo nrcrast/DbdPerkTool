@@ -213,6 +213,9 @@ export default class Dbd extends Component<MyProps, MyState> {
           installPack={this.installPack.bind(this)}
           installed={installed}
           downloads={pack.downloads}
+          setFilter={(text: string) => {
+            this.setState({ searchFilter: text });
+          }}
           onAuthorClick={e => {
             e.preventDefault();
             this.setState({ showAuthorPage: true, currentAuthor: pack.author });
