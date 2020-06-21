@@ -12,6 +12,7 @@ type MyProps = {
   installed: boolean;
   downloads: number;
   installPack: any;
+  setFilter: any;
   meta: any;
   onAuthorClick: any;
 };
@@ -101,27 +102,43 @@ export default class PortraitPack extends Component<MyProps, MyState> {
         </a>
       );
 
+    const latestChapterLink = (
+      <a
+        href="#"
+        onClick={e => {
+          e.preventDefault();
+          this.props.setFilter(this.props.meta.latestChapter);
+        }}
+      >
+        {this.props.meta.latestChapter}
+      </a>
+    );
+
     return (
-        <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
-          <Card.Body className="p-2">{headerImg}</Card.Body>
-          <Card.Title>{this.props.meta.name}</Card.Title>
-          <Card.Body className="mb-0">
-            <Row className="mb-0 mt-0">
-              <Col className="col-sm">
-                <p>
-                  <b>Author:</b>{' '}
-                  {author}
-                </p>
-              </Col>
-              <Col className="col-sm">
-                <p>
-                  <b>Downloads:</b> {this.props.meta.downloads}
-                </p>
-              </Col>
-            </Row>
-          </Card.Body>
-          {installBtn}
-        </Card>
+      <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
+        <Card.Body className="p-2">{headerImg}</Card.Body>
+        <Card.Title>{this.props.meta.name}</Card.Title>
+        <Card.Body className="mb-0">
+          <Row>
+            <Col>
+              <p>
+                <b>Author:</b> {author}
+              </p>
+            </Col>
+            <Col>
+              <p>
+                <b>Downloads:</b> {this.props.meta.downloads}
+              </p>
+            </Col>
+          </Row>
+          <Row className="mb-0">
+            <Col>
+              <b>Latest Chapter:</b> {latestChapterLink}
+            </Col>
+          </Row>
+        </Card.Body>
+        {installBtn}
+      </Card>
     );
   }
 }
