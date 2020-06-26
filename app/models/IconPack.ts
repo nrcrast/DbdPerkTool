@@ -15,10 +15,22 @@ export default abstract class IconPack {
     this.meta = meta;
   }
 
+  /**
+   * Copy necessary files from extracted icon zip to their final destination
+   * in the DBD game files
+   * 
+   * @param sourcePath temporary path where icons are stored
+   * @param destPath the DBD UI/Icons directory
+   * @param opts options. currently only used in PerkPack implementation
+   */
   abstract async copyFilesTo(sourcePath: string, destPath: string, opts: any): Promise<any>;
+
+  /**
+   * Persist the saved pack ID for the UI
+   */
   abstract async saveInstalledPackId(): Promise<any>;
 
-  async getZipUrl() {
+  private async getZipUrl(): Promise<string> {
     const url = await axios.get(
       'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
       {
@@ -30,7 +42,12 @@ export default abstract class IconPack {
     return url.data;
   }
 
-  async extractZip(rawData: Buffer) {
+  /**
+   * Given a buffer of raw zip data, extract to a temporary directory
+   * @param rawData 
+   * @returns temporary directory. Must be removed manually!
+   */
+  private async extractZip(rawData: Buffer) {
     return new Promise((resolve, reject) => {
       const tmpFile = tmp.fileSync();
       fs.writeFile(tmpFile.name, rawData, err => {
@@ -51,7 +68,12 @@ export default abstract class IconPack {
     });
   }
 
-  async downloadZip(onProgress: Function) {
+  /**
+   * Retrieve the raw zip data for the current pack
+   * @param onProgress - optional. Called with an integer percentage as the download progresses
+   * @returns Buffer of raw zip data
+   */
+  private async downloadZip(onProgress?: Function): Promise<Buffer> {
     const url = await this.getZipUrl();
 
     const response = await axios({
@@ -69,7 +91,12 @@ export default abstract class IconPack {
     return Buffer.from(response.data);
   }
 
-  async downloadAndExtract(onProgress: Function) {
+  /**
+   * Download zip and extract it to a temporary directory
+   * @param onProgress - optional. Called with an integer percentage as the download progresses
+   * @returns temporary directory
+   */
+  private async downloadAndExtract(onProgress?: Function) {
     log.debug('Downloading Zip');
     const rawZipData = await this.downloadZip(onProgress);
     log.debug('Extracting Zip');
@@ -78,7 +105,12 @@ export default abstract class IconPack {
     return extractDir;
   }
 
-  async install(onProgress: Function, opts: any) {
+  /**
+   * Perform main installation operation. Retrieve a zip, extract it, and copy files to DBD directory
+   * @param onProgress - callback to be called for download progress
+   * @param opts - options. currently only used in PerkPack implementation
+   */
+  async install(onProgress: Function, opts = {}) {
     const dbdPath = settingsUtil.settings.dbdInstallPath;
 
     if (dbdPath === '') {
