@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PortraitPack from './PortraitPack';
+import PerkPack from './PerkPack';
 import PackDisplay from './PackDisplay';
 
 type MyProps = {};
@@ -7,7 +7,7 @@ type MyState = {
 
 };
 
-export default class Dbd extends Component<MyProps, MyState> {
+export default class Perks extends Component<MyProps, MyState> {
   constructor(params: {}) {
     super(params);
     this.state = {
@@ -17,7 +17,7 @@ export default class Dbd extends Component<MyProps, MyState> {
   fromPacksBuildCards(packs, opts) {
     return packs.map((pack) => {
       return (
-        <PortraitPack
+        <PerkPack
           onError={opts.onError}
           onInstallComplete={opts.onInstallComplete}
           meta={pack}
@@ -37,9 +37,9 @@ export default class Dbd extends Component<MyProps, MyState> {
   render() {
     return (
       <PackDisplay
-        packQuery={{ hasPortraits: true }}
+        packQuery={{}}
         cardBuilder={this.fromPacksBuildCards}
-        installedPackSettingsKey="installedPortraitPack"
+        installedPackSettingsKey="installedPack"
       />
     );
   }

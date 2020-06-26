@@ -6,6 +6,7 @@ export default function PerkPackInstallOption(props: any) {
   return (
     <Form.Check
       defaultChecked
+      key={`${slugify(props.label)}-checkbox`}
       type="checkbox"
       id={`${slugify(props.label)}-checkbox`}
       label={props.label}

@@ -11,7 +11,7 @@ export default function PlainTextInput(props) {
   if(props.options) {
     input = <Typeahead
     onChange={props.onChange}
-    allowNew="true"
+    allowNew={true}
     options={props.options}
   />
   } else {

@@ -98,7 +98,7 @@ export default class Create extends Component<MyProps, MyState> {
 
   async componentDidMount() {
     const packs = await axios.get(
-      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs'
+      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs?all=true'
     );
     this.setState({ packs: packs.data });
   }

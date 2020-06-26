@@ -1,9 +1,4 @@
 import React, { Component, useState } from 'react';
-import axios from 'axios';
-import fs from 'fs-extra';
-import tmp from 'tmp';
-import path from 'path';
-import unzipper from 'unzipper';
 import log from 'electron-log';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
@@ -15,9 +10,8 @@ import Accordion from 'react-bootstrap/Accordion';
 import PerkPackHas from './PerkPack/PerkPackHas';
 import PerkPackDetails from './PerkPack/PerkPackDetails';
 import PerkPackInstallOptionsModal from './PerkPackInstallOptionsModal';
-import settingsUtil from '../settings/Settings';
-
-axios.defaults.adapter = require('axios/lib/adapters/http');
+import PerkPackModel from '../models/PerkPack';
+import PackMetaMapper from '../models/PackMetaMapper';
 
 type MyProps = {
   id: string;
@@ -53,139 +47,10 @@ export default class PerkPack extends Component<MyProps, MyState> {
     this.setState({ saveProgress: progress });
   }
 
-  async downloadPack(url: string, onProgress: Function) {
-    const response = await axios({
-      url,
-      method: 'GET',
-      onDownloadProgress: progressEvent => {
-        onProgress(
-          Math.floor((progressEvent.loaded / progressEvent.total) * 100)
-        );
-      },
-      responseType: 'arraybuffer'
-    });
-
-    return new Promise((resolve, reject) => {
-      const tmpFile = tmp.fileSync();
-      fs.writeFile(tmpFile.name, Buffer.from(response.data), err => {
-        log.info(response.data.length);
-        log.info(tmpFile.name);
-        if (err) {
-          reject(err);
-        } else {
-          const tmpDir = tmp.dirSync({ keep: true });
-          fs.createReadStream(tmpFile.name)
-            .pipe(unzipper.Extract({ path: tmpDir.name }))
-            .on('close', () => {
-              resolve(tmpDir);
-            })
-            .on('error', e => {
-              reject(e);
-            });
-        }
-      });
-    });
-  }
-
-  async copyIconFiles(baseDir, targetDir, opts) {
-    if (!opts.installPortraits) {
-      log.info('Not installing Portraits');
-      await fs.remove(path.resolve(baseDir, 'CharPortraits'));
-    }
-    if (!opts.installPowers) {
-      log.info('Not installing Powers');
-      await fs.remove(path.resolve(baseDir, 'Powers'));
-    }
-    if (!opts.installItems) {
-      log.info('Not installing Items');
-      await fs.remove(path.resolve(baseDir, 'Items'));
-      await fs.remove(path.resolve(baseDir, 'ItemAddons'));
-    }
-    if (!opts.installStatus) {
-      log.info('Not installing Status Effects');
-      await fs.remove(path.resolve(baseDir, 'StatusEffects'));
-    }
-
-    if (!opts.installPerks) {
-      log.info('Not installing Perks');
-      await fs.remove(path.resolve(baseDir, 'Perks'));
-    }
-
-    if (!opts.installMisc) {
-      const dirs = await fs.readdir(baseDir, { withFileTypes: true });
-      const rmDirs = dirs
-        .filter(dir => {
-          return (
-            dir.isDirectory() &&
-            ![
-              'CharPortraits',
-              'Perks',
-              'Items',
-              'ItemAddons',
-              'Powers',
-              'StatusEffects'
-            ].includes(dir.name)
-          );
-        })
-        .map(dir => dir.name);
-      log.info('Not installing misc dirs: ', rmDirs);
-      await Promise.all(
-        rmDirs.map(dir => {
-          return fs.remove(path.resolve(baseDir, dir));
-        })
-      );
-    }
-
-    const dirsToCopy = await fs.readdir(baseDir, { withFileTypes: true });
-    const dirNamesToCopy = dirsToCopy
-      .filter(dir => dir.isDirectory())
-      .map(dir => dir.name);
-    log.info('Copying dirs: ', dirNamesToCopy);
-    await fs.copy(baseDir, targetDir);
-  }
-
   async doInstall(id: string, progressCb: any, opts: any) {
-    const dbdLocation = settingsUtil.settings.dbdInstallPath;
-    if (dbdLocation === '') {
-      this.props.onError(
-        'Dead By Daylight installation not found. Please set your installation location via the Settings tab.'
-      );
-      return;
-    }
+    const pack = new PerkPackModel(PackMetaMapper.fromRaw(this.props.meta));
     try {
-      const url = await axios.get(
-        'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
-        {
-          params: {
-            packId: id
-          }
-        }
-      );
-      settingsUtil.settings.installedPack = id;
-      await settingsUtil.save();
-      const packDir = await this.downloadPack(url.data, progress => {
-        log.info(`Progresssss: ${progress}%`);
-        if (progressCb) {
-          progressCb(progress);
-        }
-      });
-      log.info('Download complete: ' + packDir.name);
-      const packLocation = path.resolve(
-        dbdLocation,
-        'DeadByDaylight',
-        'Content',
-        'UI',
-        'Icons'
-      );
-      log.info(`Copying from ${packDir.name}/Pack to ${packLocation}`);
-      await this.copyIconFiles(
-        path.resolve(packDir.name, 'Pack'),
-        packLocation,
-        opts
-      );
-      packDir.removeCallback();
-      log.info('Installation complete!');
-
+      await pack.install(progressCb, opts);
       this.props.onInstallComplete(id);
     } catch (e) {
       this.props.onError(`Error installing pack ${id}: ${e}`);

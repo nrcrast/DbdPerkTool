@@ -22,7 +22,7 @@ export default function TopNav() {
         <Nav.Link as={Link} to={routes.SETTINGS}>
           Settings
         </Nav.Link>
-        <Nav.Link as={Link} to={routes.DBD}>
+        <Nav.Link as={Link} to={routes.PERKS}>
           Icon Packs
         </Nav.Link>
         <Nav.Link as={Link} to={routes.PORTRAITS}>

@@ -1,7 +1,7 @@
 {
   "HOME": "/",
   "SETTINGS": "/settings",
-  "DBD": "/dbd",
+  "PERKS": "/perks",
   "CREATE": "/create",
   "PORTRAITS": "/portraits"
 }

@@ -56,6 +56,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     checkboxes.push(
       <PerkPackInstallOption
+        key="perpackinstallopt-perks"
         label="Perks"
         onChange={(checked: boolean) => {
           this.setState({ installPerks: checked });
@@ -66,6 +67,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     if (this.props.meta.hasPortraits) {
       checkboxes.push(
         <PerkPackInstallOption
+          key="perpackinstallopt-portraits"
           label="Portraits"
           onChange={(checked: boolean) => {
             this.setState({ installPortraits: checked });
@@ -77,6 +79,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     if (this.props.meta.hasItems) {
       checkboxes.push(
         <PerkPackInstallOption
+          key="perpackinstallopt-items"
           label="Items"
           onChange={(checked: boolean) => {
             this.setState({ installItems: checked });
@@ -88,6 +91,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     if (this.props.meta.hasStatusEffects) {
       checkboxes.push(
         <PerkPackInstallOption
+          key="perpackinstallopt-status"
           label="Status Effects"
           onChange={(checked: boolean) => {
             this.setState({ installStatus: checked });
@@ -99,6 +103,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     if (this.props.meta.hasPowers) {
       checkboxes.push(
         <PerkPackInstallOption
+          key="perpackinstallopt-powers"
           label="Powers"
           onChange={(checked: boolean) => {
             this.setState({ installPowers: checked });
@@ -109,6 +114,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     checkboxes.push(
       <PerkPackInstallOption
+        key="perpackinstallopt-misc"
         label="Misc (Offerings, Favors, Emblems, etc...)"
         onChange={(checked: boolean) => {
           this.setState({ installMisc: checked });

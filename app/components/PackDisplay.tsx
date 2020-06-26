@@ -10,15 +10,17 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import AuthorModal from './AuthorModal';
-import log from 'electron-log';
 import nomar from 'nomar';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
-type MyProps = {};
+type MyProps = {
+  cardBuilder: any;
+  installedPackSettingsKey: string;
+  packQuery: any;
+};
 type MyState = {
   installedPack: string;
-  packs: Array<any>;
   errorModalShow: boolean;
   isLoading: boolean;
   searchFilter: string;
@@ -27,14 +29,14 @@ type MyState = {
   showInstallOpts: boolean;
   sortKey: string;
   errorText: string;
+  packs: Array<any>;
 };
 
-export default class Dbd extends Component<MyProps, MyState> {
+export default class PackDisplay extends Component<MyProps, MyState> {
   constructor(params: {}) {
     super(params);
     this.state = {
       installedPack: '',
-      packs: [],
       errorModalShow: false,
       isLoading: true,
       searchFilter: '',
@@ -42,16 +44,19 @@ export default class Dbd extends Component<MyProps, MyState> {
       errorText: '',
       showAuthorPage: false,
       currentAuthor: '',
-      showInstallOpts: false
+      showInstallOpts: false,
+      packs: []
     };
   }
 
   async componentDidMount() {
     // Get packs
     const packs = await axios.get(
-      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs'
+      `https://dead-by-daylight-icon-toolbox.herokuapp.com/packs`,
+      { params: this.props.packQuery || undefined }
     );
-    const installedPack = settingsUtil.settings.installedPack || '';
+    const installedPack =
+      settingsUtil.settings[this.props.installedPackSettingsKey] || '';
     this.setState({
       installedPack,
       packs: packs.data,
@@ -100,13 +105,12 @@ export default class Dbd extends Component<MyProps, MyState> {
 
   getPackChapterNum(pack) {
     const latestChapterMatch = pack.latestChapter.match(/Chapter (.*): .*/);
-    if(!latestChapterMatch || latestChapterMatch.length < 2) {
+    if (!latestChapterMatch || latestChapterMatch.length < 2) {
       return 0;
     } else {
       const lastChapterRomanStr = latestChapterMatch[1];
       return nomar(lastChapterRomanStr);
     }
-
   }
 
   packSortComparator(a, b) {
@@ -118,41 +122,13 @@ export default class Dbd extends Component<MyProps, MyState> {
       return this.strcmpIgnoreCase(a.author, b.author);
     } else if (key === 'Downloads') {
       return a.downloads > b.downloads ? -1 : 1;
-    } else if(key === 'Chapter') {
+    } else if (key === 'Chapter') {
       return this.getPackChapterNum(a) > this.getPackChapterNum(b) ? -1 : 1;
     }
 
     const aDate = new Date(a.lastUpdate);
     const bDate = new Date(b.lastUpdate);
-    return aDate > bDate ? -1 : (aDate < bDate ? 1 : 0);
-  }
-
-  fromPacksBuildCards(packs) {
-    const filteredPacks = packs.filter(pack => this.isPackIncluded(pack));
-    return filteredPacks.map((pack, index) => {
-      let installed = this.state.installedPack === pack.id;
-      return (
-        <PerkPack
-          id={pack.id}
-          meta={pack}
-          installed={installed}
-          downloads={pack.downloads}
-          setFilter={(text: string) => {
-            this.setState({ searchFilter: text });
-          }}
-          onError={(msg: string) => {
-            this.setState({ errorText: msg, errorModalShow: true });
-          }}
-          onInstallComplete={(id: string) => {
-            this.setState({ installedPack: id });
-          }}
-          onAuthorClick={e => {
-            e.preventDefault();
-            this.setState({ showAuthorPage: true, currentAuthor: pack.author });
-          }}
-        />
-      );
-    });
+    return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
   }
 
   fromCardsBuildDeck(cards) {
@@ -191,7 +167,28 @@ export default class Dbd extends Component<MyProps, MyState> {
 
     let packs = [...this.state.packs];
     packs.sort(this.packSortComparator.bind(this));
-    const cards = this.fromPacksBuildCards(packs);
+
+    const currentRenderer = this;
+    const filteredPacks = packs
+      .filter(pack => this.isPackIncluded(pack))
+      .map(pack => {
+        pack.isInstalled = currentRenderer.state.installedPack === pack.id;
+        return pack;
+      });
+    const cards = this.props.cardBuilder(filteredPacks, {
+      onError: (msg: string) => {
+        this.setState({ errorText: msg, errorModalShow: true });
+      },
+      onInstallComplete: (id: string) => {
+        this.setState({ installedPack: id });
+      },
+      onAuthorClick: (author: string) => {
+        this.setState({ showAuthorPage: true, currentAuthor: author });
+      },
+      onSetFilter: (text: string) => {
+        this.setState({ searchFilter: text });
+      }
+    });
     const deck = this.fromCardsBuildDeck(cards);
 
     return (
