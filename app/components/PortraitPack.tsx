@@ -117,7 +117,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
     return (
       <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
         <Card.Body className="p-2">{headerImg}</Card.Body>
-        <Card.Title>{this.props.meta.name}</Card.Title>
+        <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
         <Card.Body className="mb-0">
           <Row>
             <Col>

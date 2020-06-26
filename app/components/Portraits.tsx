@@ -15,6 +15,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import log from 'electron-log';
+import nomar from 'nomar';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -186,6 +187,18 @@ export default class Dbd extends Component<MyProps, MyState> {
     return a.toUpperCase().localeCompare(b.toUpperCase());
   }
 
+  // TODO share btwn Perk and Portrait
+  getPackChapterNum(pack) {
+    const latestChapterMatch = pack.latestChapter.match(/Chapter (.*): .*/);
+    if(!latestChapterMatch || latestChapterMatch.length < 2) {
+      return 0;
+    } else {
+      const lastChapterRomanStr = latestChapterMatch[1];
+      return nomar(lastChapterRomanStr);
+    }
+
+  }
+
   packSortComparator(a, b) {
     const key = this.state.sortKey;
 
@@ -194,11 +207,14 @@ export default class Dbd extends Component<MyProps, MyState> {
     } else if (key === 'Author') {
       return this.strcmpIgnoreCase(a.author, b.author);
     } else if (key === 'Downloads') {
-      return a.downloads > b.downloads;
+      return a.downloads > b.downloads ? -1 : 1;
+    } else if(key === 'Chapter') {
+      // log.debug(`Pack A: ${this.getPackChapterNum(a)} B: ${this.getPackChapterNum(b)} Return: ${this.getPackChapterNum(a) > this.getPackChapterNum(b)}`);
+      return this.getPackChapterNum(a) > this.getPackChapterNum(b) ? -1 : 1;
     }
 
-    const aDate = new Date(a.createdAt);
-    const bDate = new Date(b.createdAt);
+    const aDate = new Date(a.updatedAt);
+    const bDate = new Date(b.updatedAt);
     return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
   }
 
@@ -318,6 +334,16 @@ export default class Dbd extends Component<MyProps, MyState> {
                   }}
                 >
                   Date (newest first)
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  className="field-label-text"
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault();
+                    this.setState({ sortKey: 'Chapter' });
+                  }}
+                >
+                  Chapter (newest first)
                 </NavDropdown.Item>
               </DropdownButton>
             </Col>

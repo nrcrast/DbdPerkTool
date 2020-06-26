@@ -33,7 +33,10 @@ export default function TopNav() {
         </Nav.Link>
       </Nav>
       <Nav className="ml-auto">
-        <Button variant="secondary" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JWX35VP4RXA7A&source=url" onClick={openDonate}>Donate</Button>
+        <Button variant="secondary" href="https://www.patreon.com/dbdicontoolbox" onClick={openDonate}>Patreon</Button>
+      </Nav>
+      <Nav className="ml-3">
+        <Button variant="secondary" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JWX35VP4RXA7A&source=url" onClick={openDonate}>Paypal</Button>
       </Nav>
     </Navbar>
   );

@@ -272,7 +272,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
       <Accordion>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
           <Card.Body>{headerImg}</Card.Body>
-          <Card.Title>{this.props.meta.name}</Card.Title>
+          <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
           <Card.Body className="mb-0">
             <Row>
               <Col>
