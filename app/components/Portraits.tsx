@@ -95,59 +95,6 @@ export default class Dbd extends Component<MyProps, MyState> {
     });
   }
 
-  async installPack(id: string, progressCb: any) {
-    const dbdLocation = settingsUtil.settings.dbdInstallPath;
-    if (dbdLocation === '') {
-      this.setState({
-        errorText:
-          'Dead By Daylight installation not found. Please set your installation location via the Settings tab.',
-        errorModalShow: true
-      });
-      return;
-    }
-    try {
-      const url = await axios.get(
-        'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
-        {
-          params: {
-            packId: id
-          }
-        }
-      );
-      settingsUtil.settings.installedPortraitPack = id;
-      await settingsUtil.save();
-      const packDir = await this.downloadPack(url.data, progress => {
-        log.info(`Progress: ${progress}%`);
-        progressCb(progress);
-      });
-      log.info('Download complete: ' + packDir.name);
-      const packLocation = path.resolve(
-        dbdLocation,
-        'DeadByDaylight',
-        'Content',
-        'UI',
-        'Icons',
-        'CharPortraits'
-      );
-      log.info(`Copying from ${packDir.name}/Pack to ${packLocation}`);
-      await fs.copy(
-        path.resolve(packDir.name, 'Pack', 'CharPortraits'),
-        packLocation
-      );
-      packDir.removeCallback();
-      log.info('Installation complete!');
-
-      this.setState({
-        installedPack: id
-      });
-    } catch (e) {
-      this.setState({
-        errorText: `Error installing pack ${id}: ${e}`,
-        errorModalShow: true
-      });
-    }
-  }
-
   chunkArray(myArray: Array<any>, chunkSize: number) {
     const arrayLength = myArray.length;
     const tempArray = [];
@@ -190,13 +137,12 @@ export default class Dbd extends Component<MyProps, MyState> {
   // TODO share btwn Perk and Portrait
   getPackChapterNum(pack) {
     const latestChapterMatch = pack.latestChapter.match(/Chapter (.*): .*/);
-    if(!latestChapterMatch || latestChapterMatch.length < 2) {
+    if (!latestChapterMatch || latestChapterMatch.length < 2) {
       return 0;
     } else {
       const lastChapterRomanStr = latestChapterMatch[1];
       return nomar(lastChapterRomanStr);
     }
-
   }
 
   packSortComparator(a, b) {
@@ -208,7 +154,7 @@ export default class Dbd extends Component<MyProps, MyState> {
       return this.strcmpIgnoreCase(a.author, b.author);
     } else if (key === 'Downloads') {
       return a.downloads > b.downloads ? -1 : 1;
-    } else if(key === 'Chapter') {
+    } else if (key === 'Chapter') {
       // log.debug(`Pack A: ${this.getPackChapterNum(a)} B: ${this.getPackChapterNum(b)} Return: ${this.getPackChapterNum(a) > this.getPackChapterNum(b)}`);
       return this.getPackChapterNum(a) > this.getPackChapterNum(b) ? -1 : 1;
     }
@@ -224,9 +170,14 @@ export default class Dbd extends Component<MyProps, MyState> {
       let installed = this.state.installedPack === pack.id;
       return (
         <PortraitPack
+          onError={(msg: string) => {
+            this.setState({ errorText: msg, errorModalShow: true });
+          }}
+          onInstallComplete={(id: string) => {
+            this.setState({ installedPack: id });
+          }}
           meta={pack}
           id={pack.id}
-          installPack={this.installPack.bind(this)}
           installed={installed}
           downloads={pack.downloads}
           setFilter={(text: string) => {
