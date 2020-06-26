@@ -122,9 +122,9 @@ export default class Dbd extends Component<MyProps, MyState> {
       return this.getPackChapterNum(a) > this.getPackChapterNum(b) ? -1 : 1;
     }
 
-    const aDate = new Date(a.updatedAt);
-    const bDate = new Date(b.updatedAt);
-    return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
+    const aDate = new Date(a.lastUpdate);
+    const bDate = new Date(b.lastUpdate);
+    return aDate > bDate ? -1 : (aDate < bDate ? 1 : 0);
   }
 
   fromPacksBuildCards(packs) {
