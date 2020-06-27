@@ -1,13 +1,11 @@
 import React, { Component, useState } from 'react';
-
-import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 import PortraitPackModel from '../models/PortraitPack';
 import PackMetaMapper from '../models/PackMetaMapper';
+import PackInstallButton from './PackInstallButton';
 
 type MyProps = {
   id: string;
@@ -20,7 +18,6 @@ type MyProps = {
   onInstallComplete: any;
 };
 type MyState = {
-  installed: boolean;
   saving: boolean;
   saveProgress: number;
 };
@@ -29,7 +26,6 @@ export default class PortraitPack extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
     super(params);
     this.state = {
-      installed: false,
       saving: false,
       saveProgress: 0
     };
@@ -62,25 +58,6 @@ export default class PortraitPack extends Component<MyProps, MyState> {
   }
 
   render() {
-    const installBtn = (
-      <Button
-        variant={this.props.installed ? 'secondary' : 'dark'}
-        onClick={this.installPack.bind(this)}
-        className="m-1"
-      >
-        <Spinner
-          as="span"
-          animation="border"
-          size="sm"
-          role="status"
-          aria-hidden="true"
-          className="mr-2"
-          hidden={!this.state.saving}
-        />
-        {this.props.installed ? 'Installed' : 'Install'}
-      </Button>
-    );
-
     const images = [];
     const baseUrl = `https://d43kvaebi7up3.cloudfront.net/${encodeURIComponent(
       this.props.id
@@ -140,7 +117,11 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             </Col>
           </Row>
         </Card.Body>
-        {installBtn}
+        <PackInstallButton
+          installed={this.props.installed}
+          installInProgress={this.state.saving}
+          onClick={this.installPack.bind(this)}
+        />
       </Card>
     );
   }
