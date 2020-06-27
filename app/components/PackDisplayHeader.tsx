@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -6,10 +6,11 @@ import Col from 'react-bootstrap/Col';
 import { useDebouncedCallback } from 'use-debounce';
 import log from 'electron-log';
 
-type MyProps = { onSortKeySet: Function; onSearchFilter: Function };
+type MyProps = { onSortKeySet: Function; onSearchFilter: Function; initialFilterText: string };
 
 export default function PackDisplayHeader(props: MyProps) {
-  const [searchText, setSearchText] = useState('');
+  console.log('Initial: ' + props.initialFilterText);
+  const [searchText, setSearchText] = useState(props.initialFilterText);
   const [sortKeyText, setSortKeyText] = useState('Downloads');
 
   // The idea here is to only actually run the search after the user is finished typing
@@ -27,6 +28,8 @@ export default function PackDisplayHeader(props: MyProps) {
     setSearchText(text);
     debounceSearchCallback(text);
   };
+
+  useEffect(() => setSearchText(props.initialFilterText), [props.initialFilterText]);
 
   return (
     <Form.Group>

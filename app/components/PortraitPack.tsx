@@ -6,6 +6,9 @@ import Image from 'react-bootstrap/Image';
 import PortraitPackModel from '../models/PortraitPack';
 import PackMetaMapper from '../models/PackMetaMapper';
 import InstallButton from './IconPack/InstallButton';
+import Author from './IconPack/Author';
+import LatestChapter from './IconPack/LatestChapter';
+import MainPreview from './IconPack/MainPreview';
 
 type MyProps = {
   id: string;
@@ -58,51 +61,27 @@ export default class PortraitPack extends Component<MyProps, MyState> {
   }
 
   render() {
-    const images = [];
-    const baseUrl = `https://d43kvaebi7up3.cloudfront.net/${encodeURIComponent(
-      this.props.id
-    )}`;
-    for (let i = 0; i < 4; i++) {
-      const url = `${baseUrl}/portraits_${i}.png`;
-      images.push(
-        <Col key={`portraitpack-${this.props.id}-img-${i}`}>
-          <Image className="perk-preview-img" src={url} fluid />
-        </Col>
-      );
-    }
-    const headerImg = <Row className="flex-nowrap">{images}</Row>;
-
-    // Author isn't a link if it's multiple
-    const author =
-      this.props.meta.author.indexOf('+') >= 0 ? (
-        this.props.meta.author
-      ) : (
-        <a href="#" onClick={this.props.onAuthorClick}>
-          {this.props.meta.author}
-        </a>
-      );
-
-    const latestChapterLink = (
-      <a
-        href="#"
-        onClick={e => {
-          e.preventDefault();
-          this.props.setFilter(this.props.meta.latestChapter);
-        }}
-      >
-        {this.props.meta.latestChapter}
-      </a>
-    );
+    const urls = [...Array(4).keys()].map(i => {
+      return `portraits_${i}.png`;
+    });
 
     return (
       <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
-        <Card.Body className="p-2">{headerImg}</Card.Body>
+        <Card.Body className="p-2">
+          <MainPreview urls={urls} id={this.props.id} />
+        </Card.Body>
         <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
         <Card.Body className="mb-0">
           <Row>
             <Col>
               <p>
-                <b>Author:</b> {author}
+                <b>Author:</b>{' '}
+                <Author
+                  onClick={(name: string) => {
+                    this.props.onAuthorClick(name);
+                  }}
+                  name={this.props.meta.author}
+                />
               </p>
             </Col>
             <Col>
@@ -113,7 +92,13 @@ export default class PortraitPack extends Component<MyProps, MyState> {
           </Row>
           <Row className="mb-0">
             <Col>
-              <b>Latest Chapter:</b> {latestChapterLink}
+              <b>Latest Chapter:</b>{' '}
+              <LatestChapter
+                name={this.props.meta.latestChapter}
+                onClick={() => {
+                  this.props.setFilter(this.props.meta.latestChapter);
+                }}
+              />
             </Col>
           </Row>
         </Card.Body>

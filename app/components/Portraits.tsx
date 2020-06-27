@@ -25,9 +25,8 @@ export default class Dbd extends Component<MyProps, MyState> {
           installed={pack.isInstalled}
           downloads={pack.downloads}
           setFilter={opts.onSetFilter}
-          onAuthorClick={(e) => {
-            e.preventDefault();
-            opts.onAuthorClick(pack.author);
+          onAuthorClick={(author: string) => {
+            opts.onAuthorClick(author);
           }}
         />
       );

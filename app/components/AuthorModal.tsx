@@ -61,9 +61,9 @@ export default class AuthorModal extends Component<MyProps, MyState> {
         this.state.authorData.links &&
         this.state.authorData.links.length > 0
       ) {
-        const linkList = this.state.authorData.links.map(linkData => {
+        const linkList = this.state.authorData.links.map((linkData, index) => {
           return (
-            <ListGroup.Item>
+            <ListGroup.Item key={`authormodal-link-${index}`}>
               <a href={linkData.link} onClick={this.openLink}>
                 {linkData.label}
               </a>

@@ -6,7 +6,7 @@ import Image from 'react-bootstrap/Image';
 
 type MyProps = {
   meta: any;
-  baseUrl: string;
+  id: string;
 };
 
 function buildImgRow(
@@ -14,7 +14,7 @@ function buildImgRow(
   label: string,
   colWidth: number = 12
 ) {
-  const cols = images.map((url: string, index:number) => {
+  const cols = images.map((url: string, index: number) => {
     return (
       <Col key={`perkpackdetails-col-${index}`}>
         <Image src={url} fluid />
@@ -37,11 +37,14 @@ function buildImgRow(
 }
 
 export default function PerkPackDetails(props: MyProps) {
+  const baseUrl = `https://d43kvaebi7up3.cloudfront.net/${encodeURIComponent(
+    props.id
+  )}`;
   let portraitImg = undefined;
   if (props.meta.hasPortraits) {
     portraitImg = buildImgRow(
       [0, 1, 2, 3].map(i => {
-        return `${props.baseUrl}/portraits_${i}.png`;
+        return `${baseUrl}/portraits_${i}.png`;
       }),
       'Portraits',
       12
@@ -52,7 +55,7 @@ export default function PerkPackDetails(props: MyProps) {
   if (props.meta.hasItems) {
     itemImg = buildImgRow(
       [0, 1, 2, 3].map(i => {
-        return `${props.baseUrl}/items_${i}.png`;
+        return `${baseUrl}/items_${i}.png`;
       }),
       'Items',
       8
@@ -63,7 +66,7 @@ export default function PerkPackDetails(props: MyProps) {
   if (props.meta.hasStatusEffects) {
     statusImg = buildImgRow(
       [0, 1, 2, 3].map(i => {
-        return `${props.baseUrl}/statusEffects_${i}.png`;
+        return `${baseUrl}/statusEffects_${i}.png`;
       }),
       'Status Effects',
       6

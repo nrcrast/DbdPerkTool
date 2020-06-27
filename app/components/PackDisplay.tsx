@@ -192,6 +192,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
         this.setState({ installedPack: id });
       },
       onAuthorClick: (author: string) => {
+        console.log('Author: ' + author);
         this.setState({ showAuthorPage: true, currentAuthor: author });
       },
       onSetFilter: (text: string) => {
@@ -209,6 +210,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           onSortKeySet={(text: string) => {
             this.setState({ sortKey: text });
           }}
+          initialFilterText={this.state.searchFilter}
         />
         {deck}
         <ErrorModal
