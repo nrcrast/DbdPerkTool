@@ -88,7 +88,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
     for (let i = 0; i < 4; i++) {
       const url = `${baseUrl}/portraits_${i}.png`;
       images.push(
-        <Col>
+        <Col key={`portraitpack-${this.props.id}-img-${i}`}>
           <Image className="perk-preview-img" src={url} fluid />
         </Col>
       );

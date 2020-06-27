@@ -99,7 +99,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
     for (let i = 0; i < 4; i++) {
       const url = `${baseUrl}/perks_${i}.png`;
       images.push(
-        <Col>
+        <Col key={`perkpack-perk-img-${this.props.id}-col-${i}`}>
           <Image className="perk-preview-img" src={url} fluid />
         </Col>
       );

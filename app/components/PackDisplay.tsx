@@ -11,6 +11,8 @@ import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import AuthorModal from './AuthorModal';
 import nomar from 'nomar';
+import { debounce } from 'throttle-debounce';
+import PackDisplayHeader from './PackDisplayHeader';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -29,7 +31,9 @@ type MyState = {
   showInstallOpts: boolean;
   sortKey: string;
   errorText: string;
+  searchFilterText: string;
   packs: Array<any>;
+  searchDebounce: Function;
 };
 
 export default class PackDisplay extends Component<MyProps, MyState> {
@@ -45,7 +49,9 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       showAuthorPage: false,
       currentAuthor: '',
       showInstallOpts: false,
-      packs: []
+      searchFilterText: '',
+      packs: [],
+      searchDebounce: () => {}
     };
   }
 
@@ -60,7 +66,10 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     this.setState({
       installedPack,
       packs: packs.data,
-      isLoading: false
+      isLoading: false,
+      searchDebounce: debounce(250, () => {
+        this.setState({ searchFilter: this.state.searchFilterText });
+      })
     });
   }
 
@@ -135,10 +144,10 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     const decks = [];
     for (let i = 0; i < cards.length; i += 2) {
       if (i + 1 >= cards.length) {
-        decks.push(<Row>{cards[i]}</Row>);
+        decks.push(<Row key={`pack-card-${i}`}>{cards[i]}</Row>);
       } else {
         decks.push(
-          <Row>
+          <Row key={`pack-card-${i}`}>
             <Col className="col-sm">{cards[i]}</Col>
             <Col className="col-sm">{cards[i + 1]}</Col>
           </Row>
@@ -193,84 +202,14 @@ export default class PackDisplay extends Component<MyProps, MyState> {
 
     return (
       <div>
-        <Form.Group>
-          <Form.Row className="justify-content-center">
-            <Col>
-              <DropdownButton
-                variant="dark"
-                id="sortDropDown"
-                title={
-                  <span>
-                    <i className="fas fa-sort-amount-down"></i> Sort (
-                    {this.state.sortKey})
-                  </span>
-                }
-              >
-                <NavDropdown.Item
-                  className="field-label-text"
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.setState({ sortKey: 'Name' });
-                  }}
-                >
-                  Name (A-Z)
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  className="field-label-text"
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.setState({ sortKey: 'Downloads' });
-                  }}
-                >
-                  Downloads
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  className="field-label-text"
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.setState({ sortKey: 'Author' });
-                  }}
-                >
-                  Author (A-Z)
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  className="field-label-text"
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.setState({ sortKey: 'Date' });
-                  }}
-                >
-                  Date (newest first)
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  className="field-label-text"
-                  href="#"
-                  onClick={e => {
-                    e.preventDefault();
-                    this.setState({ sortKey: 'Chapter' });
-                  }}
-                >
-                  Chapter (newest first)
-                </NavDropdown.Item>
-              </DropdownButton>
-            </Col>
-            <Col>
-              <Form.Control
-                type="text"
-                placeholder="Search"
-                className="mr-sm-2 dbd-input-field"
-                onChange={e => {
-                  this.setState({ searchFilter: e.target.value });
-                }}
-                value={this.state.searchFilter}
-              />
-            </Col>
-          </Form.Row>
-        </Form.Group>
+        <PackDisplayHeader
+          onSearchFilter={(text: string) => {
+            this.setState({ searchFilter: text });
+          }}
+          onSortKeySet={(text: string) => {
+            this.setState({ sortKey: text });
+          }}
+        />
         {deck}
         <ErrorModal
           title={errorModalTitle}

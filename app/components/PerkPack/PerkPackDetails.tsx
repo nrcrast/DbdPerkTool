@@ -15,9 +15,9 @@ function buildImgRow(
   label: string,
   colWidth: number = 12
 ) {
-  const cols = images.map((url: string) => {
+  const cols = images.map((url: string, index:number) => {
     return (
-      <Col>
+      <Col key={`perkpackdetails-col-${index}`}>
         <Image src={url} fluid />
       </Col>
     );
