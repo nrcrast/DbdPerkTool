@@ -6,12 +6,12 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 import Accordion from 'react-bootstrap/Accordion';
-import PerkPackHas from './PerkPack/PerkPackHas';
-import PerkPackDetails from './PerkPack/PerkPackDetails';
-import PerkPackInstallOptionsModal from './PerkPackInstallOptionsModal';
+import Has from './IconPack/PerkPack/Has';
+import Details from './IconPack/PerkPack/Details';
+import InstallOptionsModal from './IconPack/PerkPack/InstallOptionsModal';
+import InstallButton from './IconPack/InstallButton';
 import PerkPackModel from '../models/PerkPack';
 import PackMetaMapper from '../models/PackMetaMapper';
-import PackInstallButton from './PackInstallButton';
 
 type MyProps = {
   id: string;
@@ -134,14 +134,14 @@ export default class PerkPack extends Component<MyProps, MyState> {
               </Col>
             </Row>
 
-            <PerkPackHas
+            <Has
               portraits={this.props.meta.hasPortraits}
               powers={this.props.meta.hasPowers}
               items={this.props.meta.hasItems}
               statusEffects={this.props.meta.hasStatusEffects}
             />
           </Card.Body>
-          <PackInstallButton
+          <InstallButton
             installed={this.props.installed}
             installInProgress={this.state.saving}
             onClick={() => {
@@ -164,10 +164,10 @@ export default class PerkPack extends Component<MyProps, MyState> {
             </Accordion.Toggle>
           </Card.Header>
           <Accordion.Collapse eventKey="0">
-            <PerkPackDetails baseUrl={baseUrl} meta={this.props.meta} />
+            <Details baseUrl={baseUrl} meta={this.props.meta} />
           </Accordion.Collapse>
         </Card>
-        <PerkPackInstallOptionsModal
+        <InstallOptionsModal
           show={this.state.showInstallOpts}
           onConfirm={opts => {
             log.info('OPTS: ', opts);

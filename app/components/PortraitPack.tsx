@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 import PortraitPackModel from '../models/PortraitPack';
 import PackMetaMapper from '../models/PackMetaMapper';
-import PackInstallButton from './PackInstallButton';
+import InstallButton from './IconPack/InstallButton';
 
 type MyProps = {
   id: string;
@@ -117,7 +117,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             </Col>
           </Row>
         </Card.Body>
-        <PackInstallButton
+        <InstallButton
           installed={this.props.installed}
           installInProgress={this.state.saving}
           onClick={this.installPack.bind(this)}

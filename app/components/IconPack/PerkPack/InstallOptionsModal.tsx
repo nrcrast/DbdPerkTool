@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import PerkPackInstallOption from './PerkPackInstallOption';
+import InstallOption from './InstallOption';
 
 type MyProps = { meta: any; show: boolean; onHide: any; onConfirm: any };
 type MyState = {
@@ -55,7 +55,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     const checkboxes = [];
 
     checkboxes.push(
-      <PerkPackInstallOption
+      <InstallOption
         key="perpackinstallopt-perks"
         label="Perks"
         onChange={(checked: boolean) => {
@@ -66,7 +66,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     if (this.props.meta.hasPortraits) {
       checkboxes.push(
-        <PerkPackInstallOption
+        <InstallOption
           key="perpackinstallopt-portraits"
           label="Portraits"
           onChange={(checked: boolean) => {
@@ -78,7 +78,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     if (this.props.meta.hasItems) {
       checkboxes.push(
-        <PerkPackInstallOption
+        <InstallOption
           key="perpackinstallopt-items"
           label="Items"
           onChange={(checked: boolean) => {
@@ -90,7 +90,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     if (this.props.meta.hasStatusEffects) {
       checkboxes.push(
-        <PerkPackInstallOption
+        <InstallOption
           key="perpackinstallopt-status"
           label="Status Effects"
           onChange={(checked: boolean) => {
@@ -102,7 +102,7 @@ export default class PerkPackInstallOptionsModal extends Component<
 
     if (this.props.meta.hasPowers) {
       checkboxes.push(
-        <PerkPackInstallOption
+        <InstallOption
           key="perpackinstallopt-powers"
           label="Powers"
           onChange={(checked: boolean) => {
@@ -113,7 +113,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     }
 
     checkboxes.push(
-      <PerkPackInstallOption
+      <InstallOption
         key="perpackinstallopt-misc"
         label="Misc (Offerings, Favors, Emblems, etc...)"
         onChange={(checked: boolean) => {
