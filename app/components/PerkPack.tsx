@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Image from 'react-bootstrap/Image';
 import Accordion from 'react-bootstrap/Accordion';
 import Has from './IconPack/PerkPack/Has';
 import Details from './IconPack/PerkPack/Details';
@@ -155,7 +154,6 @@ export default class PerkPack extends Component<MyProps, MyState> {
         <InstallOptionsModal
           show={this.state.showInstallOpts}
           onConfirm={opts => {
-            log.info('OPTS: ', opts);
             this.setState({ showInstallOpts: false });
             this.installPack(opts);
           }}

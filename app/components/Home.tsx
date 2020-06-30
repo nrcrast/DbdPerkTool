@@ -4,6 +4,7 @@ const {shell, ipcRenderer} = electron;
 import log from 'electron-log';
 import UpdateYesNoDialog from './update/UpdateYesNoDialog';
 import UpdateProgress from './update/UpdateProgress';
+import PatronList from './PatronList';
 
 type MyProps = {};
 type MyState = { showUpdateModal: boolean, latestVersion: string, showProgressModal:boolean, updateProgress: number };
@@ -108,6 +109,7 @@ export default class Home extends Component<MyProps, MyState> {
           </a>{' '}
           or messaging /u/elpantalla on Reddit.
         </p>
+        <PatronList/>
         <UpdateYesNoDialog version={this.state.latestVersion} show={this.state.showUpdateModal} onClose={this.onUpdateModalClose.bind(this)} />
         <UpdateProgress progress={this.state.updateProgress} show={this.state.showProgressModal}/>
       </div>
