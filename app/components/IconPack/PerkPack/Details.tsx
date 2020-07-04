@@ -51,14 +51,47 @@ export default function PerkPackDetails(props: MyProps) {
     );
   }
 
+  let offeringsImg = undefined
+  if (props.meta.hasFavors) {
+    offeringsImg = buildImgRow(
+      [0, 1, 2, 3, 4].map(i => {
+        return `${baseUrl}/favors_${i}.png`;
+      }),
+      'Offerings',
+      12
+    );
+  }
+
   let itemImg = undefined;
   if (props.meta.hasItems) {
     itemImg = buildImgRow(
-      [0, 1, 2, 3].map(i => {
+      [0, 1, 2, 3, 4].map(i => {
         return `${baseUrl}/items_${i}.png`;
       }),
       'Items',
-      8
+      12
+    );
+  }
+
+  let addonsImg = undefined;
+  if (props.meta.hasItemAddOns) {
+    addonsImg = buildImgRow(
+      [0, 1, 2, 3].map(i => {
+        return `${baseUrl}/addons_${i}.png`;
+      }),
+      'Add-Ons',
+      12
+    );
+  }
+
+  let powersImg = undefined;
+  if (props.meta.hasPowers) {
+    powersImg = buildImgRow(
+      [0, 1, 2, 3].map(i => {
+        return `${baseUrl}/powers_${i}.png`;
+      }),
+      'Killer Powers',
+      12
     );
   }
 
@@ -69,7 +102,7 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}/statusEffects_${i}.png`;
       }),
       'Status Effects',
-      6
+      12
     );
   }
   return (
@@ -79,7 +112,10 @@ export default function PerkPackDetails(props: MyProps) {
         <i>{props.meta.description}</i>
       </Card.Text>
       {portraitImg}
+      {offeringsImg}
       {itemImg}
+      {addonsImg}
+      {powersImg}
       {statusImg}
     </div>
   );

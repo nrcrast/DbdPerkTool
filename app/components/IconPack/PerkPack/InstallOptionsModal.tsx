@@ -12,6 +12,7 @@ type MyState = {
   installStatus: boolean;
   installMisc: boolean;
   installPerks: boolean;
+  installOfferings: boolean;
 };
 
 export default class PerkPackInstallOptionsModal extends Component<
@@ -26,7 +27,8 @@ export default class PerkPackInstallOptionsModal extends Component<
       installItems: true,
       installStatus: true,
       installMisc: true,
-      installPerks: true
+      installPerks: true,
+      installOfferings: true
     };
   }
 
@@ -38,7 +40,8 @@ export default class PerkPackInstallOptionsModal extends Component<
         installItems: true,
         installStatus: true,
         installMisc: true,
-        installPerks: true
+        installPerks: true,
+        installOfferings: true
       });
     }
   }
@@ -112,10 +115,22 @@ export default class PerkPackInstallOptionsModal extends Component<
       );
     }
 
+    if (this.props.meta.hasFavors) {
+      checkboxes.push(
+        <InstallOption
+          key="perpackinstallopt-favors"
+          label="Offerings"
+          onChange={(checked: boolean) => {
+            this.setState({ installOfferings: checked });
+          }}
+        />
+      );
+    }
+
     checkboxes.push(
       <InstallOption
         key="perpackinstallopt-misc"
-        label="Misc (Offerings, Favors, Emblems, etc...)"
+        label="Misc (Emblems, Actions, etc...)"
         onChange={(checked: boolean) => {
           this.setState({ installMisc: checked });
         }}

@@ -23,7 +23,8 @@ export default class PerkPack extends IconPack {
             'Items',
             'ItemAddons',
             'Powers',
-            'StatusEffects'
+            'StatusEffects',
+            'Favors'
           ].includes(dir.name)
         );
       })
@@ -60,6 +61,11 @@ export default class PerkPack extends IconPack {
       await fs.remove(path.resolve(sourcePath, 'Perks'));
     }
 
+    if (!opts.installOfferings) {
+      log.info('Not installing Offerings');
+      await fs.remove(path.resolve(sourcePath, 'Favors'));
+    }
+
     if (!opts.installMisc) {
       await this.removeUserUnwantedMiscComponents(sourcePath);
     }
@@ -67,6 +73,7 @@ export default class PerkPack extends IconPack {
 
   async copyFilesTo(sourcePath: string, destPath: string, opts: any) {
     await this.removeUserUnwantedComponents(sourcePath, opts);
+    log.info(`Copying from ${sourcePath} to ${destPath}`);
     await fs.copy(sourcePath, destPath);
   }
 

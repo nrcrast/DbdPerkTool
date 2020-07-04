@@ -123,6 +123,8 @@ export default class PerkPack extends Component<MyProps, MyState> {
               powers={this.props.meta.hasPowers}
               items={this.props.meta.hasItems}
               statusEffects={this.props.meta.hasStatusEffects}
+              addons={this.props.meta.hasItemAddOns}
+              offerings={this.props.meta.hasFavors}
             />
           </Card.Body>
           <InstallButton

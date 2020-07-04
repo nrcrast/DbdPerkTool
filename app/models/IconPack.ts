@@ -126,7 +126,7 @@ export default abstract class IconPack {
 		  );
 
     const packDir = await this.downloadAndExtract(onProgress);
-    await this.copyFilesTo(packDir.name, dbdIconsPath, opts);
+    await this.copyFilesTo(`${packDir.name}/Pack`, dbdIconsPath, opts);
     log.debug('Files copied!');
     await this.saveInstalledPackId();
     packDir.removeCallback();

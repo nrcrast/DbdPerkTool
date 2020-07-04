@@ -8,24 +8,36 @@ type MyProps = {
   powers: boolean;
   items: boolean;
   statusEffects: boolean;
+  offerings: boolean;
+  addons: boolean;
 };
 type MyState = {};
 
 export default function PerkPackHas(props: MyProps) {
   return (
-    <Row className="justify-content-center no-gutters">
-      <Col className='col-md'>
-      <HasItem label="Portraits" has={props.portraits} />
-      </Col>
-      <Col className='col-md'>
-      <HasItem label="Powers" has={props.powers} />
-      </Col>
-      <Col className='col-md'>
-      <HasItem label="Items" has={props.items} />
-      </Col>
-      <Col className='col-md'>
-      <HasItem label="Status" has={props.statusEffects} />
-      </Col>
-    </Row>
+    <div>
+      <Row className="justify-content-center no-gutters">
+        <Col className="col-md">
+          <HasItem label="Portraits" has={props.portraits} />
+        </Col>
+        <Col className="col-md">
+          <HasItem label="Powers" has={props.powers} />
+        </Col>
+        <Col className="col-md">
+          <HasItem label="Items" has={props.items} />
+        </Col>
+      </Row>
+      <Row className="justify-content-center no-gutters">
+        <Col className="col-md">
+          <HasItem label="Status" has={props.statusEffects} />
+        </Col>
+        <Col className="col-md">
+          <HasItem label="Offerings" has={props.offerings} />
+        </Col>
+        <Col className="col-md">
+          <HasItem label="Add-Ons" has={props.addons} />
+        </Col>
+      </Row>
+    </div>
   );
 }

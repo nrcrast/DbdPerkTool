@@ -21,11 +21,15 @@ const mainWindow = remote.getCurrentWindow();
 mainWindow.removeMenu();
 // mainWindow.setIcon(__dirname + '/img/icon.ico');
 
-mainWindow.on('resize', () => {
-  const [width] = mainWindow.getSize();
-  const aspectRatio = 16 / 9;
-  const newHeight = Math.floor(width / aspectRatio);
-  mainWindow.setSize(width, newHeight);
+// mainWindow.on('resize', () => {
+//   const [width] = mainWindow.getSize();
+//   const aspectRatio = 16 / 9;
+//   const newHeight = Math.floor(width / aspectRatio);
+//   mainWindow.setSize(width, newHeight);
+// });
+
+mainWindow.webContents.session.clearCache(function(){
+//some callback.
 });
 
 document.addEventListener('DOMContentLoaded', () => {
