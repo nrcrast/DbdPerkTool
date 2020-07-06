@@ -7,7 +7,7 @@ body {
 }
 
 .main-content {
-  background: rgba(48, 48, 48, 0.5);
+  background: rgba(48, 48, 48, 0.1);
 }
 
 .main-navbar {
@@ -15,7 +15,7 @@ body {
 }
 
 .perk-card {
-  background: rgba(48, 48, 48, 0.7);
+  background: rgba(48, 48, 48, 0.5);
   max-width: 800px;
 }
 
@@ -26,6 +26,11 @@ body {
 
 .perk-pack-data {
   font-size: 0.8rem;
+}
+
+.perk-preview-img-compact {
+  width: 50%;
+  height: 50%;
 }
 
 code {
@@ -91,4 +96,25 @@ a:hover {
 .btn-secondary:hover {
   background-color: #478694;
   border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #478694;
+  border: none;
+}
+
+.btn-dark {
+  border:none;
+}
+
+.btn-dark:hover {
+  border:none;
+}
+
+.btn-dark:focus {
+  border:none;
+}
+
+.carousel {
+  overflow: hidden;
 }

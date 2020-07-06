@@ -24,12 +24,14 @@ type MyProps = {
   setFilter: any;
   onError: any;
   onInstallComplete: any;
+  viewMode: string;
 };
 type MyState = {
   saving: boolean;
   isExpanded: boolean;
   saveProgress: number;
   showInstallOpts: boolean;
+  showDetails: boolean;
 };
 
 export default class PerkPack extends Component<MyProps, MyState> {
@@ -39,7 +41,8 @@ export default class PerkPack extends Component<MyProps, MyState> {
       saving: false,
       saveProgress: 0,
       isExpanded: false,
-      showInstallOpts: false
+      showInstallOpts: false,
+      showDetails: false
     };
   }
 
@@ -80,53 +83,77 @@ export default class PerkPack extends Component<MyProps, MyState> {
       <i className="fas fa-arrow-down"></i>
     );
 
+    let cardBody = (
+      <Card.Body className="mb-0">
+        <Row>
+          <Col>
+            <p>
+              <b>Author:</b>{' '}
+              <Author
+                onClick={(name: string) => {
+                  this.props.onAuthorClick(name);
+                }}
+                name={this.props.meta.author}
+              />
+            </p>
+          </Col>
+          <Col>
+            <p>
+              <b>Downloads:</b> {this.props.meta.downloads}
+            </p>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
+            <b>Latest Chapter:</b>{' '}
+            <LatestChapter
+              name={this.props.meta.latestChapter}
+              onClick={() => {
+                this.props.setFilter(this.props.meta.latestChapter);
+              }}
+            />
+          </Col>
+        </Row>
+
+        <Has
+          portraits={this.props.meta.hasPortraits}
+          powers={this.props.meta.hasPowers}
+          items={this.props.meta.hasItems}
+          statusEffects={this.props.meta.hasStatusEffects}
+          addons={this.props.meta.hasItemAddOns}
+          offerings={this.props.meta.hasFavors}
+        />
+      </Card.Body>
+    );
+
+    if (this.props.viewMode === 'Compact') {
+      cardBody = (
+        <Card.Body>
+          <p>
+            <b>Author:</b>{' '}
+            <Author
+              onClick={(name: string) => {
+                this.props.onAuthorClick(name);
+              }}
+              name={this.props.meta.author}
+            />
+          </p>
+        </Card.Body>
+      );
+    }
+
     return (
-      <Accordion>
+      <div>
         <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
           <Card.Body>
-            <MainPreview urls={urls} id={this.props.id} />
-          </Card.Body>
-          <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
-          <Card.Body className="mb-0">
-            <Row>
-              <Col>
-                <p>
-                  <b>Author:</b>{' '}
-                  <Author
-                    onClick={(name: string) => {
-                      this.props.onAuthorClick(name);
-                    }}
-                    name={this.props.meta.author}
-                  />
-                </p>
-              </Col>
-              <Col>
-                <p>
-                  <b>Downloads:</b> {this.props.meta.downloads}
-                </p>
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col>
-                <b>Latest Chapter:</b>{' '}
-                <LatestChapter
-                  name={this.props.meta.latestChapter}
-                  onClick={() => {
-                    this.props.setFilter(this.props.meta.latestChapter);
-                  }}
-                />
-              </Col>
-            </Row>
-
-            <Has
-              portraits={this.props.meta.hasPortraits}
-              powers={this.props.meta.hasPowers}
-              items={this.props.meta.hasItems}
-              statusEffects={this.props.meta.hasStatusEffects}
-              addons={this.props.meta.hasItemAddOns}
-              offerings={this.props.meta.hasFavors}
+            <MainPreview
+              urls={urls}
+              id={this.props.id}
+              viewMode={this.props.viewMode}
             />
           </Card.Body>
+          <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
+          {cardBody}
           <InstallButton
             installed={this.props.installed}
             installInProgress={this.state.saving}
@@ -134,25 +161,22 @@ export default class PerkPack extends Component<MyProps, MyState> {
               this.setState({ showInstallOpts: true });
             }}
           />
-          <Card.Header>
-            <Accordion.Toggle
-              as={Button}
-              variant="link"
-              eventKey="0"
-              className="perk-pack-expand-btn"
-              onClick={e => {
-                this.setState({
-                  isExpanded: !this.state.isExpanded
-                });
-              }}
-            >
-              Details {expandArrow}
-            </Accordion.Toggle>
-          </Card.Header>
-          <Accordion.Collapse eventKey="0">
-            <Details id={this.props.id} meta={this.props.meta} />
-          </Accordion.Collapse>
+          <Button
+            variant="dark"
+            className="m-1"
+            onClick={() => {
+              this.setState({ showDetails: true });
+            }}
+          >
+            Details
+          </Button>
         </Card>
+        <Details
+          show={this.state.showDetails}
+          onHide={() => this.setState({ showDetails: false })}
+          id={this.props.id}
+          meta={this.props.meta}
+        />
         <InstallOptionsModal
           show={this.state.showInstallOpts}
           onConfirm={opts => {
@@ -162,7 +186,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
           onHide={() => this.setState({ showInstallOpts: false })}
           meta={this.props.meta}
         />
-      </Accordion>
+      </div>
     );
   }
 }

@@ -6,12 +6,13 @@ import Col from 'react-bootstrap/Col';
 import { useDebouncedCallback } from 'use-debounce';
 import log from 'electron-log';
 
-type MyProps = { onSortKeySet: Function; onSearchFilter: Function; initialFilterText: string };
+type MyProps = { onSortKeySet: Function; onSearchFilter: Function; initialFilterText: string; onViewModeSet: Function };
 
 export default function PackDisplayHeader(props: MyProps) {
   console.log('Initial: ' + props.initialFilterText);
   const [searchText, setSearchText] = useState(props.initialFilterText);
   const [sortKeyText, setSortKeyText] = useState('Downloads');
+  const [viewModeText, setViewModeText] = useState('Normal');
 
   // The idea here is to only actually run the search after the user is finished typing
   const [debounceSearchCallback] = useDebouncedCallback(text => {
@@ -24,6 +25,11 @@ export default function PackDisplayHeader(props: MyProps) {
     props.onSortKeySet(text);
   };
 
+  const setViewMode = (text: string) => {
+    setViewModeText(text);
+    props.onViewModeSet(text);
+  }
+
   const setSearchFilter = (text: string) => {
     setSearchText(text);
     debounceSearchCallback(text);
@@ -34,13 +40,13 @@ export default function PackDisplayHeader(props: MyProps) {
   return (
     <Form.Group>
       <Form.Row className="justify-content-center">
-        <Col>
+        <Col sm="auto">
           <DropdownButton
             variant="dark"
             id="sortDropDown"
             title={
               <span>
-                <i className="fas fa-sort-amount-down"></i> Sort ({sortKeyText})
+                <i className="fas fa-eye"></i> Sort ({sortKeyText})
               </span>
             }
           >
@@ -93,6 +99,38 @@ export default function PackDisplayHeader(props: MyProps) {
               }}
             >
               Chapter (newest first)
+            </NavDropdown.Item>
+          </DropdownButton>
+        </Col>
+        <Col className="mr-auto">
+        <DropdownButton
+            variant="dark"
+            id="viewModeDropDown"
+            title={
+              <span>
+                <i className="fas fa-sort-amount-down"></i> View Mode ({viewModeText})
+              </span>
+            }
+          >
+            <NavDropdown.Item
+              className="field-label-text"
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                setViewMode('Normal');
+              }}
+            >
+              Normal
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              className="field-label-text"
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                setViewMode('Compact');
+              }}
+            >
+              Compact
             </NavDropdown.Item>
           </DropdownButton>
         </Col>

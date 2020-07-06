@@ -3,10 +3,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Image from 'react-bootstrap/Image';
+import Modal from 'react-bootstrap/Modal';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 
 type MyProps = {
   meta: any;
   id: string;
+  show: boolean;
+  onHide: Function;
 };
 
 function buildImgRow(
@@ -51,7 +56,7 @@ export default function PerkPackDetails(props: MyProps) {
     );
   }
 
-  let offeringsImg = undefined
+  let offeringsImg = undefined;
   if (props.meta.hasFavors) {
     offeringsImg = buildImgRow(
       [0, 1, 2, 3, 4].map(i => {
@@ -106,17 +111,40 @@ export default function PerkPackDetails(props: MyProps) {
     );
   }
   return (
-    <div className="m-2">
-      <Card.Text>
-        <b>Description: </b>
-        <i>{props.meta.description}</i>
-      </Card.Text>
-      {portraitImg}
-      {offeringsImg}
-      {itemImg}
-      {addonsImg}
-      {powersImg}
-      {statusImg}
-    </div>
+    <Modal
+      show={props.show}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      onHide={props.onHide}
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {props.meta.name}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      <Tabs defaultActiveKey="overview" id="uncontrolled-tab-example">
+        <Tab eventKey="overview" title="Overview">
+
+            <b>Description: </b>
+            <i>{props.meta.description}</i>
+
+            {portraitImg}
+            {offeringsImg}
+            {itemImg}
+            {addonsImg}
+            {powersImg}
+            {statusImg}
+        </Tab>
+        <Tab eventKey="perks" title="Perks">
+          <p>PERKS</p>
+        </Tab>
+        <Tab eventKey="items" title="Items">
+          <p>ITEMS</p>
+        </Tab>
+      </Tabs>
+      </Modal.Body>
+    </Modal>
   );
 }

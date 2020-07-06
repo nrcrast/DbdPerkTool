@@ -32,6 +32,7 @@ type MyState = {
   sortKey: string;
   errorText: string;
   searchFilterText: string;
+  viewMode: string;
   packs: Array<any>;
   searchDebounce: Function;
 };
@@ -50,6 +51,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       currentAuthor: '',
       showInstallOpts: false,
       searchFilterText: '',
+      viewMode: 'Normal',
       packs: [],
       searchDebounce: () => {}
     };
@@ -141,21 +143,13 @@ export default class PackDisplay extends Component<MyProps, MyState> {
   }
 
   fromCardsBuildDeck(cards) {
-    const decks = [];
-    for (let i = 0; i < cards.length; i += 2) {
-      if (i + 1 >= cards.length) {
-        decks.push(<Row key={`pack-card-${i}`}>{cards[i]}</Row>);
-      } else {
-        decks.push(
-          <Row key={`pack-card-${i}`}>
-            <Col className="col-sm">{cards[i]}</Col>
-            <Col className="col-sm">{cards[i + 1]}</Col>
-          </Row>
-        );
-      }
-    }
-
-    return decks;
+      return (
+        <Row key="pack-cards" className="justify-content-center">
+          {cards.map(card => (
+            <Col className="col-auto">{card}</Col>
+          ))}
+        </Row>
+      );
   }
 
   render() {
@@ -185,6 +179,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
         return pack;
       });
     const cards = this.props.cardBuilder(filteredPacks, {
+      viewMode: this.state.viewMode,
       onError: (msg: string) => {
         this.setState({ errorText: msg, errorModalShow: true });
       },
@@ -211,6 +206,9 @@ export default class PackDisplay extends Component<MyProps, MyState> {
             this.setState({ sortKey: text });
           }}
           initialFilterText={this.state.searchFilter}
+          onViewModeSet={(mode: string) => {
+            this.setState({ viewMode: mode });
+          }}
         />
         {deck}
         <ErrorModal
