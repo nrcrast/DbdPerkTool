@@ -46,7 +46,7 @@ export default function PackDisplayHeader(props: MyProps) {
             id="sortDropDown"
             title={
               <span>
-                <i className="fas fa-eye"></i> Sort ({sortKeyText})
+                <i className="fas fa-sort-amount-down"></i> Sort ({sortKeyText})
               </span>
             }
           >
@@ -108,7 +108,7 @@ export default function PackDisplayHeader(props: MyProps) {
             id="viewModeDropDown"
             title={
               <span>
-                <i className="fas fa-sort-amount-down"></i> View Mode ({viewModeText})
+                <i className="fas fa-eye"></i> View Mode ({viewModeText})
               </span>
             }
           >

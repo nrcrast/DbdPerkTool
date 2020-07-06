@@ -124,11 +124,15 @@ export default function PerkPackDetails(props: MyProps) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-      <Tabs defaultActiveKey="overview" id="uncontrolled-tab-example">
-        <Tab eventKey="overview" title="Overview">
-
-            <b>Description: </b>
-            <i>{props.meta.description}</i>
+        <Tabs defaultActiveKey="overview" id="uncontrolled-tab-example">
+          <Tab eventKey="overview" title="Overview">
+            <Card.Body>
+              <b>Description: </b>
+              <i>{props.meta.description}</i>
+              <br/>
+              <b>Latest Chapter: </b>
+              <i>{props.meta.latestChapter}</i>
+            </Card.Body>
 
             {portraitImg}
             {offeringsImg}
@@ -136,14 +140,14 @@ export default function PerkPackDetails(props: MyProps) {
             {addonsImg}
             {powersImg}
             {statusImg}
-        </Tab>
-        <Tab eventKey="perks" title="Perks">
-          <p>PERKS</p>
-        </Tab>
-        <Tab eventKey="items" title="Items">
-          <p>ITEMS</p>
-        </Tab>
-      </Tabs>
+          </Tab>
+          <Tab eventKey="perks" title="Perks">
+            <p>PERKS</p>
+          </Tab>
+          <Tab eventKey="items" title="Items">
+            <p>ITEMS</p>
+          </Tab>
+        </Tabs>
       </Modal.Body>
     </Modal>
   );

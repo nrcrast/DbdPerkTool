@@ -3,21 +3,19 @@ import PortraitPack from './PortraitPack';
 import PackDisplay from './PackDisplay';
 
 type MyProps = {};
-type MyState = {
-
-};
+type MyState = {};
 
 export default class Dbd extends Component<MyProps, MyState> {
   constructor(params: {}) {
     super(params);
-    this.state = {
-    };
+    this.state = {};
   }
 
   fromPacksBuildCards(packs, opts) {
-    return packs.map((pack) => {
+    return packs.map(pack => {
       return (
         <PortraitPack
+        viewMode={opts.viewMode}
           onError={opts.onError}
           onInstallComplete={opts.onInstallComplete}
           meta={pack}

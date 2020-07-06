@@ -129,22 +129,31 @@ export default class PerkPack extends Component<MyProps, MyState> {
     if (this.props.viewMode === 'Compact') {
       cardBody = (
         <Card.Body>
-          <p>
-            <b>Author:</b>{' '}
-            <Author
-              onClick={(name: string) => {
-                this.props.onAuthorClick(name);
-              }}
-              name={this.props.meta.author}
-            />
-          </p>
+          <b>Author:</b>{' '}
+          <Author
+            onClick={(name: string) => {
+              this.props.onAuthorClick(name);
+            }}
+            name={this.props.meta.author}
+          />
+          <br />
+          <b>Latest Chapter:</b>{' '}
+          <LatestChapter
+            name={this.props.meta.latestChapter}
+            onClick={() => {
+              this.props.setFilter(this.props.meta.latestChapter);
+            }}
+          />
         </Card.Body>
       );
     }
 
+    const margin = this.props.viewMode === 'Normal' ? 'm-3' : 'mb-3';
     return (
       <div>
-        <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
+        <Card
+          className={`${margin} ml-0 mr-0 text-center shadow perk-card border-0`}
+        >
           <Card.Body>
             <MainPreview
               urls={urls}

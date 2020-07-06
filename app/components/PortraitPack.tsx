@@ -19,6 +19,7 @@ type MyProps = {
   onAuthorClick: any;
   onError: any;
   onInstallComplete: any;
+  viewMode: string;
 };
 type MyState = {
   saving: boolean;
@@ -65,43 +66,73 @@ export default class PortraitPack extends Component<MyProps, MyState> {
       return `portraits_${i}.png`;
     });
 
+    let cardBody = (
+      <Card.Body className="mb-0">
+        <Row>
+          <Col>
+            <p>
+              <b>Author:</b>{' '}
+              <Author
+                onClick={(name: string) => {
+                  this.props.onAuthorClick(name);
+                }}
+                name={this.props.meta.author}
+              />
+            </p>
+          </Col>
+          <Col>
+            <p>
+              <b>Downloads:</b> {this.props.meta.downloads}
+            </p>
+          </Col>
+        </Row>
+        <Row className="mb-0">
+          <Col>
+            <b>Latest Chapter:</b>{' '}
+            <LatestChapter
+              name={this.props.meta.latestChapter}
+              onClick={() => {
+                this.props.setFilter(this.props.meta.latestChapter);
+              }}
+            />
+          </Col>
+        </Row>
+      </Card.Body>
+    );
+
+    if (this.props.viewMode === 'Compact') {
+      cardBody = (
+        <Card.Body className="mb-0">
+          <b>Author:</b>{' '}
+          <Author
+            onClick={(name: string) => {
+              this.props.onAuthorClick(name);
+            }}
+            name={this.props.meta.author}
+          />
+          <br/>
+          <b>Latest Chapter:</b>{' '}
+          <LatestChapter
+            name={this.props.meta.latestChapter}
+            onClick={() => {
+              this.props.setFilter(this.props.meta.latestChapter);
+            }}
+          />
+        </Card.Body>
+      );
+    }
+
     return (
       <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
         <Card.Body className="p-2">
-          <MainPreview urls={urls} id={this.props.id} />
+          <MainPreview
+            viewMode={this.props.viewMode}
+            urls={urls}
+            id={this.props.id}
+          />
         </Card.Body>
         <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
-        <Card.Body className="mb-0">
-          <Row>
-            <Col>
-              <p>
-                <b>Author:</b>{' '}
-                <Author
-                  onClick={(name: string) => {
-                    this.props.onAuthorClick(name);
-                  }}
-                  name={this.props.meta.author}
-                />
-              </p>
-            </Col>
-            <Col>
-              <p>
-                <b>Downloads:</b> {this.props.meta.downloads}
-              </p>
-            </Col>
-          </Row>
-          <Row className="mb-0">
-            <Col>
-              <b>Latest Chapter:</b>{' '}
-              <LatestChapter
-                name={this.props.meta.latestChapter}
-                onClick={() => {
-                  this.props.setFilter(this.props.meta.latestChapter);
-                }}
-              />
-            </Col>
-          </Row>
-        </Card.Body>
+        {cardBody}
         <InstallButton
           installed={this.props.installed}
           installInProgress={this.state.saving}
