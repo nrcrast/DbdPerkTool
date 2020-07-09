@@ -6,6 +6,8 @@ import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import settingsUtil from './settings/Settings';
 import './app.global.css';
+import axios from 'axios';
+import logger from 'electron-log';
 
 const _setImmediate = setImmediate;
 process.once('loaded', function() {
@@ -28,17 +30,31 @@ mainWindow.removeMenu();
 //   mainWindow.setSize(width, newHeight);
 // });
 
-mainWindow.webContents.session.clearCache(function(){
-//some callback.
+// Get latest version
+axios.get;
+
+mainWindow.webContents.session.clearCache(function() {
+  //some callback.
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  settingsUtil.read().then(() => {
-    render(
-      <AppContainer>
-        <Root store={store} history={history} />
-      </AppContainer>,
-      document.getElementById('root')
-    );
-  });
+document.addEventListener('DOMContentLoaded', async () => {
+  await settingsUtil.read();
+  const lastUpdate = await axios.get(
+    'https://dead-by-daylight-icon-toolbox.herokuapp.com/lastUpdate'
+  );
+  logger.info(`Last Update: ${lastUpdate.data} Current Update: ${settingsUtil.settings.lastUpdate}`);
+  if (lastUpdate.data !== settingsUtil.settings.lastUpdate) {
+    logger.info('Clearing cache!');
+    mainWindow.webContents.session.clearCache(() => {});
+  }
+
+  settingsUtil.settings.lastUpdate = lastUpdate.data;
+  await settingsUtil.save();
+
+  render(
+    <AppContainer>
+      <Root store={store} history={history} />
+    </AppContainer>,
+    document.getElementById('root')
+  );
 });

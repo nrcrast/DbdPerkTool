@@ -141,12 +141,12 @@ export default function PerkPackDetails(props: MyProps) {
             {powersImg}
             {statusImg}
           </Tab>
-          <Tab eventKey="perks" title="Perks">
+          {/* <Tab eventKey="perks" title="Perks">
             <p>PERKS</p>
           </Tab>
           <Tab eventKey="items" title="Items">
             <p>ITEMS</p>
-          </Tab>
+          </Tab> */}
         </Tabs>
       </Modal.Body>
     </Modal>

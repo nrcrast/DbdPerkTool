@@ -8,6 +8,7 @@ type SettingSchema = {
   dbdInstallPath: string;
   installedPack: string;
   installedPortraitPack: string;
+  lastUpdate: string;
 };
 
 class Settings {
@@ -20,6 +21,7 @@ class Settings {
       'dbdPerkToolSettings.json'
     );
     this.defaultSettings = {
+      lastUpdate: '',
       dbdInstallPath: '',
       installedPack: '',
       installedPortraitPack: ''

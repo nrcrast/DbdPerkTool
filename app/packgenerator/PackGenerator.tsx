@@ -107,8 +107,8 @@ export default class PackGenerator {
 
       files.forEach(file => {
         const pathInZip = slash(path.relative(currentGen.packDir.dir, file));
-        if(currentGen.skipFiles.includes(pathInZip)) {
-          log.warn(`Skipping ${pathInZip}`);
+        if(currentGen.skipFiles.includes(pathInZip.toLowerCase())) {
+          // log.warn(`Skipping ${pathInZip}`);
         } else {
           archive.append(fs.createReadStream(file), { name: 'Pack/' + pathInZip });
         }
