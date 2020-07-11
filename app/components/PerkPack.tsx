@@ -158,6 +158,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
             <MainPreview
               urls={urls}
               id={this.props.id}
+              baseUrl={this.props.meta.previewDir}
               viewMode={this.props.viewMode}
             />
           </Card.Body>

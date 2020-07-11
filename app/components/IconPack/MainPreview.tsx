@@ -8,17 +8,15 @@ type MyProps = {
   urls: Array<string>;
   id: string;
   viewMode: string;
+  baseUrl: string;
 };
 
 export default function MainPreview(props: MyProps) {
-  const baseUrl = `https://d43kvaebi7up3.cloudfront.net/${encodeURIComponent(
-    props.id
-  )}`;
   if (props.viewMode === 'Normal') {
     const images = props.urls.map<React.ReactNode>((url, index) => {
       return (
         <Col key={`iconpack-mainpreview-img-${index}`}>
-          <Image className="perk-preview-img" src={`${baseUrl}/${url}`} fluid />
+          <Image className="perk-preview-img" src={`${props.baseUrl}${url}`} fluid />
         </Col>
       );
     });
@@ -27,7 +25,7 @@ export default function MainPreview(props: MyProps) {
     const images = props.urls.map<React.ReactNode>((url, index) => {
       return (
         <Carousel.Item key={`iconpack-mainpreview-${props.id}-img-${index}`}>
-          <Image className="perk-preview-img-compact" src={`${baseUrl}/${url}`} fluid/>
+          <Image className="perk-preview-img-compact" src={`${props.baseUrl}${url}`} fluid/>
         </Carousel.Item>
       );
     });

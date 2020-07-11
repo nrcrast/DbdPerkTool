@@ -129,6 +129,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             viewMode={this.props.viewMode}
             urls={urls}
             id={this.props.id}
+            baseUrl={this.props.meta.previewDir}
           />
         </Card.Body>
         <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
