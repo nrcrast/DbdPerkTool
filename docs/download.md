@@ -29,10 +29,11 @@ I apologize for abusing Jekyll in this way. This makes the release data here dyn
 
 		changeListHtml += changes.map((change) => {
 			return `<li>${change}</li>`;
-		});
+		}).join('');
 
 		changeListHtml += '</ul>';
 		$('#dbd-download-changelog')[0].innerHTML = changeListHtml;
+		console.log($('#dbd-download-changelog')[0].innerHTML);
 	});
 </script>
 
