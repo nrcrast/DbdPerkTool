@@ -9,6 +9,7 @@ import InstallButton from './IconPack/InstallButton';
 import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
+import Title from './IconPack/Title';
 
 type MyProps = {
   id: string;

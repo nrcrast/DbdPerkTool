@@ -164,7 +164,10 @@ export default class PerkPack extends Component<MyProps, MyState> {
               viewMode={this.props.viewMode}
             />
           </Card.Body>
-          <Title name={this.props.meta.name} isFeatured={this.props.meta.featured}/>
+          <Title
+            name={this.props.meta.name}
+            isFeatured={this.props.meta.featured}
+          />
           {cardBody}
           <InstallButton
             installed={this.props.installed}

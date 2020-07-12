@@ -12,7 +12,10 @@ export default function Title(props: MyProps) {
   if (props.isFeatured) {
     return (
       <Card.Title>
-        <i><b>Featured Pack: </b></i> {props.name}
+        <div className="ribbon-wrapper">
+          <div class="ribbon">Featured</div>
+        </div>
+        {props.name}
       </Card.Title>
     );
   } else {
