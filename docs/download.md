@@ -4,10 +4,27 @@ title: Download
 permalink: /download/
 ---
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script
+			  src="https://code.jquery.com/jquery-3.5.1.min.js"
+			  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+			  crossorigin="anonymous"></script>
+<script>
+	axios.get('https://api.github.com/repos/nrcrast/DbdPerkTool/releases/latest').then((resp) => {
+		console.log(resp.data.name);
+		$('#dbd-download-instructions')[0].innerHTML = `Download the latest release (v${resp.data.name}) <a href="https://files.dbdicontoolbox.com/file/dbd-icon-toolbox/Dead-By-Daylight-Icon-Toolbox-Latest.msi">here</a>. If you have trouble with the .msi, you can try using the alternative .exe installer <a href="https://files.dbdicontoolbox.com/file/dbd-icon-toolbox/Dead-By-Daylight-Icon-Toolbox-Latest.exe">here</a>`;
+		console.log($('#dbd-download-instructions'));
+	});
+</script>
+
 ## Instructions
-Download the latest release (v1.1.1) [here](https://github.com/nrcrast/DbdPerkTool/releases/download/v1.1.1/Dead-By-Daylight-Icon-Toolbox-1.1.1.msi).
+
+<p id="dbd-download-instructions">
+Loading...
+</p>
 
 ## Why is Windows complaining?
-The license to sign a Windows desktop application costs $400 a year. If the community is willing to front the money, I'll pay for it. Otherwise I've made the repo open source so you can be sure I'm not up to any funny business. 
+
+The license to sign a Windows desktop application costs \$400 a year. If the community is willing to front the money, I'll pay for it. Otherwise I've made the repo open source so you can be sure I'm not up to any funny business.
 
 ![Bypassing SmartScreen](../images/windows-smartscreen.png)
