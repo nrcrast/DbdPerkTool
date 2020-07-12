@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import {shell} from 'electron';
 import { Link } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import routes from '../constants/routes.json';
+import TopNavPage from './TopNavPage';
 
 export default function TopNav() {
   function openDonate(e) {
@@ -12,25 +13,17 @@ export default function TopNav() {
     let link = e.target.href;
     shell.openExternal(link);
   }
+  const [activeTab, setActiveTab] = useState(routes.HOME);
+  console.log('Active Tab: ' + activeTab);
   return (
     <Navbar variant="dark" className="rounded shadow main-navbar">
       <Navbar.Brand>Icon Toolbox</Navbar.Brand>
       <Nav>
-        <Nav.Link as={Link} to={routes.HOME}>
-          About
-        </Nav.Link>
-        <Nav.Link as={Link} to={routes.SETTINGS}>
-          Settings
-        </Nav.Link>
-        <Nav.Link as={Link} to={routes.PERKS}>
-          Icon Packs
-        </Nav.Link>
-        <Nav.Link as={Link} to={routes.PORTRAITS}>
-          Portrait Packs
-        </Nav.Link>
-        <Nav.Link as={Link} to={routes.CREATE}>
-          Create
-        </Nav.Link>
+        <TopNavPage currentActive={activeTab} text="About" to={routes.HOME} setActive={setActiveTab}/>
+        <TopNavPage currentActive={activeTab} text="Settings" to={routes.SETTINGS} setActive={setActiveTab}/>
+        <TopNavPage currentActive={activeTab} text="Icon Packs" to={routes.PERKS} setActive={setActiveTab}/>
+        <TopNavPage currentActive={activeTab} text="Portrait Packs" to={routes.PORTRAITS} setActive={setActiveTab}/>
+        <TopNavPage currentActive={activeTab} text="Create" to={routes.CREATE} setActive={setActiveTab}/>
       </Nav>
       <Nav className="ml-auto">
         <Button variant="secondary" href="https://www.patreon.com/dbdicontoolbox" onClick={openDonate}>Patreon</Button>

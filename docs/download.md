@@ -3,6 +3,7 @@ layout: default
 title: Download
 permalink: /download/
 ---
+
 <!---
 I apologize for abusing Jekyll in this way. This makes the release data here dynamic so I don't have to change it again.
 -->
@@ -42,6 +43,7 @@ Loading...
 </p>
 
 ## Changelog
+
 <div id="dbd-download-changelog">
 Loading...
 </div>
