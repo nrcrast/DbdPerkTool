@@ -127,6 +127,13 @@ export default class PackDisplay extends Component<MyProps, MyState> {
   packSortComparator(a, b) {
     const key = this.state.sortKey;
 
+    // Featured packs always take precedence 
+    if(a.featured && !b.featured) {
+      return -1;
+    } else if(b.featured && !a.featured) {
+      return 1;
+    }
+
     if (key === 'Name') {
       return this.strcmpIgnoreCase(a.name, b.name);
     } else if (key === 'Author') {

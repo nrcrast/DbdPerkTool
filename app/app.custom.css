@@ -19,6 +19,10 @@ body {
   max-width: 800px;
 }
 
+.pack-featured {
+  box-shadow: 0 0.5rem 1rem rgba(35,132,164, .6) !important;
+}
+
 .perk-header-img {
   max-width: 800px;
   height: auto;

@@ -14,6 +14,7 @@ import PackMetaMapper from '../models/PackMetaMapper';
 import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
+import Title from './IconPack/Title';
 
 type MyProps = {
   id: string;
@@ -149,10 +150,11 @@ export default class PerkPack extends Component<MyProps, MyState> {
     }
 
     const margin = this.props.viewMode === 'Normal' ? 'm-3' : 'mb-3';
+    const featured = this.props.meta.featured ? 'pack-featured' : '';
     return (
       <div>
         <Card
-          className={`${margin} ml-0 mr-0 text-center shadow perk-card border-0`}
+          className={`${margin} ${featured} ml-0 mr-0 text-center shadow perk-card border-0`}
         >
           <Card.Body>
             <MainPreview
@@ -162,7 +164,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
               viewMode={this.props.viewMode}
             />
           </Card.Body>
-          <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
+          <Title name={this.props.meta.name} isFeatured={this.props.meta.featured}/>
           {cardBody}
           <InstallButton
             installed={this.props.installed}

@@ -110,7 +110,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             }}
             name={this.props.meta.author}
           />
-          <br/>
+          <br />
           <b>Latest Chapter:</b>{' '}
           <LatestChapter
             name={this.props.meta.latestChapter}
@@ -122,8 +122,12 @@ export default class PortraitPack extends Component<MyProps, MyState> {
       );
     }
 
+    const featured = this.props.meta.featured ? 'pack-featured' : '';
+
     return (
-      <Card className="m-3 ml-0 mr-0 text-center shadow perk-card border-0">
+      <Card
+        className={`${featured} m-3 ml-0 mr-0 text-center shadow perk-card border-0`}
+      >
         <Card.Body className="p-2">
           <MainPreview
             viewMode={this.props.viewMode}
@@ -132,7 +136,7 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             baseUrl={this.props.meta.previewDir}
           />
         </Card.Body>
-        <Card.Title className="mb-0">{this.props.meta.name}</Card.Title>
+        <Title name={this.props.meta.name} isFeatured={this.props.meta.featured}/>
         {cardBody}
         <InstallButton
           installed={this.props.installed}
