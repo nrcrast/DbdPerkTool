@@ -18,19 +18,11 @@ I apologize for abusing Jekyll in this way. This makes the release data here dyn
 		const changes = resp.data.body.split(/\r?\n/).map((change) => {
 			let trimmedChange = change.trim();
 			if(trimmedChange.startsWith('*')) {
-				return trimmedChange.slice(1).trim();
-			} else {
-				return trimmedChange;
+				trimmedChange = trimmedChange.slice(1).trim();
 			}
-		});
-
-		let changeListHtml = '<ul>';
-
-		changeListHtml += changes.map((change) => {
-			return `<li>${change}</li>`;
+			return `<li>${trimmedChange}</li>`;
 		}).join('');
-
-		changeListHtml += '</ul>';
+		const changeListHtml = `<ul>${changes}</ul>`;
 		$('#dbd-download-changelog')[0].innerHTML = changeListHtml;
 	});
 </script>
