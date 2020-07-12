@@ -14,7 +14,6 @@ I apologize for abusing Jekyll in this way. This makes the release data here dyn
 			  crossorigin="anonymous"></script>
 <script>
 	axios.get('https://api.github.com/repos/nrcrast/DbdPerkTool/releases/latest').then((resp) => {
-		console.log(resp.data.name);
 		$('#dbd-download-instructions')[0].innerHTML = `Download the latest release (v${resp.data.name}) <a href="https://files.dbdicontoolbox.com/file/dbd-icon-toolbox/Dead-By-Daylight-Icon-Toolbox-Latest.msi">here</a>. If you have trouble with the .msi, you can try using the alternative .exe installer <a href="https://files.dbdicontoolbox.com/file/dbd-icon-toolbox/Dead-By-Daylight-Icon-Toolbox-Latest.exe">here</a>.`;
 		const changes = resp.data.body.split(/\r?\n/).map((change) => {
 			let trimmedChange = change.trim();
@@ -33,7 +32,6 @@ I apologize for abusing Jekyll in this way. This makes the release data here dyn
 
 		changeListHtml += '</ul>';
 		$('#dbd-download-changelog')[0].innerHTML = changeListHtml;
-		console.log($('#dbd-download-changelog')[0].innerHTML);
 	});
 </script>
 
