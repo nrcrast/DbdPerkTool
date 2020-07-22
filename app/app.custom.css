@@ -15,8 +15,18 @@ body {
 }
 
 .perk-card {
+  border-radius: 0;
   background: rgba(48, 48, 48, 0.5);
   max-width: 800px;
+}
+
+.nav-tabs .nav-link {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.modal-content {
+  border-radius: 0;
 }
 
 .pack-featured {
@@ -96,6 +106,10 @@ a:hover {
   color: white;
 }
 
+.btn {
+  border-radius: 0;
+}
+
 .btn-secondary {
   background-color: #23a4a4;
   border: none;
@@ -130,6 +144,11 @@ a:hover {
 
 .carousel {
   overflow: hidden;
+}
+
+.modal-body {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
 }
 
 .ribbon-wrapper {

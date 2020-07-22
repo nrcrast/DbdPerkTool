@@ -1,9 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
+import copy from 'recursive-copy';
+import readdir from 'recursive-readdir';
 import log from 'electron-log';
 import { PackMeta } from './PackMeta';
 import IconPack from './IconPack';
 import settingsUtil from '../settings/Settings';
+import slash from 'slash';
+import {promisify} from 'util';
+
 
 export default class PerkPack extends IconPack {
   opts: any;
@@ -11,70 +16,25 @@ export default class PerkPack extends IconPack {
     super(meta);
   }
 
-  async removeUserUnwantedMiscComponents(sourcePath) {
-    const dirs = await fs.readdir(sourcePath, { withFileTypes: true });
-    const rmDirs = dirs
-      .filter(dir => {
-        return (
-          dir.isDirectory() &&
-          ![
-            'CharPortraits',
-            'Perks',
-            'Items',
-            'ItemAddons',
-            'Powers',
-            'StatusEffects',
-            'Favors'
-          ].includes(dir.name)
-        );
-      })
-      .map(dir => dir.name);
-    log.info('Not installing misc dirs: ', rmDirs);
-    await Promise.all(
-      rmDirs.map(dir => {
-        return fs.remove(path.resolve(sourcePath, dir));
-      })
-    );
-  }
-
-  async removeUserUnwantedComponents(sourcePath: string, opts: any) {
-    if (!opts.installPortraits) {
-      log.info('Not installing Portraits');
-      await fs.remove(path.resolve(sourcePath, 'CharPortraits'));
-    }
-    if (!opts.installPowers) {
-      log.info('Not installing Powers');
-      await fs.remove(path.resolve(sourcePath, 'Powers'));
-    }
-    if (!opts.installItems) {
-      log.info('Not installing Items');
-      await fs.remove(path.resolve(sourcePath, 'Items'));
-      await fs.remove(path.resolve(sourcePath, 'ItemAddons'));
-    }
-    if (!opts.installStatus) {
-      log.info('Not installing Status Effects');
-      await fs.remove(path.resolve(sourcePath, 'StatusEffects'));
-    }
-
-    if (!opts.installPerks) {
-      log.info('Not installing Perks');
-      await fs.remove(path.resolve(sourcePath, 'Perks'));
-    }
-
-    if (!opts.installOfferings) {
-      log.info('Not installing Offerings');
-      await fs.remove(path.resolve(sourcePath, 'Favors'));
-    }
-
-    if (!opts.installMisc) {
-      await this.removeUserUnwantedMiscComponents(sourcePath);
-    }
-  }
-
   async copyFilesTo(sourcePath: string, destPath: string, opts: any) {
-    await this.removeUserUnwantedComponents(sourcePath, opts);
-    log.info(`Copying from ${sourcePath} to ${destPath}`);
-    await fs.copy(sourcePath, destPath);
+    // Create an object for faster lookup
+    const desiredFilesObj = {};
+    opts.forEach((file) => {
+      desiredFilesObj[file] = true;
+    });
+    const filterFn = (src:String) => {
+      if(!src || !src.endsWith('.png')) {
+        return false;
+      }
+      const copying = desiredFilesObj[src.toLowerCase()] === true;
+      // if(copying) {
+      //   log.debug(`Copying File ${src}: ${copying}`);
+      // }
+  
+      return copying;
+    };
+
+    await copy(sourcePath, destPath, {filter: filterFn, overwrite: true, });
   }
 
   async saveInstalledPackId() {

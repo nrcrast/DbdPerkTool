@@ -1,8 +1,17 @@
 import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import InstallOption from './InstallOption';
+import Tree from 'rc-tree';
+import axios from 'axios';
+import getLanguage from '../../../language/Language';
+
+type FileTreeNode = {
+  key: string;
+  title: string;
+  children: Array<FileTreeNode>
+};
+
+type FileTree = Array<FileTreeNode>;
 
 type MyProps = { meta: any; show: boolean; onHide: any; onConfirm: any };
 type MyState = {
@@ -13,13 +22,16 @@ type MyState = {
   installMisc: boolean;
   installPerks: boolean;
   installOfferings: boolean;
+  fileTree: FileTree;
+  checkedKeys: Array<string>;
+  allKeys: Array<string>;
 };
 
 export default class PerkPackInstallOptionsModal extends Component<
   MyProps,
   MyState
 > {
-  constructor(params: {}) {
+  constructor(params: MyProps) {
     super(params);
     this.state = {
       installPortraits: true,
@@ -28,12 +40,27 @@ export default class PerkPackInstallOptionsModal extends Component<
       installStatus: true,
       installMisc: true,
       installPerks: true,
-      installOfferings: true
+      installOfferings: true,
+      fileTree: [],
+      checkedKeys: [],
+      allKeys: []
     };
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps: MyProps) {
     if (this.props.show !== prevProps.show) {
+      const packDetails = (
+        await axios.get(
+          'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
+          {
+            params: {
+              packId: this.props.meta.id,
+              download: false
+            }
+          }
+        )
+      ).data;
+      this.buildTreeDataFrom(packDetails.files);
       this.setState({
         installPortraits: true,
         installPowers: true,
@@ -47,97 +74,56 @@ export default class PerkPackInstallOptionsModal extends Component<
   }
 
   onConfirm() {
-    this.props.onConfirm(this.state);
+    const selectedImages = this.state.checkedKeys.filter(key =>
+      key.endsWith('.png')
+    );
+    this.props.onConfirm(selectedImages);
   }
 
   onHide() {
     this.props.onHide();
   }
 
-  buildCheckboxes() {
-    const checkboxes = [];
+  onCheck(checkedKeys: Array<string>) {
+    this.setState({ checkedKeys });
+  }
 
-    checkboxes.push(
-      <InstallOption
-        key="perpackinstallopt-perks"
-        label="Perks"
-        onChange={(checked: boolean) => {
-          this.setState({ installPerks: checked });
-        }}
-      />
-    );
+  buildTreeDataFrom(fileList: Array<string>) {
+    const tree:FileTree = [];
+    const checkedKeys:Array<string> = [];
 
-    if (this.props.meta.hasPortraits) {
-      checkboxes.push(
-        <InstallOption
-          key="perpackinstallopt-portraits"
-          label="Portraits"
-          onChange={(checked: boolean) => {
-            this.setState({ installPortraits: checked });
-          }}
-        />
-      );
-    }
+    fileList.forEach(file => {
+      const parent = file.slice(0, file.indexOf('/'));
+      const icon = file.slice(file.indexOf('/') + 1);
 
-    if (this.props.meta.hasItems) {
-      checkboxes.push(
-        <InstallOption
-          key="perpackinstallopt-items"
-          label="Items"
-          onChange={(checked: boolean) => {
-            this.setState({ installItems: checked });
-          }}
-        />
-      );
-    }
+      let parentNode = tree.find(node => node.key === parent);
 
-    if (this.props.meta.hasStatusEffects) {
-      checkboxes.push(
-        <InstallOption
-          key="perpackinstallopt-status"
-          label="Status Effects"
-          onChange={(checked: boolean) => {
-            this.setState({ installStatus: checked });
-          }}
-        />
-      );
-    }
+      if (!parentNode) {
+        tree.push({
+          key: parent,
+          title: getLanguage(parent) || parent,
+          children: []
+        });
+        parentNode = tree[tree.length - 1];
+        checkedKeys.push(parent);
+      }
 
-    if (this.props.meta.hasPowers) {
-      checkboxes.push(
-        <InstallOption
-          key="perpackinstallopt-powers"
-          label="Powers"
-          onChange={(checked: boolean) => {
-            this.setState({ installPowers: checked });
-          }}
-        />
-      );
-    }
+      parentNode.children.push({
+        key: file,
+        title: getLanguage(file) || icon,
+        children: []
+      });
+      checkedKeys.push(file);
+    });
 
-    if (this.props.meta.hasFavors) {
-      checkboxes.push(
-        <InstallOption
-          key="perpackinstallopt-favors"
-          label="Offerings"
-          onChange={(checked: boolean) => {
-            this.setState({ installOfferings: checked });
-          }}
-        />
-      );
-    }
+    // Sort by root
+    tree.sort((a, b) => a.title.localeCompare(b.title));
 
-    checkboxes.push(
-      <InstallOption
-        key="perpackinstallopt-misc"
-        label="Misc (Emblems, Actions, etc...)"
-        onChange={(checked: boolean) => {
-          this.setState({ installMisc: checked });
-        }}
-      />
-    );
+    tree.forEach(child => {
+      child.children.sort((a, b) => a.title.localeCompare(b.title));
+    });
 
-    return checkboxes;
+    this.setState({ fileTree: tree, checkedKeys, allKeys: [...checkedKeys] });
   }
 
   render() {
@@ -155,9 +141,34 @@ export default class PerkPackInstallOptionsModal extends Component<
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>{this.buildCheckboxes()}</Form>
+          <Tree
+            className="myCls"
+            showLine
+            checkable
+            selectable={false}
+            checkedKeys={this.state.checkedKeys}
+            onCheck={this.onCheck.bind(this)}
+            treeData={this.state.fileTree}
+          />
         </Modal.Body>
         <Modal.Footer>
+          <div style={{ marginRight: 'auto' }}>
+            <Button
+              style={{ marginRight: '3px' }}
+              onClick={() => {
+                this.setState({ checkedKeys: [] });
+              }}
+            >
+              Select None
+            </Button>
+            <Button
+              onClick={() => {
+                this.setState({ checkedKeys: [...this.state.allKeys] });
+              }}
+            >
+              Select All
+            </Button>
+          </div>
           <Button
             onClick={() => {
               this.onConfirm();
