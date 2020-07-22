@@ -5,7 +5,14 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-export default function PlainTextInput(props) {
+type MyProps = {
+  onChange: Function;
+  options: any;
+  value: string;
+  label: string;
+}
+
+export default function PlainTextInput(props: MyProps) {
   let input;
 
   if(props.options) {

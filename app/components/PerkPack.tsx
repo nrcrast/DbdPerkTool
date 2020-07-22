@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Accordion from 'react-bootstrap/Accordion';
 import Has from './IconPack/PerkPack/Has';
 import Details from './IconPack/PerkPack/Details';
 import InstallOptionsModal from './IconPack/PerkPack/InstallOptionsModal';
@@ -61,8 +60,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
     }
   }
 
-  async installPack(opts) {
-    log.info('Install Opts: ', opts);
+  async installPack(opts: Array<string>) {
     this.setState({
       saving: true,
       saveProgress: 0
@@ -194,7 +192,7 @@ export default class PerkPack extends Component<MyProps, MyState> {
         />
         <InstallOptionsModal
           show={this.state.showInstallOpts}
-          onConfirm={opts => {
+          onConfirm={(opts: Array<string>) => {
             this.setState({ showInstallOpts: false });
             this.installPack(opts);
           }}

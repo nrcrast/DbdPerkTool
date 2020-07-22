@@ -5,12 +5,12 @@ import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
 import PackDir from '../packdir/PackDir';
 import PackGenerator from '../packgenerator/PackGenerator';
-import { default as fsWithCallbacks } from 'fs';
 import PlainTextInput from './Form/PlainTextInput';
 import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
 import log from 'electron-log';
 import axios from 'axios';
+import PackMeta from '../models/PackMeta';
 
 const { dialog } = require('electron').remote;
 
@@ -27,7 +27,7 @@ type MyState = {
   errorText: string;
   description: string;
   successText: string;
-  packs: Array<Object>;
+  packs: Array<PackMeta>;
 };
 
 export default class Create extends Component<MyProps, MyState> {
@@ -117,7 +117,7 @@ export default class Create extends Component<MyProps, MyState> {
     }
   }
 
-  async handlePackDirChanged(event) {
+  async handlePackDirChanged(event: any) {
     this.setState({
       packDir: event.target.value
     });
@@ -136,10 +136,10 @@ export default class Create extends Component<MyProps, MyState> {
         >
           <PlainTextInput
             label="Title"
-            onChange={selected => {
+            onChange={(selected: any) => {
               const data = selected[0] || '';
               const packName = data.label || data;
-              const targetPack = this.state.packs.find(
+              const targetPack: PackMeta = this.state.packs.find(
                 pack => pack.name === packName
               );
 
