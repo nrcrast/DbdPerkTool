@@ -171,7 +171,7 @@ export default function PerkPackDetails(props: MyProps) {
             {statusImg}
           </Tab>
           {capabilities.map(capability => (
-            <Tab eventKey={slugify(typeToTitle[capability].toLowerCase())} title={typeToTitle[capability]} className="text-center">
+            <Tab key={slugify(typeToTitle[capability].toLowerCase())} eventKey={slugify(typeToTitle[capability].toLowerCase())} title={typeToTitle[capability]} className="text-center">
               <Image src={`${baseUrl}gallery_${capability}.png`} fluid />
             </Tab>
           ))}

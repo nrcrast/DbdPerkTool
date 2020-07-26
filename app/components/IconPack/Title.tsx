@@ -13,7 +13,7 @@ export default function Title(props: MyProps) {
     return (
       <Card.Title>
         <div className="ribbon-wrapper">
-          <div class="ribbon">Featured</div>
+          <div className="ribbon">Featured</div>
         </div>
         {props.name}
       </Card.Title>

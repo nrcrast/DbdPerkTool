@@ -12603,6 +12603,13 @@ react-hot-loader@^4.12.19:
     shallowequal "^1.1.0"
     source-map "^0.7.3"
 
+react-infinite-scroll-component@^5.0.5:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/react-infinite-scroll-component/-/react-infinite-scroll-component-5.0.5.tgz#6e4b2bd53f5da0ec3d46eca9661b086dbb7fd2b2"
+  integrity sha512-Xsqqo6gp+mtPbJe/j3hRZrVLFT+gA5FpE4i21HsMJo87vrqVSda8PLOeH+Wizp6SIW8MM1NaYvF7lblfG5YeCA==
+  dependencies:
+    throttle-debounce "^2.1.0"
+
 react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6, react-is@^16.9.0:
   version "16.12.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
@@ -15665,6 +15672,11 @@ uuid@^3.0.1, uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
+uuid@^8.2.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.2.0.tgz#cb10dd6b118e2dada7d0cd9730ba7417c93d920e"
+  integrity sha512-CYpGiFTUrmI6OBMkAdjSDM0k5h8SkkiTP4WAjQgDgNB1S3Ou9VBEvr6q0Kv2H1mMk7IWfxYGpMH5sd5AvcIV2Q==
 
 v8-compile-cache@2.0.3:
   version "2.0.3"
