@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import settingsUtil from '../settings/Settings';
-import PerkPack from './PerkPack';
+import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import Spinner from 'react-bootstrap/Spinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import axios from 'axios';
-import ErrorModal from './ErrorModal';
-import Spinner from 'react-bootstrap/Spinner';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Form from 'react-bootstrap/Form';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import AuthorModal from './AuthorModal';
 import nomar from 'nomar';
-import { debounce } from 'throttle-debounce';
+import settingsUtil from '../settings/Settings';
+import ErrorModal from './ErrorModal';
+import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -22,26 +18,22 @@ type MyProps = {
   packQuery: any;
 };
 type MyState = {
-  installedPack: string;
   errorModalShow: boolean;
   isLoading: boolean;
   searchFilter: string;
   currentAuthor: string;
   showAuthorPage: boolean;
-  showInstallOpts: boolean;
   sortKey: string;
   errorText: string;
-  searchFilterText: string;
   viewMode: string;
   packs: Array<any>;
-  searchDebounce: Function;
+  installedPack: string;
 };
 
 export default class PackDisplay extends Component<MyProps, MyState> {
   constructor(params: {}) {
     super(params);
     this.state = {
-      installedPack: '',
       errorModalShow: false,
       isLoading: true,
       searchFilter: '',
@@ -49,18 +41,16 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       errorText: '',
       showAuthorPage: false,
       currentAuthor: '',
-      showInstallOpts: false,
-      searchFilterText: '',
       viewMode: 'Normal',
       packs: [],
-      searchDebounce: () => {}
+      installedPack: ''
     };
   }
 
   async componentDidMount() {
     // Get packs
     const packs = await axios.get(
-      `https://dead-by-daylight-icon-toolbox.herokuapp.com/packs`,
+      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs',
       { params: this.props.packQuery || undefined }
     );
     const installedPack =
@@ -68,10 +58,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     this.setState({
       installedPack,
       packs: packs.data,
-      isLoading: false,
-      searchDebounce: debounce(250, () => {
-        this.setState({ searchFilter: this.state.searchFilterText });
-      })
+      isLoading: false
     });
   }
 
@@ -127,10 +114,10 @@ export default class PackDisplay extends Component<MyProps, MyState> {
   packSortComparator(a, b) {
     const key = this.state.sortKey;
 
-    // Featured packs always take precedence 
-    if(a.featured && !b.featured) {
+    // Featured packs always take precedence
+    if (a.featured && !b.featured) {
       return -1;
-    } else if(b.featured && !a.featured) {
+    } else if (b.featured && !a.featured) {
       return 1;
     }
 
@@ -150,13 +137,15 @@ export default class PackDisplay extends Component<MyProps, MyState> {
   }
 
   fromCardsBuildDeck(cards) {
-      return (
-        <Row key="pack-cards" className="justify-content-center">
-          {cards.map(card => (
-            <Col className="col-auto">{card}</Col>
-          ))}
-        </Row>
-      );
+    return (
+      <Row key="pack-cards" className="justify-content-center">
+        {cards.map(card => (
+          <Col key={`card-${uuidv4()}`} className="col-auto">
+            {card}
+          </Col>
+        ))}
+      </Row>
+    );
   }
 
   render() {
@@ -175,14 +164,14 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     const errorModalTitle = 'Error';
     const errorModalText = this.state.errorText;
 
-    let packs = [...this.state.packs];
+    const { packs } = this.state;
+    const { installedPack } = this.state;
     packs.sort(this.packSortComparator.bind(this));
 
-    const currentRenderer = this;
     const filteredPacks = packs
       .filter(pack => this.isPackIncluded(pack))
       .map(pack => {
-        pack.isInstalled = currentRenderer.state.installedPack === pack.id;
+        pack.isInstalled = installedPack === pack.id;
         return pack;
       });
     const cards = this.props.cardBuilder(filteredPacks, {
@@ -194,7 +183,6 @@ export default class PackDisplay extends Component<MyProps, MyState> {
         this.setState({ installedPack: id });
       },
       onAuthorClick: (author: string) => {
-        console.log('Author: ' + author);
         this.setState({ showAuthorPage: true, currentAuthor: author });
       },
       onSetFilter: (text: string) => {
@@ -204,7 +192,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     const deck = this.fromCardsBuildDeck(cards);
 
     return (
-      <div>
+      <div style={{width: '100%'}}>
         <PackDisplayHeader
           onSearchFilter={(text: string) => {
             this.setState({ searchFilter: text });

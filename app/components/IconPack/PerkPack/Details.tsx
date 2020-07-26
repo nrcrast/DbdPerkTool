@@ -6,25 +6,14 @@ import Image from 'react-bootstrap/Image';
 import Modal from 'react-bootstrap/Modal';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import GalleryTab from './GalleryTab';
 import slugify from '@sindresorhus/slugify';
+import getLanguage from '../../../language/Language';
 
 type MyProps = {
   meta: any;
   id: string;
   show: boolean;
   onHide: Function;
-};
-
-const typeToTitle = {
-  favors: 'Offerings',
-  items: 'Items',
-  itemaddons: 'Add-Ons',
-  perks: 'Perks',
-  statuseffects: 'Status Effects',
-  powers: 'Powers',
-  charportraits: 'Portraits',
-  actions: 'Actions'
 };
 
 function buildImgRow(
@@ -171,7 +160,7 @@ export default function PerkPackDetails(props: MyProps) {
             {statusImg}
           </Tab>
           {capabilities.map(capability => (
-            <Tab key={slugify(typeToTitle[capability].toLowerCase())} eventKey={slugify(typeToTitle[capability].toLowerCase())} title={typeToTitle[capability]} className="text-center">
+            <Tab key={slugify(getLanguage(capability).toLowerCase())} eventKey={slugify(getLanguage(capability).toLowerCase())} title={getLanguage(capability)} className="text-center">
               <Image src={`${baseUrl}gallery_${capability}.png`} fluid />
             </Tab>
           ))}

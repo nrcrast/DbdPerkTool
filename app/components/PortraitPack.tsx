@@ -3,6 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/Button';
 import PortraitPackModel from '../models/PortraitPack';
 import PackMetaMapper from '../models/PackMetaMapper';
 import InstallButton from './IconPack/InstallButton';
@@ -10,6 +11,8 @@ import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
+
+import Details from './IconPack/PortraitPack/Details';
 
 type MyProps = {
   id: string;
@@ -25,6 +28,7 @@ type MyProps = {
 type MyState = {
   saving: boolean;
   saveProgress: number;
+  showDetails: boolean;
 };
 
 export default class PortraitPack extends Component<MyProps, MyState> {
@@ -32,7 +36,8 @@ export default class PortraitPack extends Component<MyProps, MyState> {
     super(params);
     this.state = {
       saving: false,
-      saveProgress: 0
+      saveProgress: 0,
+      showDetails: false,
     };
   }
 
@@ -137,12 +142,30 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             baseUrl={this.props.meta.previewDir}
           />
         </Card.Body>
-        <Title name={this.props.meta.name} isFeatured={this.props.meta.featured}/>
+        <Title
+          name={this.props.meta.name}
+          isFeatured={this.props.meta.featured}
+        />
         {cardBody}
         <InstallButton
           installed={this.props.installed}
           installInProgress={this.state.saving}
           onClick={this.installPack.bind(this)}
+        />
+        <Button
+          variant="dark"
+          className="m-1"
+          onClick={() => {
+            this.setState({ showDetails: true });
+          }}
+        >
+          Details
+        </Button>
+        <Details
+          show={this.state.showDetails}
+          onHide={() => this.setState({ showDetails: false })}
+          id={this.props.id}
+          meta={this.props.meta}
         />
       </Card>
     );
