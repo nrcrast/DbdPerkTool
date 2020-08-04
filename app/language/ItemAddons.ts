@@ -765,44 +765,120 @@ const addons: { [key: string]: string } = {
     'Killer / Deathslinger / Wanted Poster  (Rare)',
   'itemaddons/ukraine/iconaddon_wardenskeys.png':
     'Killer / Deathslinger / Warden’s Keys  (Rare)',
-  'itemaddons/dlc6/iconaddon_awardwinningchili.png': 'Killer / Cannibal / Award-Winning Chili (Very Rare)',
+  'itemaddons/dlc6/iconaddon_awardwinningchili.png':
+    'Killer / Cannibal / Award-Winning Chili (Very Rare)',
   'itemaddons/dlc6/iconaddon_chili.png': 'Killer / Cannibal / Chili (Uncommon)',
-  'itemaddons/dlc6/iconaddon_knifescratches.png': 'Killer / Cannibal / Knife Scratches (Uncommon)',
-  'itemaddons/dlc6/iconaddon_thebeastsmark.png': 'Killer / Cannibal / Beast\'s Marks (Rare)',
-  'itemaddons/dlc6/iconaddon_thegrease.png': 'Killer / Cannibal / The Grease (Rare)',
-  'itemaddons/guam/iconaddon_bottleofchloroform.png': 'Killer / Clown / Bottle of Chloroform (Rare)',
-  'itemaddons/guam/iconaddon_cheapginbottle.png': 'Killer / Clown / Cheap Gin Bottle (Very Rare)',
-  'itemaddons/guam/iconaddon_cigarbox.png': 'Killer / Clown / Cigar Box (Very Rare)',
-  'itemaddons/guam/iconaddon_ether10.png': 'Killer / Clown / Ether 10 Vol% (Rare)',
-  'itemaddons/guam/iconaddon_ether15.png': 'Killer / Clown / Ether 15 Vol% (Very Rare)',
-  'itemaddons/guam/iconaddon_flaskofbleach.png': 'Killer / Clown / Flask of Bleach (Rare)',
-  'itemaddons/guam/iconaddon_garishmakeupkit.png': 'Killer / Clown / Garish Makeup Kit (Very Rare)',
-  'itemaddons/guam/iconaddon_sulfuricacidvial.png': 'Killer / Clown / Sulphuric Acid Vial (Rare)',
-  'itemaddons/guam/iconaddon_tattoosmiddlefinger.png': 'Killer / Clown / Tatto\'s Middle Finger (Ultra Rare)',
+  'itemaddons/dlc6/iconaddon_knifescratches.png':
+    'Killer / Cannibal / Knife Scratches (Uncommon)',
+  'itemaddons/dlc6/iconaddon_thebeastsmark.png':
+    "Killer / Cannibal / Beast's Marks (Rare)",
+  'itemaddons/dlc6/iconaddon_thegrease.png':
+    'Killer / Cannibal / The Grease (Rare)',
+  'itemaddons/guam/iconaddon_bottleofchloroform.png':
+    'Killer / Clown / Bottle of Chloroform (Rare)',
+  'itemaddons/guam/iconaddon_cheapginbottle.png':
+    'Killer / Clown / Cheap Gin Bottle (Very Rare)',
+  'itemaddons/guam/iconaddon_cigarbox.png':
+    'Killer / Clown / Cigar Box (Very Rare)',
+  'itemaddons/guam/iconaddon_ether10.png':
+    'Killer / Clown / Ether 10 Vol% (Rare)',
+  'itemaddons/guam/iconaddon_ether15.png':
+    'Killer / Clown / Ether 15 Vol% (Very Rare)',
+  'itemaddons/guam/iconaddon_flaskofbleach.png':
+    'Killer / Clown / Flask of Bleach (Rare)',
+  'itemaddons/guam/iconaddon_garishmakeupkit.png':
+    'Killer / Clown / Garish Makeup Kit (Very Rare)',
+  'itemaddons/guam/iconaddon_sulfuricacidvial.png':
+    'Killer / Clown / Sulphuric Acid Vial (Rare)',
+  'itemaddons/guam/iconaddon_tattoosmiddlefinger.png':
+    "Killer / Clown / Tatto's Middle Finger (Ultra Rare)",
   'itemaddons/guam/iconaddon_vhsporn.png': 'Killer / Clown / VHS Porn (Rare)',
   'itemaddons/iconaddon_gum.png': 'Unused / Gum',
   'itemaddons/iconaddon_inhaler.png': 'Unused / Inhaler',
-  'itemaddons/iconaddon_sootshadowdance.png': 'Killer / Wraith / "Shadow Dance" - Soot (Common)',
-  'itemaddons/wales/iconaddon_blackstrap.png': 'Killer / Executioner / Black Strap (Common)',
-  'itemaddons/wales/iconaddon_burningmanpainting.png': 'Killer / Executioner / Burning Man Painting (Rare)',
-  'itemaddons/wales/iconaddon_cinderellamusicbox.png': 'Killer / Executioner / Cinderella Music Box (Uncommon)',
-  'itemaddons/wales/iconaddon_copperring.png': 'Killer / Executioner / Copper Ring (Common)',
-  'itemaddons/wales/iconaddon_crimsonceremonybook.png': 'Killer / Executioner / Crimson Ceremony Book (Very Rare)',
-  'itemaddons/wales/iconaddon_deadbutterfly.png': 'Killer / Executioner / Dead Butterfly (Common)',
-  'itemaddons/wales/iconaddon_forgottenvideotape.png': 'Killer / Executioner / Forgotten Videotape (Uncommon)',
-  'itemaddons/wales/iconaddon_iridescentseal.png': 'Killer / Executioner / Iridescent Seal of Metatron (Ultra Rare)',
-  'itemaddons/wales/iconaddon_leadring.png': 'Killer / Executioner / Lead Ring (Common)',
-  'itemaddons/wales/iconaddon_leopardprintfabric.png': 'Killer / Executioner / Leopard Print Fabric (Uncommon)',
-  'itemaddons/wales/iconaddon_lostmemoriesbook.png': 'Killer / Executioner / Lost Memories Book (Very Rare)',
-  'itemaddons/wales/iconaddon_mannequinfoot.png': 'Killer / Executioner / Mannequin Foot (Rare)',
-  'itemaddons/wales/iconaddon_mistyday.png': 'Killer / Executioner / Misty Day, Remains of Judgement (Rare)',
-  'itemaddons/wales/iconaddon_obsidiangoblet.png': 'Killer / Executioner / Obsidian Goblet (Ultra Rare)',
-  'itemaddons/wales/iconaddon_rustcoloredegg.png': 'Killer / Executioner / Rust Colored Egg (Very Rare)',
-  'itemaddons/wales/iconaddon_scarletegg.png': 'Killer / Executioner / Scarlet Egg (Very Rare)',
-  'itemaddons/wales/iconaddon_spearhead.png': 'Killer / Executioner / Spearhead (Uncommon)',
-  'itemaddons/wales/iconaddon_tabletoftheoppressor.png': 'Killer / Executioner / Tablet of the Oppressor (Rare)',
-  'itemaddons/wales/iconaddon_valtielsectphotograph.png': 'Killer / Executioner / Valtiel Sect Photograph (Rare)',
-  'itemaddons/wales/iconaddon_waxdoll.png': 'Killer / Executioner / Wax Doll (Uncommon)',
+  'itemaddons/iconaddon_sootshadowdance.png':
+    'Killer / Wraith / "Shadow Dance" - Soot (Common)',
+  'itemaddons/wales/iconaddon_blackstrap.png':
+    'Killer / Executioner / Black Strap (Common)',
+  'itemaddons/wales/iconaddon_burningmanpainting.png':
+    'Killer / Executioner / Burning Man Painting (Rare)',
+  'itemaddons/wales/iconaddon_cinderellamusicbox.png':
+    'Killer / Executioner / Cinderella Music Box (Uncommon)',
+  'itemaddons/wales/iconaddon_copperring.png':
+    'Killer / Executioner / Copper Ring (Common)',
+  'itemaddons/wales/iconaddon_crimsonceremonybook.png':
+    'Killer / Executioner / Crimson Ceremony Book (Very Rare)',
+  'itemaddons/wales/iconaddon_deadbutterfly.png':
+    'Killer / Executioner / Dead Butterfly (Common)',
+  'itemaddons/wales/iconaddon_forgottenvideotape.png':
+    'Killer / Executioner / Forgotten Videotape (Uncommon)',
+  'itemaddons/wales/iconaddon_iridescentseal.png':
+    'Killer / Executioner / Iridescent Seal of Metatron (Ultra Rare)',
+  'itemaddons/wales/iconaddon_leadring.png':
+    'Killer / Executioner / Lead Ring (Common)',
+  'itemaddons/wales/iconaddon_leopardprintfabric.png':
+    'Killer / Executioner / Leopard Print Fabric (Uncommon)',
+  'itemaddons/wales/iconaddon_lostmemoriesbook.png':
+    'Killer / Executioner / Lost Memories Book (Very Rare)',
+  'itemaddons/wales/iconaddon_mannequinfoot.png':
+    'Killer / Executioner / Mannequin Foot (Rare)',
+  'itemaddons/wales/iconaddon_mistyday.png':
+    'Killer / Executioner / Misty Day, Remains of Judgement (Rare)',
+  'itemaddons/wales/iconaddon_obsidiangoblet.png':
+    'Killer / Executioner / Obsidian Goblet (Ultra Rare)',
+  'itemaddons/wales/iconaddon_rustcoloredegg.png':
+    'Killer / Executioner / Rust Colored Egg (Very Rare)',
+  'itemaddons/wales/iconaddon_scarletegg.png':
+    'Killer / Executioner / Scarlet Egg (Very Rare)',
+  'itemaddons/wales/iconaddon_spearhead.png':
+    'Killer / Executioner / Spearhead (Uncommon)',
+  'itemaddons/wales/iconaddon_tabletoftheoppressor.png':
+    'Killer / Executioner / Tablet of the Oppressor (Rare)',
+  'itemaddons/wales/iconaddon_valtielsectphotograph.png':
+    'Killer / Executioner / Valtiel Sect Photograph (Rare)',
+  'itemaddons/wales/iconaddon_waxdoll.png':
+    'Killer / Executioner / Wax Doll (Uncommon)',
+  'itemaddons/cannibal/iconaddon_iridescentflesh.png':
+    'Killer / Cannibal / Iridescent Flesh (Ultra Rare)',
+  'itemaddons/xipre/iconaddon_apexmuffler.png':
+    'Killer / Hillbilly / Apex Muffler (Very Rare)',
+  'itemaddons/xipre/iconaddon_bigbuckle.png':
+    'Killer / Hillbilly / Big Buckle (Uncommon)',
+  'itemaddons/xipre/iconaddon_blackgrease.png':
+    'Killer / Hillbilly / Black Grease (Rare)',
+  'itemaddons/xipre/iconaddon_dadsboots.png':
+    "Killer / Hillbilly / Dad's Boots (Common)",
+  'itemaddons/xipre/iconaddon_deathengravings.png':
+    'Killer / Hillbilly / Death Engravings (Uncommon)',
+  'itemaddons/xipre/iconaddon_doomengravings.png':
+    'Killer / Hillbilly / Doom Engravings (Rare)',
+  'itemaddons/xipre/iconaddon_heavyclutch.png':
+    'Killer / Hillbilly / Heavy Clutch (Common)',
+  'itemaddons/xipre/iconaddon_iridescentbrick.png':
+    'Killer / Hillbilly / Iridescent Brick (Ultra Rare)',
+  'itemaddons/xipre/iconaddon_junkyardairfilter.png':
+    'Killer / Hillbilly / Junkyard Air Filter (Common)',
+  'itemaddons/xipre/iconaddon_leafymash.png':
+    'Killer / Hillbilly / Leafy Mash (Rare)',
+  'itemaddons/xipre/iconaddon_lowkickbackchains.png':
+    'Killer / Hillbilly / Low Kickback Chains (Rare)',
+  'itemaddons/xipre/iconaddon_lowprochains.png':
+    'Killer / Hillbilly / LoPro Chains (Ultra Rare)',
+  'itemaddons/xipre/iconaddon_mothershelpers.png':
+    "Killer / Hillbilly / Mother's Helpers (Rare)",
+  'itemaddons/xipre/iconaddon_offbrandmotoroil.png':
+    'Killer / Hillbilly / Off-brand Motor Oil (Uncommon)',
+  'itemaddons/xipre/iconaddon_pighousegloves.png':
+    'Killer / Hillbilly / Pighouse Gloves (Very Rare)',
+  'itemaddons/xipre/iconaddon_puncturedmuffler.png':
+    'Killer / Hillbilly / Punctured Muffler (Uncommon)',
+  'itemaddons/xipre/iconaddon_speedlimiter.png':
+    'Killer / Hillbilly / Speed Limiter (Uncommon)',
+  'itemaddons/xipre/iconaddon_spikedboots.png':
+    'Killer / Hillbilly / Spiked Boots (Very Rare)',
+  'itemaddons/xipre/iconaddon_steeltoeboots.png':
+    'Killer / Hillbilly / Steel toe Boots (Common)',
+  'itemaddons/xipre/iconaddon_tunedcarburetor.png':
+    'Killer / Hillbilly / Tuned Carburetor (Very Rare)'
 };
 
 export default function getLanguage(filePath: string) {
