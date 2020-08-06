@@ -9,6 +9,8 @@ import settingsUtil from '../settings/Settings';
 import ErrorModal from './ErrorModal';
 import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
+import ReactPaginate from 'react-paginate';
+import log from 'electron-log';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -206,6 +208,28 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           }}
         />
         {deck}
+        <ReactPaginate
+          previousLabel={'previous'}
+          nextLabel={'next'}
+          breakLabel={'...'}
+          breakClassName={'break-me'}
+          pageCount={8}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={() => {
+            log.info('Page clicked...');
+          }}
+          breakClassName={'page-item'}
+          breakLinkClassName={'page-link'}
+          containerClassName={'pagination'}
+          pageClassName={'page-item'}
+          pageLinkClassName={'page-link'}
+          previousClassName={'page-item'}
+          previousLinkClassName={'page-link'}
+          nextClassName={'page-item'}
+          nextLinkClassName={'page-link'}
+          activeClassName={'active'}
+        />
         <ErrorModal
           title={errorModalTitle}
           text={errorModalText}

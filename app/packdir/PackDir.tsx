@@ -47,9 +47,8 @@ export default class PackDir {
     const normalizedFiles = userFilesRaw.map(file => {
       return slash(path.relative(currentPackDir.dir, file)).toLowerCase();
     });
-    const expectedLower = expectedFiles.map(file => file.toLowerCase());
     const unexpectedFiles = normalizedFiles.filter((file: string) => {
-      return !expectedLower.includes(file);
+      return !expectedFiles.includes(file);
     });
 
     log.info('Unexpected Files', unexpectedFiles);

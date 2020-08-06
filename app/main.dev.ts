@@ -15,6 +15,12 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import ProgressBar from 'electron-progressbar';
 import { EventEmitter } from 'events';
+import axios from 'axios';
+import fs from 'fs';
+import {download} from 'electron-dl';
+import IconPack from '../app/models/IconPack';
+
+axios.defaults.adapter = require('axios/lib/adapters/http');
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -28,7 +34,7 @@ export default class AppUpdater {
     autoUpdater.on('checking-for-update', () => {});
     autoUpdater.on('update-available', info => {
       ipcMain.on('update-available-resp', (event, doUpdate) => {
-        if(doUpdate === true) {
+        if (doUpdate === true) {
           autoUpdater.downloadUpdate();
         }
       });
@@ -36,7 +42,7 @@ export default class AppUpdater {
     });
     autoUpdater.on('update-not-available', info => {});
     autoUpdater.on('error', err => {});
-    autoUpdater.signals.progress((progressObj) => {
+    autoUpdater.signals.progress(progressObj => {
       log.info('Progress: ', progressObj);
       win.webContents.send('update-progress', progressObj);
     });
@@ -108,6 +114,24 @@ const createWindow = async () => {
     // Remove this if your app does not use auto updates
     // eslint-disable-next-line
     new AppUpdater(mainWindow);
+    ipcMain.on('downloadFile', async (event, args) => {
+      const dir = path.dirname(args.outputLocation);
+      const file = path.basename(args.outputLocation);
+      log.info(`Downloading ${args.url} to ${dir}/${file}`);
+      try {
+        await download(mainWindow, args.url, {
+          directory: dir,
+          filename: file,
+          onPRogress: progress => {
+            log.info('Progress: ', progress);
+          }
+        });
+        log.info('Download complete!');
+        mainWindow.webContents.send('downloadComplete', {});
+      } catch (err) {
+        mainWindow.webContents.send('downloadComplete', { err });
+      }
+    });
   });
 
   mainWindow.on('closed', () => {
