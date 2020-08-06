@@ -1,6 +1,4 @@
-/* eslint-disable class-methods-use-this */
 import axios from 'axios';
-import { ipcRenderer } from 'electron';
 import tmp from 'tmp';
 import unzipper from 'unzipper';
 import fs from 'fs-extra';
@@ -8,8 +6,6 @@ import path from 'path';
 import log from 'electron-log';
 import settingsUtil from '../settings/Settings';
 import { PackMeta } from './PackMeta';
-import request from 'request';
-import progress from 'request-progress';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -50,44 +46,30 @@ export default abstract class IconPack {
     return url.data;
   }
 
-  static async downloadFile(fileUrl: string, outputLocationPath: string) {
-    log.debug(`Downloading ${fileUrl} to ${outputLocationPath}`);
-    const writer = fs.createWriteStream(outputLocationPath);
-
-    return axios({
-      method: 'get',
-      url: fileUrl,
-      responseType: 'stream'
-    }).then(response => {
-      return new Promise((resolve, reject) => {
-        response.data.pipe(writer);
-        let error = null;
-        writer.on('error', err => {
-          error = err;
-          writer.close();
-          reject(err);
-        });
-        writer.on('close', () => {
-          if (!error) {
-            resolve(true);
-          }
-        });
-      });
-    });
-  }
-
   /**
    * Given a buffer of raw zip data, extract to a temporary directory
-   * @param zipFile
+   * @param rawData
    * @returns temporary directory. Must be removed manually!
    */
-  private async extractZip(zipFile: any) {
-    const tmpDir = tmp.dirSync();
-    log.debug(`Opening zip: `, zipFile);
-    const dir = await unzipper.Open.file(zipFile.name);
-    await dir.extract({ path: tmpDir.name });
-    log.debug(`Extracted to: `, tmpDir);
-    return tmpDir;
+  private async extractZip(rawData: Buffer) {
+    return new Promise((resolve, reject) => {
+      const tmpFile = tmp.fileSync();
+      fs.writeFile(tmpFile.name, rawData, err => {
+        if (err) {
+          reject(err);
+        } else {
+          const tmpDir = tmp.dirSync({ keep: true });
+          fs.createReadStream(tmpFile.name)
+            .pipe(unzipper.Extract({ path: tmpDir.name }))
+            .on('close', () => {
+              resolve(tmpDir);
+            })
+            .on('error', e => {
+              reject(e);
+            });
+        }
+      });
+    });
   }
 
   /**
@@ -97,26 +79,20 @@ export default abstract class IconPack {
    */
   private async downloadZip(onProgress?: Function): Promise<Buffer> {
     const url = await this.getZipUrl();
-    log.debug(`Installing Pack: ${this.meta.name}`);
-    log.debug(`Downloading zip: ${url}`);
-    const zipFile = tmp.fileSync();
-    return new Promise((resolve, reject) => {
-      // Alright, so I'm not completely sure what's going on here
-      // For some machines, downloading the file from the renderer results
-      // in incomplete downloads. To resolve this, send a message to the main process
-      // The main process will send a 'downloadComplete' message when the DL is finished
-      ipcRenderer.send('downloadFile', {
-        url,
-        outputLocation: zipFile.name
-      });
-      ipcRenderer.on('downloadComplete', (event, args) => {
-        if (args.err) {
-          reject(args.err);
-        } else {
-          resolve(zipFile);
+
+    const response = await axios({
+      url,
+      method: 'GET',
+      onDownloadProgress: progressEvent => {
+        if (onProgress) {
+          onProgress(
+            Math.floor((progressEvent.loaded / progressEvent.total) * 100)
+          );
         }
-      });
+      },
+      responseType: 'arraybuffer'
     });
+    return Buffer.from(response.data);
   }
 
   /**
@@ -126,9 +102,9 @@ export default abstract class IconPack {
    */
   private async downloadAndExtract(onProgress?: Function) {
     log.debug('Downloading Zip');
-    const zipFile = await this.downloadZip(onProgress);
+    const rawZipData = await this.downloadZip(onProgress);
     log.debug('Extracting Zip');
-    const extractDir = await this.extractZip(zipFile);
+    const extractDir = await this.extractZip(rawZipData);
     log.debug(`Extracted to ${extractDir.name}`);
     return extractDir;
   }
