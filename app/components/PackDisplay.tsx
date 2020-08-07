@@ -208,7 +208,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           }}
         />
         {deck}
-        <ReactPaginate
+        {/* <ReactPaginate
           previousLabel={'previous'}
           nextLabel={'next'}
           breakLabel={'...'}
@@ -229,7 +229,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           nextClassName={'page-item'}
           nextLinkClassName={'page-link'}
           activeClassName={'active'}
-        />
+        /> */}
         <ErrorModal
           title={errorModalTitle}
           text={errorModalText}
