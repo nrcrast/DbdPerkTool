@@ -13,21 +13,36 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import styled from 'styled-components';
 
 type Props = {
   store: Store;
   history: History;
 };
 
+const Content = styled.div`
+  flex: 1;
+  overflow: hidden;
+  padding-bottom: 6px;
+`;
+
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+`;
+
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-    <TopNav />
-      <Container fluid>
-        <Row className="main-content shadow p-3 m-3 justify-content-center">
-          <Routes />
-        </Row>
-      </Container>
+      <MainContainer>
+        <TopNav />
+        <Content>
+          <Row className="main-content shadow p-3 m-3 justify-content-center">
+            <Routes />
+          </Row>
+        </Content>
+      </MainContainer>
     </ConnectedRouter>
   </Provider>
 );

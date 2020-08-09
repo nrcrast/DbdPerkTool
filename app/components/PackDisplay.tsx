@@ -11,6 +11,7 @@ import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
 import ReactPaginate from 'react-paginate';
 import log from 'electron-log';
+import styled from 'styled-components';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -30,6 +31,8 @@ type MyState = {
   viewMode: string;
   packs: Array<any>;
   installedPack: string;
+  page: number;
+  pageSize: number;
 };
 
 export default class PackDisplay extends Component<MyProps, MyState> {
@@ -45,7 +48,9 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       currentAuthor: '',
       viewMode: 'Normal',
       packs: [],
-      installedPack: ''
+      installedPack: '',
+      page: 0,
+      pageSize: 12
     };
   }
 
@@ -139,9 +144,12 @@ export default class PackDisplay extends Component<MyProps, MyState> {
   }
 
   fromCardsBuildDeck(cards) {
+    const startIndex = this.state.page * this.state.pageSize;
+    const endIndex = Math.min(startIndex + this.state.pageSize, cards.length);
+    const paginatedCards = cards.slice(startIndex, endIndex);
     return (
       <Row key="pack-cards" className="justify-content-center">
-        {cards.map(card => (
+        {paginatedCards.map(card => (
           <Col key={`card-${uuidv4()}`} className="col-auto">
             {card}
           </Col>
@@ -193,9 +201,32 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     });
     const deck = this.fromCardsBuildDeck(cards);
 
+    const DeckWrapper = styled.div`
+      overflow-y: scroll;
+      overflow-x: hidden;
+      flex: 1;
+    `;
+
+    const PackDisplayContainer = styled.div`
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    `;
+
+    const PackGridContainer = styled.div`
+      display: flex;
+      justify-content: center;
+    `;
+
     return (
-      <div style={{width: '100%'}}>
+      <PackDisplayContainer>
         <PackDisplayHeader
+          currentPage={this.state.page}
+          numPages={Math.ceil(cards.length / this.state.pageSize)}
+          initialPageSize={this.state.pageSize}
+          initialSortKey={this.state.sortKey}
+          initialViewMode={this.state.viewMode}
           onSearchFilter={(text: string) => {
             this.setState({ searchFilter: text });
           }}
@@ -206,30 +237,14 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           onViewModeSet={(mode: string) => {
             this.setState({ viewMode: mode });
           }}
-        />
-        {deck}
-        {/* <ReactPaginate
-          previousLabel={'previous'}
-          nextLabel={'next'}
-          breakLabel={'...'}
-          breakClassName={'break-me'}
-          pageCount={8}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={() => {
-            log.info('Page clicked...');
+          onPageSizeSet={(size: number) => {
+            this.setState({ pageSize: size, page: 0 });
           }}
-          breakClassName={'page-item'}
-          breakLinkClassName={'page-link'}
-          containerClassName={'pagination'}
-          pageClassName={'page-item'}
-          pageLinkClassName={'page-link'}
-          previousClassName={'page-item'}
-          previousLinkClassName={'page-link'}
-          nextClassName={'page-item'}
-          nextLinkClassName={'page-link'}
-          activeClassName={'active'}
-        /> */}
+          onPageChange={(page: number) => {
+            this.setState({ page });
+          }}
+        />
+        <DeckWrapper>{deck}</DeckWrapper>
         <ErrorModal
           title={errorModalTitle}
           text={errorModalText}
@@ -247,7 +262,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
             });
           }}
         />
-      </div>
+      </PackDisplayContainer>
     );
   }
 }

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import routes from '../constants/routes.json';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import FormCheck from 'react-bootstrap/FormCheck';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import settingsUtil from '../settings/Settings';
