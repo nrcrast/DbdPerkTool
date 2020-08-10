@@ -9,6 +9,8 @@ type SettingSchema = {
   installedPack: string;
   installedPortraitPack: string;
   lastUpdate: string;
+  autoUpdate: boolean;
+  showCreate: boolean;
 };
 
 class Settings {
@@ -24,21 +26,23 @@ class Settings {
       lastUpdate: '',
       dbdInstallPath: '',
       installedPack: '',
-      installedPortraitPack: ''
+      installedPortraitPack: '',
+      autoUpdate: false,
+      showCreate: false
     };
-    this.settings = {...this.defaultSettings};
+    this.settings = { ...this.defaultSettings };
   }
 
   async setDefaultSettings() {
     const dbd = new DeadByDaylight();
     let dbdPath = '';
-    
+
     try {
       dbdPath = await dbd.getInstallPath();
     } catch (e) {
       dbdPath = '';
     }
-    this.settings = {...this.defaultSettings};
+    this.settings = { ...this.defaultSettings };
     this.settings.dbdInstallPath = dbdPath;
   }
 

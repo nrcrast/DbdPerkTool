@@ -7,11 +7,12 @@ import Col from 'react-bootstrap/Col';
 import nomar from 'nomar';
 import settingsUtil from '../settings/Settings';
 import ErrorModal from './ErrorModal';
+import SuccessModal from './SuccessModal';
 import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
-import ReactPaginate from 'react-paginate';
 import log from 'electron-log';
 import styled from 'styled-components';
+import ReactPaginate from 'react-paginate';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -30,10 +31,34 @@ type MyState = {
   errorText: string;
   viewMode: string;
   packs: Array<any>;
-  installedPack: string;
   page: number;
   pageSize: number;
+  successModalShow: boolean;
+  successModalText: string;
 };
+
+const DeckWrapper = styled.div`
+  overflow-y: scroll;
+  overflow-x: hidden;
+  flex: 1;
+`;
+
+const PackDisplayContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const PaginatorWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3px;
+  padding: 3px;
+  width: 100%;
+  background: rgba(48, 48, 48, 0.5);
+`;
 
 export default class PackDisplay extends Component<MyProps, MyState> {
   constructor(params: {}) {
@@ -48,9 +73,10 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       currentAuthor: '',
       viewMode: 'Normal',
       packs: [],
-      installedPack: '',
       page: 0,
-      pageSize: 12
+      pageSize: 12,
+      successModalShow: false,
+      successModalText: ''
     };
   }
 
@@ -60,12 +86,9 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs',
       { params: this.props.packQuery || undefined }
     );
-    const installedPack =
-      settingsUtil.settings[this.props.installedPackSettingsKey] || '';
     this.setState({
-      installedPack,
+      isLoading: false,
       packs: packs.data,
-      isLoading: false
     });
   }
 
@@ -175,22 +198,20 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     const errorModalText = this.state.errorText;
 
     const { packs } = this.state;
-    const { installedPack } = this.state;
     packs.sort(this.packSortComparator.bind(this));
 
-    const filteredPacks = packs
-      .filter(pack => this.isPackIncluded(pack))
-      .map(pack => {
-        pack.isInstalled = installedPack === pack.id;
-        return pack;
-      });
+    const filteredPacks = packs.filter(pack => this.isPackIncluded(pack));
     const cards = this.props.cardBuilder(filteredPacks, {
       viewMode: this.state.viewMode,
       onError: (msg: string) => {
         this.setState({ errorText: msg, errorModalShow: true });
       },
       onInstallComplete: (id: string) => {
-        this.setState({ installedPack: id });
+        const pack = this.state.packs.find(pack => pack.id === id);
+        this.setState({
+          successModalShow: true,
+          successModalText: `Pack ${pack.name} installed!`
+        });
       },
       onAuthorClick: (author: string) => {
         this.setState({ showAuthorPage: true, currentAuthor: author });
@@ -200,24 +221,6 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       }
     });
     const deck = this.fromCardsBuildDeck(cards);
-
-    const DeckWrapper = styled.div`
-      overflow-y: scroll;
-      overflow-x: hidden;
-      flex: 1;
-    `;
-
-    const PackDisplayContainer = styled.div`
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    `;
-
-    const PackGridContainer = styled.div`
-      display: flex;
-      justify-content: center;
-    `;
 
     return (
       <PackDisplayContainer>
@@ -245,11 +248,41 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           }}
         />
         <DeckWrapper>{deck}</DeckWrapper>
+        <PaginatorWrapper>
+          <ReactPaginate
+            previousLabel={'Previous'}
+            nextLabel={'Next'}
+            breakLabel={'...'}
+            pageCount={Math.ceil(cards.length / this.state.pageSize)}
+            marginPagesDisplayed={1}
+            pageRangeDisplayed={15}
+            forcePage={this.state.page}
+            onPageChange={arg => {
+              this.setState({ page: arg.selected });
+            }}
+            breakClassName={'page-item'}
+            breakLinkClassName={'page-link'}
+            containerClassName={'pagination'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+            activeClassName={'active'}
+          />
+        </PaginatorWrapper>
         <ErrorModal
           title={errorModalTitle}
           text={errorModalText}
           show={this.state.errorModalShow}
           onHide={() => this.setState({ errorModalShow: false })}
+        />
+        <SuccessModal
+          title="Install Complete"
+          text={this.state.successModalText}
+          show={this.state.successModalShow}
+          onHide={() => this.setState({ successModalShow: false })}
         />
         <AuthorModal
           show={this.state.showAuthorPage}

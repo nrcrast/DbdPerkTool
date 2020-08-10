@@ -11,6 +11,7 @@ body,
 html {
   height: 100vh;
   width: 100vw;
+  font-size: 14px;
 }
 
 #root {
@@ -24,6 +25,7 @@ html {
 
 .main-navbar {
   background: rgba(48, 48, 48, 0.5);
+  max-height: 38px;
 }
 
 .perk-card {
@@ -84,6 +86,8 @@ a:hover {
 
 .field-label-text {
   color: #23a4a4 !important;
+  font-weight: bold;
+  margin-bottom: 0;
 }
 
 .perk-pack-expand-btn {
@@ -117,6 +121,11 @@ a:hover {
   border-bottom: 1px solid #23a4a4 !important;
   box-shadow: 0 1px 0 0 #23a4a4 !important;
   color: white;
+}
+
+.pagination {
+  margin-bottom: 6px;
+  margin-top: 3px;
 }
 
 .page-link {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ipcRenderer } from 'electron';
 import tmp from 'tmp';
 import unzipper from 'unzipper';
 import fs from 'fs-extra';
@@ -48,27 +49,19 @@ export default abstract class IconPack {
 
   /**
    * Given a buffer of raw zip data, extract to a temporary directory
-   * @param rawData
    * @returns temporary directory. Must be removed manually!
    */
-  private async extractZip(rawData: Buffer) {
+  private async extractZip(zipPath: string) {
     return new Promise((resolve, reject) => {
-      const tmpFile = tmp.fileSync();
-      fs.writeFile(tmpFile.name, rawData, err => {
-        if (err) {
-          reject(err);
-        } else {
-          const tmpDir = tmp.dirSync({ keep: true });
-          fs.createReadStream(tmpFile.name)
-            .pipe(unzipper.Extract({ path: tmpDir.name }))
-            .on('close', () => {
-              resolve(tmpDir);
-            })
-            .on('error', e => {
-              reject(e);
-            });
-        }
-      });
+      const tmpDir = tmp.dirSync({ keep: true });
+      fs.createReadStream(zipPath)
+        .pipe(unzipper.Extract({ path: tmpDir.name }))
+        .on('close', () => {
+          resolve(tmpDir);
+        })
+        .on('error', e => {
+          reject(e);
+        });
     });
   }
 
@@ -79,20 +72,21 @@ export default abstract class IconPack {
    */
   private async downloadZip(onProgress?: Function): Promise<Buffer> {
     const url = await this.getZipUrl();
+    const zip = tmp.fileSync();
+    return new Promise((resolve, reject) => {
+      ipcRenderer.send('downloadFile', {
+        outputLocation: zip.name,
+        url
+      });
 
-    const response = await axios({
-      url,
-      method: 'GET',
-      onDownloadProgress: progressEvent => {
-        if (onProgress) {
-          onProgress(
-            Math.floor((progressEvent.loaded / progressEvent.total) * 100)
-          );
+      ipcRenderer.on('downloadComplete', (event, err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(zip.name);
         }
-      },
-      responseType: 'arraybuffer'
+      });
     });
-    return Buffer.from(response.data);
   }
 
   /**
@@ -102,9 +96,9 @@ export default abstract class IconPack {
    */
   private async downloadAndExtract(onProgress?: Function) {
     log.debug('Downloading Zip');
-    const rawZipData = await this.downloadZip(onProgress);
+    const zipPath = await this.downloadZip(onProgress);
     log.debug('Extracting Zip');
-    const extractDir = await this.extractZip(rawZipData);
+    const extractDir = await this.extractZip(zipPath);
     log.debug(`Extracted to ${extractDir.name}`);
     return extractDir;
   }

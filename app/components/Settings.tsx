@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import path from 'path';
 import { Link } from 'react-router-dom';
 import routes from '../constants/routes.json';
@@ -13,101 +13,93 @@ import log from 'electron-log';
 import { app, remote, shell } from 'electron';
 
 type MyProps = {};
-type MyState = { settings: Object; unsaved: boolean };
 
-export default class Settings extends Component<MyProps, MyState> {
-  constructor(params: MyProps) {
-    super(params);
-    this.state = {
-      settings: {},
-      unsaved: false
-    };
-  }
+async function doSave(installPath, autoUpdate, showCreate) {
+  settingsUtil.settings.dbdInstallPath = installPath;
+  settingsUtil.settings.autoUpdate = autoUpdate;
+  settingsUtil.settings.showCreate = showCreate;
+  await settingsUtil.save();
+}
 
-  syncSettings() {
-    this.setState({
-      settings: settingsUtil.settings
-    });
-  }
+function openLogs() {
+  const logPath = path.resolve((app || remote.app).getPath('userData'), 'logs');
+  shell.openExternal(logPath);
+}
 
-  async componentDidMount() {
+export default function Settings(props: MyProps) {
+  const [installPath, setInstallPath] = useState('');
+  const [autoUpdate, setAutoUpdate] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [unsaved, setUnsaved] = useState(false);
+
+  const loadSettings = async () => {
     await settingsUtil.read();
-    return this.syncSettings();
-  }
+    const { settings } = settingsUtil;
+    setInstallPath(settings.dbdInstallPath);
+    setAutoUpdate(settings.autoUpdate);
+    setShowCreate(settings.showCreate);
+  };
 
-  async doSave(e) {
-    e.preventDefault();
-    log.info(this);
-    settingsUtil.settings.dbdInstallPath = this.state.settings.dbdInstallPath;
-    await settingsUtil.save();
-    this.setState({
-      unsaved: false
-    });
-  }
+  useEffect(() => {
+    loadSettings();
+  }, []);
 
-  handleDbdPathChanged(event) {
-    this.setState({
-      settings: {
-        dbdInstallPath: event.target.value
-      }
-    });
-  }
-
-  async setDefaultSettings() {
-    await settingsUtil.setDefaultSettings();
-    this.syncSettings();
-    this.setState({
-      unsaved: true
-    });
-  }
-
-  openLogs() {
-    const logPath = path.resolve(
-      (app || remote.app).getPath('userData'),
-      'logs'
-    );
-    shell.openExternal(logPath);
-  }
-
-  handleFormChanged() {
-    this.setState({
-      unsaved: true
-    });
-  }
-
-  render() {
-    const saveButtonValue = 'Save' + (this.state.unsaved ? '*' : '');
-    return (
-      <Col className="col-8">
-        <Form
-          onSubmit={this.doSave.bind(this)}
-          onChange={this.handleFormChanged.bind(this)}
-        >
-          <PlainTextInput
-            label="Dead By Daylight Install Path"
-            value={this.state.settings.dbdInstallPath}
-            onChange={this.handleDbdPathChanged.bind(this)}
+  const saveButtonValue = 'Save' + (unsaved ? '*' : '');
+  return (
+    <Col className="col-8">
+      <Form
+        onSubmit={async e => {
+          e.preventDefault();
+          await doSave(installPath, autoUpdate, showCreate);
+          setUnsaved(false);
+        }}
+        onChange={() => setUnsaved(true)}
+      >
+        <PlainTextInput
+          label="Dead By Daylight Install Path"
+          value={installPath}
+          onChange={e => setInstallPath(e.target.value)}
+        />
+        <Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="Auto-Update"
+            checked={autoUpdate}
+            onChange={e => {
+              setAutoUpdate(e.target.checked);
+            }}
           />
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <Button variant="dark" type="submit">
-              {saveButtonValue}
-            </Button>
-            <Button
-              variant="dark"
-              style={{marginLeft: 'auto', marginRight: '3px'}}
-              onClick={this.setDefaultSettings.bind(this)}
-            >
-              Reset to Default
-            </Button>
-            <Button
-              variant="dark"
-              onClick={this.openLogs.bind(this)}
-            >
-              Open Logs
-            </Button>
-          </div>
-        </Form>
-      </Col>
-    );
-  }
+        </Form.Group>
+        <Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="Show Create Tab (Requires Restart)"
+            checked={showCreate}
+            onChange={e => {
+              setShowCreate(e.target.checked);
+            }}
+          />
+        </Form.Group>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <Button variant="dark" type="submit">
+            {saveButtonValue}
+          </Button>
+          <Button
+            variant="dark"
+            style={{ marginLeft: 'auto', marginRight: '3px' }}
+            onClick={async () => {
+              await settingsUtil.setDefaultSettings();
+              await settingsUtil.save();
+              loadSettings();
+            }}
+          >
+            Reset to Default
+          </Button>
+          <Button variant="dark" onClick={() => openLogs()}>
+            Open Logs
+          </Button>
+        </div>
+      </Form>
+    </Col>
+  );
 }

@@ -17,7 +17,7 @@ import ProgressBar from 'electron-progressbar';
 import { EventEmitter } from 'events';
 import axios from 'axios';
 import fs from 'fs';
-import {download} from 'electron-dl';
+import fetch from 'electron-fetch';
 import IconPack from '../app/models/IconPack';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -115,21 +115,23 @@ const createWindow = async () => {
     // eslint-disable-next-line
     new AppUpdater(mainWindow);
     ipcMain.on('downloadFile', async (event, args) => {
-      const dir = path.dirname(args.outputLocation);
-      const file = path.basename(args.outputLocation);
-      log.info(`Downloading ${args.url} to ${dir}/${file}`);
+      log.info(`Downloading ${args.url} to ${args.outputLocation}`);
       try {
-        await download(mainWindow, args.url, {
-          directory: dir,
-          filename: file,
-          onPRogress: progress => {
-            log.info('Progress: ', progress);
-          }
+        fetch(args.url).then(res => {
+          const dest = fs.createWriteStream(args.outputLocation);
+          res.body.pipe(dest);
+          dest.on('close', () => {
+            log.info('Download complete!');
+            mainWindow.webContents.send('downloadComplete');
+          });
+          dest.on('error', err => {
+            log.error('Download error: ', err);
+            mainWindow.webContents.send('downloadComplete', err);
+          });
         });
-        log.info('Download complete!');
-        mainWindow.webContents.send('downloadComplete', {});
       } catch (err) {
-        mainWindow.webContents.send('downloadComplete', { err });
+        log.error('Download error: ', err);
+        mainWindow.webContents.send('downloadComplete', err);
       }
     });
   });

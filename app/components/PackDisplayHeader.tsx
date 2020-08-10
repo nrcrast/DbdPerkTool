@@ -5,7 +5,6 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useDebouncedCallback } from 'use-debounce';
 import log from 'electron-log';
 import styled from 'styled-components';
-import ReactPaginate from 'react-paginate';
 
 type MyProps = {
   onSortKeySet: Function;
@@ -16,23 +15,16 @@ type MyProps = {
   initialViewMode: string;
   onPageSizeSet: Function;
   initialPageSize: number;
-  currentPage: number;
-  numPages: number;
-  onPageChange: Function;
 };
 
 const Container = styled.div`
   display: flex;
-  margin-bottom: 0px;
+  margin-bottom: 6px;
+  flex-wrap: nowrap;
 `;
 
 const DropdownButtonWrapper = styled.div`
   margin-right: 3px;
-`;
-
-const PaginatorWrapper = styled.div`
-  margin-right: auto;
-  margin-left: auto;
 `;
 
 export default function PackDisplayHeader(props: MyProps) {
@@ -87,6 +79,7 @@ export default function PackDisplayHeader(props: MyProps) {
             (sortKey: string) => {
               return (
                 <NavDropdown.Item
+                  key={`sortkey-${sortKey}`}
                   className="field-label-text"
                   href="#"
                   onClick={e => {
@@ -114,6 +107,7 @@ export default function PackDisplayHeader(props: MyProps) {
           {['Normal', 'Compact'].map((viewMode: string) => {
             return (
               <NavDropdown.Item
+                key={`viewMode-${viewMode}`}
                 className="field-label-text"
                 href="#"
                 onClick={e => {
@@ -136,6 +130,7 @@ export default function PackDisplayHeader(props: MyProps) {
           {[6, 12, 18, 24, 48].map((pageSize: number) => {
             return (
               <NavDropdown.Item
+                key={`pgsize-${pageSize}`}
                 className="field-label-text"
                 href="#"
                 onClick={(e: any) => {
@@ -149,32 +144,13 @@ export default function PackDisplayHeader(props: MyProps) {
           })}
         </DropdownButton>
       </DropdownButtonWrapper>
-      <PaginatorWrapper>
-        <ReactPaginate
-          previousLabel={'Previous'}
-          nextLabel={'Next'}
-          breakLabel={'...'}
-          pageCount={props.numPages}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          forcePage={props.currentPage}
-          onPageChange={arg => {
-            props.onPageChange(arg.selected);
-          }}
-          breakClassName={'page-item'}
-          breakLinkClassName={'page-link'}
-          containerClassName={'pagination'}
-          pageClassName={'page-item'}
-          pageLinkClassName={'page-link'}
-          previousClassName={'page-item'}
-          previousLinkClassName={'page-link'}
-          nextClassName={'page-item'}
-          nextLinkClassName={'page-link'}
-          activeClassName={'active'}
-        />
-      </PaginatorWrapper>
+
       <Form.Control
-        style={{ maxWidth: '400px', minWidth: '100px', marginLeft: 'auto' }}
+        style={{
+          maxWidth: '400px',
+          minWidth: '100px',
+          marginLeft: 'auto',
+        }}
         type="text"
         placeholder="Search"
         className="mr-sm-2 dbd-input-field"

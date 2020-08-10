@@ -38,7 +38,7 @@ const Root = ({ store, history }: Props) => (
       <MainContainer>
         <TopNav />
         <Content>
-          <Row className="main-content shadow p-3 m-3 justify-content-center">
+          <Row className="main-content shadow p-1 m-3 justify-content-center">
             <Routes />
           </Row>
         </Content>

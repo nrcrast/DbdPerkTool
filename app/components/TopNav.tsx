@@ -6,6 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import routes from '../constants/routes.json';
 import TopNavPage from './TopNavPage';
+import settingsUtil from '../settings/Settings';
 
 export default function TopNav() {
   function openDonate(e) {
@@ -19,7 +20,6 @@ export default function TopNav() {
     <Navbar
       variant="dark"
       className="rounded shadow main-navbar"
-      style={{ maxHeight: '50px' }}
     >
       <Navbar.Brand>Icon Toolbox</Navbar.Brand>
       <Nav>
@@ -47,12 +47,14 @@ export default function TopNav() {
           to={routes.PORTRAITS}
           setActive={setActiveTab}
         />
-        <TopNavPage
-          currentActive={activeTab}
-          text="Create"
-          to={routes.CREATE}
-          setActive={setActiveTab}
-        />
+        {settingsUtil.settings.showCreate && (
+          <TopNavPage
+            currentActive={activeTab}
+            text="Create"
+            to={routes.CREATE}
+            setActive={setActiveTab}
+          />
+        )}
       </Nav>
       <Nav className="ml-auto">
         <Button
