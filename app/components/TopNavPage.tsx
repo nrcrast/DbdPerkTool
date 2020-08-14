@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 import Nav from 'react-bootstrap/Nav';
 type MyProps = {
   to: string;
@@ -7,6 +8,10 @@ type MyProps = {
   text: string;
   setActive: Function;
 };
+
+const NavTextWrapper = styled.h3`
+  margin-bottom: 0px;
+`;
 
 export default function TopNavPage(props: MyProps) {
   const isActive = props.currentActive === props.to;
@@ -21,7 +26,7 @@ export default function TopNavPage(props: MyProps) {
           props.setActive(props.to);
         }}
       >
-        {props.text}
+        <NavTextWrapper>{props.text}</NavTextWrapper>
       </Nav.Link>
     );
   } else {
@@ -33,7 +38,7 @@ export default function TopNavPage(props: MyProps) {
           props.setActive(props.to);
         }}
       >
-        {props.text}
+        <NavTextWrapper>{props.text}</NavTextWrapper>
       </Nav.Link>
     );
   }

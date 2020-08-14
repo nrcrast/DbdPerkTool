@@ -11,6 +11,7 @@ type SettingSchema = {
   lastUpdate: string;
   autoUpdate: boolean;
   showCreate: boolean;
+  showNsfw: boolean;
 };
 
 class Settings {
@@ -28,7 +29,8 @@ class Settings {
       installedPack: '',
       installedPortraitPack: '',
       autoUpdate: false,
-      showCreate: false
+      showCreate: false,
+      showNsfw: false,
     };
     this.settings = { ...this.defaultSettings };
   }

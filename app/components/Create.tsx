@@ -26,6 +26,7 @@ type MyState = {
   saving: boolean;
   errorText: string;
   description: string;
+  isNsfw: boolean;
   successText: string;
   packs: Array<PackMeta>;
 };
@@ -42,6 +43,7 @@ export default class Create extends Component<MyProps, MyState> {
       author: '',
       email: '',
       saving: false,
+      isNsfw: false,
       description: '',
       errorText: '',
       successText: '',
@@ -77,6 +79,7 @@ export default class Create extends Component<MyProps, MyState> {
       this.state.title,
       this.state.author,
       this.state.description,
+      this.state.isNsfw,
       validationStatus.skipFiles
     );
 
@@ -117,9 +120,15 @@ export default class Create extends Component<MyProps, MyState> {
     }
   }
 
-  async handlePackDirChanged(event: any) {
+  handlePackDirChanged(event: any) {
     this.setState({
       packDir: event.target.value
+    });
+  }
+
+  handleNsfwChanged(event: any) {
+    this.setState({
+      isNsfw: event.target.checked
     });
   }
 
@@ -179,7 +188,14 @@ export default class Create extends Component<MyProps, MyState> {
             }}
             value={this.state.email}
           />
-
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="NSFW"
+              checked={this.state.isNsfw}
+              onChange={this.handleNsfwChanged.bind(this)}
+            />
+          </Form.Group>
           <Form.Group>
             <Form.Row>
               <Form.Label column sm="5" className="field-label-text">

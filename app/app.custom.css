@@ -47,6 +47,11 @@ html {
   box-shadow: 0 0.5rem 1rem rgba(35, 132, 164, 0.6) !important;
 }
 
+.img-blurred {
+  -webkit-filter: blur(5px);
+  filter: blur(5px);
+}
+
 .perk-header-img {
   max-width: 800px;
   height: auto;
@@ -72,6 +77,14 @@ a {
 a:hover {
   color: #478694;
   text-decoration: none;
+}
+
+.topnav-button {
+  display: inline-flex;
+  align-items: center; 
+  margin-left: 5px;
+  max-height: 25px;
+  font-weight: bold;
 }
 
 .navbar-dark .navbar-nav .top-nav-active {

@@ -14,7 +14,6 @@ import SuccessModal from './SuccessModal';
 import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
 
-
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
 type MyProps = {
@@ -62,6 +61,8 @@ const PaginatorWrapper = styled.div`
 `;
 
 export default class PackDisplay extends Component<MyProps, MyState> {
+  deckWrapperRef: any;
+
   constructor(params: {}) {
     super(params);
     this.state = {
@@ -79,6 +80,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
       successModalShow: false,
       successModalText: ''
     };
+    this.deckWrapperRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -89,7 +91,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
     );
     this.setState({
       isLoading: false,
-      packs: packs.data,
+      packs: packs.data
     });
   }
 
@@ -244,11 +246,8 @@ export default class PackDisplay extends Component<MyProps, MyState> {
           onPageSizeSet={(size: number) => {
             this.setState({ pageSize: size, page: 0 });
           }}
-          onPageChange={(page: number) => {
-            this.setState({ page });
-          }}
         />
-        <DeckWrapper>{deck}</DeckWrapper>
+        <DeckWrapper ref={this.deckWrapperRef}>{deck}</DeckWrapper>
         <PaginatorWrapper>
           <ReactPaginate
             previousLabel={'Previous'}
@@ -259,6 +258,7 @@ export default class PackDisplay extends Component<MyProps, MyState> {
             pageRangeDisplayed={15}
             forcePage={this.state.page}
             onPageChange={arg => {
+              this.deckWrapperRef.current.scrollTo(0, 0);
               this.setState({ page: arg.selected });
             }}
             breakClassName={'page-item'}

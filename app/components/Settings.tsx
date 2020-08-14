@@ -14,10 +14,11 @@ import { app, remote, shell } from 'electron';
 
 type MyProps = {};
 
-async function doSave(installPath, autoUpdate, showCreate) {
+async function doSave(installPath, autoUpdate, showCreate, showNsfw) {
   settingsUtil.settings.dbdInstallPath = installPath;
   settingsUtil.settings.autoUpdate = autoUpdate;
   settingsUtil.settings.showCreate = showCreate;
+  settingsUtil.settings.showNsfw = showNsfw;
   await settingsUtil.save();
 }
 
@@ -30,14 +31,16 @@ export default function Settings(props: MyProps) {
   const [installPath, setInstallPath] = useState('');
   const [autoUpdate, setAutoUpdate] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
+  const [showNsfw, setShowNsfw] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
 
   const loadSettings = async () => {
     await settingsUtil.read();
     const { settings } = settingsUtil;
     setInstallPath(settings.dbdInstallPath);
-    setAutoUpdate(settings.autoUpdate);
-    setShowCreate(settings.showCreate);
+    setAutoUpdate(settings.autoUpdate || false);
+    setShowCreate(settings.showCreate || false);
+    setShowNsfw(settings.showNsfw || false);
   };
 
   useEffect(() => {
@@ -50,7 +53,7 @@ export default function Settings(props: MyProps) {
       <Form
         onSubmit={async e => {
           e.preventDefault();
-          await doSave(installPath, autoUpdate, showCreate);
+          await doSave(installPath, autoUpdate, showCreate, showNsfw);
           setUnsaved(false);
         }}
         onChange={() => setUnsaved(true)}
@@ -77,6 +80,16 @@ export default function Settings(props: MyProps) {
             checked={showCreate}
             onChange={e => {
               setShowCreate(e.target.checked);
+            }}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="Show NSFW"
+            checked={showNsfw}
+            onChange={e => {
+              setShowNsfw(e.target.checked);
             }}
           />
         </Form.Group>

@@ -7,7 +7,10 @@ import Modal from 'react-bootstrap/Modal';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import slugify from '@sindresorhus/slugify';
+import uuid from 'react-uuid';
 import getLanguage from '../../../language/Language';
+import settingsUtil from '../../../settings/Settings';
+
 
 type MyProps = {
   meta: any;
@@ -19,12 +22,13 @@ type MyProps = {
 function buildImgRow(
   images: Array<string>,
   label: string,
-  colWidth: number = 12
+  colWidth: number = 12,
+  className: string
 ) {
   const cols = images.map((url: string, index: number) => {
     return (
-      <Col key={`perkpackdetails-col-${index}`}>
-        <Image src={url} fluid />
+      <Col key={uuid()}>
+        <Image src={url} className={className} fluid />
       </Col>
     );
   });
@@ -49,9 +53,11 @@ export default function PerkPackDetails(props: MyProps) {
 
   const capabilities = [];
 
-  if(props.meta.hasPerks) {
+  if (props.meta.hasPerks) {
     capabilities.push('perks');
   }
+
+  const imgClass = (props.meta.isNsfw && !settingsUtil.settings.showNsfw) ? 'img-blurred' : '';
 
   if (props.meta.hasPortraits) {
     capabilities.push('charportraits');
@@ -60,7 +66,8 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}portraits_${i}.png`;
       }),
       'Portraits',
-      12
+      12,
+      imgClass
     );
   }
 
@@ -72,7 +79,8 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}favors_${i}.png`;
       }),
       'Offerings',
-      12
+      12,
+      imgClass
     );
   }
 
@@ -84,7 +92,8 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}items_${i}.png`;
       }),
       'Items',
-      12
+      12,
+      imgClass
     );
   }
 
@@ -96,7 +105,8 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}addons_${i}.png`;
       }),
       'Add-Ons',
-      12
+      12,
+      imgClass
     );
   }
 
@@ -108,7 +118,8 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}powers_${i}.png`;
       }),
       'Killer Powers',
-      12
+      12,
+      imgClass
     );
   }
 
@@ -120,14 +131,14 @@ export default function PerkPackDetails(props: MyProps) {
         return `${baseUrl}statusEffects_${i}.png`;
       }),
       'Status Effects',
-      12
+      12,
+      imgClass
     );
   }
 
   if (props.meta.hasActions) {
     capabilities.push('actions');
   }
-
 
   return (
     <Modal
@@ -160,8 +171,13 @@ export default function PerkPackDetails(props: MyProps) {
             {statusImg}
           </Tab>
           {capabilities.map(capability => (
-            <Tab key={slugify(getLanguage(capability).toLowerCase())} eventKey={slugify(getLanguage(capability).toLowerCase())} title={getLanguage(capability)} className="text-center">
-              <Image src={`${baseUrl}gallery_${capability}.png`} fluid />
+            <Tab
+              key={slugify(getLanguage(capability).toLowerCase())}
+              eventKey={slugify(getLanguage(capability).toLowerCase())}
+              title={getLanguage(capability)}
+              className="text-center"
+            >
+              <Image className={imgClass} src={`${baseUrl}gallery_${capability}.png`} fluid />
             </Tab>
           ))}
         </Tabs>

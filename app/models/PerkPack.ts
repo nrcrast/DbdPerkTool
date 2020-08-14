@@ -7,8 +7,7 @@ import { PackMeta } from './PackMeta';
 import IconPack from './IconPack';
 import settingsUtil from '../settings/Settings';
 import slash from 'slash';
-import {promisify} from 'util';
-
+import { promisify } from 'util';
 
 export default class PerkPack extends IconPack {
   opts: any;
@@ -17,29 +16,32 @@ export default class PerkPack extends IconPack {
   }
 
   async copyFilesTo(sourcePath: string, destPath: string, opts: any) {
+    if (opts === undefined) {
+      return copy(sourcePath, destPath, { overwrite: true });
+    }
     // Create an object for faster lookup
     const desiredFilesObj = {};
-    opts.forEach((file) => {
+    opts.forEach(file => {
       desiredFilesObj[file] = true;
     });
-    const filterFn = (src:String) => {
-      if(!src || !src.endsWith('.png')) {
+    const filterFn = (src: String) => {
+      if (!src || !src.endsWith('.png')) {
         return false;
       }
       const copying = desiredFilesObj[src.toLowerCase()] === true;
       // if(copying) {
       //   log.debug(`Copying File ${src}: ${copying}`);
       // }
-  
+
       return copying;
     };
 
-    await copy(sourcePath, destPath, {filter: filterFn, overwrite: true, });
+    await copy(sourcePath, destPath, { filter: filterFn, overwrite: true });
   }
 
   async saveInstalledPackId() {
-	log.debug(`Saving installed pack: ${this.meta.id}`);
-	settingsUtil.settings.installedPack = this.meta.id;
-	await settingsUtil.save();
+    log.debug(`Saving installed pack: ${this.meta.id}`);
+    settingsUtil.settings.installedPack = this.meta.id;
+    await settingsUtil.save();
   }
 }

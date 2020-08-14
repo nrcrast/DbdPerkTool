@@ -11,8 +11,9 @@ import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
-
+import NsfwWarning from './IconPack/NsfwWarning';
 import Details from './IconPack/PortraitPack/Details';
+import settingsUtils from '../settings/Settings';
 
 type MyProps = {
   id: string;
@@ -139,12 +140,14 @@ export default class PortraitPack extends Component<MyProps, MyState> {
             urls={urls}
             id={this.props.id}
             baseUrl={this.props.meta.previewDir}
+            isNsfw={this.props.meta.isNsfw}
           />
         </Card.Body>
         <Title
           name={this.props.meta.name}
           isFeatured={this.props.meta.featured}
         />
+        {this.props.meta.isNsfw && !settingsUtils.settings.showNsfw && <NsfwWarning />}
         {cardBody}
         <InstallButton
           installInProgress={this.state.saving}

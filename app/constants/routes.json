@@ -3,5 +3,6 @@
   "SETTINGS": "/settings",
   "PERKS": "/perks",
   "CREATE": "/create",
-  "PORTRAITS": "/portraits"
+  "PORTRAITS": "/portraits",
+  "DEFAULT": "/default"
 }

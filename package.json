@@ -239,6 +239,7 @@
     "react-router": "^5.1.2",
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
+    "react-uuid": "^1.0.2",
     "recursive-copy": "^2.0.10",
     "recursive-readdir": "^2.2.2",
     "redux": "^4.0.5",

@@ -7,6 +7,7 @@ import PerkPage from './containers/PerkPage';
 import SettingsPage from './containers/SettingsPage';
 import CreatePage from './containers/CreatePage';
 import PortraitPage from './containers/PortraitPage';
+import DefaultPage from './containers/DefaultPage';
 
 export default function Routes() {
   return (
@@ -17,6 +18,7 @@ export default function Routes() {
         <Route exact path={routes.HOME} component={HomePage} />
         <Route exact path={routes.SETTINGS} component={SettingsPage} />
         <Route exact path={routes.CREATE} component={CreatePage} />
+        <Route exact path={routes.DEFAULT} component={DefaultPage} />
       </Switch>
     </App>
   );

@@ -14,6 +14,8 @@ import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
+import NsfwWarning from './IconPack/NsfwWarning';
+import settingsUtils from '../settings/Settings';
 
 type MyProps = {
   id: string;
@@ -83,9 +85,8 @@ export default class PerkPack extends Component<MyProps, MyState> {
 
     let cardBody = (
       <Card.Body className="mb-0">
-        <Row>
+        <Row className="mb-2">
           <Col>
-            <p>
               <b>Author:</b>{' '}
               <Author
                 onClick={(name: string) => {
@@ -93,15 +94,12 @@ export default class PerkPack extends Component<MyProps, MyState> {
                 }}
                 name={this.props.meta.author}
               />
-            </p>
           </Col>
           <Col>
-            <p>
               <b>Downloads:</b> {this.props.meta.downloads}
-            </p>
           </Col>
         </Row>
-        <Row className="mb-3">
+        <Row className="mb-2">
           <Col>
             <b>Latest Chapter:</b>{' '}
             <LatestChapter
@@ -159,12 +157,14 @@ export default class PerkPack extends Component<MyProps, MyState> {
               id={this.props.id}
               baseUrl={this.props.meta.previewDir}
               viewMode={this.props.viewMode}
+              isNsfw={this.props.meta.isNsfw}
             />
           </Card.Body>
           <Title
             name={this.props.meta.name}
             isFeatured={this.props.meta.featured}
           />
+          {this.props.meta.isNsfw && !settingsUtils.settings.showNsfw && <NsfwWarning />}
           {cardBody}
           <InstallButton
             installInProgress={this.state.saving}
