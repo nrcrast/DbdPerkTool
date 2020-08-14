@@ -17,9 +17,7 @@ In order to submit a icon pack, please contact me either on [Discord](https://di
 You can report any isses to me on Discord or through the [issue tracker](https://github.com/nrcrast/DbdPerkTool/issues) on GitHub. 
 
 ## Screenshots
-![About](images/about.png)
-
-![Perk Browser](images/screenshot_icons.png)
+![Perk Browser (Compact View)](images/screenshot_icons.png)
 
 ![Perk Browser (Normal View)](images/screenshot_icons_normal.png)
 
@@ -28,7 +26,7 @@ You can report any isses to me on Discord or through the [issue tracker](https:/
 ![Create A Pack](images/create.png)
 
 ## Limitations/Future Dev
-* Create profiles for creators, more filtering options
+See [GitHub Issues](https://github.com/nrcrast/DbdPerkTool/issues) to track future development.
 Feel free to fork and hit me with a PR!
 
 ## Icon Credits
