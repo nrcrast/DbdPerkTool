@@ -17,7 +17,6 @@ import Title from './IconPack/Title';
 
 type MyProps = {
   id: string;
-  installed: boolean;
   downloads: number;
   meta: any;
   onAuthorClick: any;
@@ -168,7 +167,6 @@ export default class PerkPack extends Component<MyProps, MyState> {
           />
           {cardBody}
           <InstallButton
-            installed={this.props.installed}
             installInProgress={this.state.saving}
             onClick={() => {
               this.setState({ showInstallOpts: true });

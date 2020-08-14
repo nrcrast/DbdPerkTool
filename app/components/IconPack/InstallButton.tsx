@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 type MyProps = {
-  installed: boolean;
   installInProgress: boolean;
   onClick: Function;
 };
@@ -11,7 +10,7 @@ type MyProps = {
 export default function PackInstallButton(props: MyProps) {
   return (
     <Button
-      variant={props.installed ? 'secondary' : 'dark'}
+      variant="dark"
       onClick={() => {
         props.onClick();
       }}
@@ -26,7 +25,7 @@ export default function PackInstallButton(props: MyProps) {
         className="mr-2"
         hidden={!props.installInProgress}
       />
-      {props.installed ? 'Installed' : 'Install'}
+      Install
     </Button>
   );
 }

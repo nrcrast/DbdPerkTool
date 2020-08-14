@@ -20,7 +20,6 @@ export default class Dbd extends Component<MyProps, MyState> {
           onInstallComplete={opts.onInstallComplete}
           meta={pack}
           id={pack.id}
-          installed={pack.isInstalled}
           downloads={pack.downloads}
           setFilter={opts.onSetFilter}
           onAuthorClick={(author: string) => {
@@ -36,7 +35,6 @@ export default class Dbd extends Component<MyProps, MyState> {
       <PackDisplay
         packQuery={{ hasPortraits: true }}
         cardBuilder={this.fromPacksBuildCards}
-        installedPackSettingsKey="installedPortraitPack"
       />
     );
   }

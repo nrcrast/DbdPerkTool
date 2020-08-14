@@ -16,7 +16,6 @@ import Details from './IconPack/PortraitPack/Details';
 
 type MyProps = {
   id: string;
-  installed: boolean;
   downloads: number;
   setFilter: any;
   meta: any;
@@ -148,7 +147,6 @@ export default class PortraitPack extends Component<MyProps, MyState> {
         />
         {cardBody}
         <InstallButton
-          installed={this.props.installed}
           installInProgress={this.state.saving}
           onClick={this.installPack.bind(this)}
         />
