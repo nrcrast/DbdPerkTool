@@ -13,7 +13,7 @@ import TopNavPageIcon from './TopNavPageIcon';
 const NavContentWrapper = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-around;
+  justify-content: center;
 `;
 
 const NavWrapper = styled.div`
@@ -28,31 +28,35 @@ const NavButtonContentWrapper = styled.div`
 export default function TopNav() {
   function openDonate(e) {
     e.preventDefault();
-    let link = e.target.href;
-    shell.openExternal(link);
+    shell.openExternal(e.target.href);
   }
   const [activeTab, setActiveTab] = useState(routes.PERKS);
   console.log('Active Tab: ' + activeTab);
   return (
     <Navbar variant="dark" className="rounded shadow main-navbar">
-      <Navbar.Brand>Icon Toolbox</Navbar.Brand>
+      <Navbar.Brand>
+        <i className="fas fa-toolbox fa-lg"></i>
+      </Navbar.Brand>
       <NavWrapper>
         <Nav>
           <NavContentWrapper>
             <TopNavPage
               currentActive={activeTab}
+              icon="fab fa-jira fa-lg"
               text="Icon Packs"
               to={routes.PERKS}
               setActive={setActiveTab}
             />
             <TopNavPage
               currentActive={activeTab}
+              icon="fas fa-portrait fa-lg"
               text="Portrait Packs"
               to={routes.PORTRAITS}
               setActive={setActiveTab}
             />
             <TopNavPage
               currentActive={activeTab}
+              icon="fas fa-undo-alt fa-lg"
               text="Default Icons"
               to={routes.DEFAULT}
               setActive={setActiveTab}
@@ -88,15 +92,7 @@ export default function TopNav() {
             href="https://www.patreon.com/dbdicontoolbox"
             onClick={openDonate}
           >
-            Patreon
-          </Button>
-          <Button
-            variant="secondary"
-            href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=JWX35VP4RXA7A&source=url"
-            onClick={openDonate}
-            className="topnav-button"
-          >
-            Paypal
+           <i className="fas fa-comment-dollar mr-1"></i> Patreon
           </Button>
         </NavButtonContentWrapper>
       </Nav>

@@ -157,14 +157,13 @@ export default class PerkPack extends Component<MyProps, MyState> {
               id={this.props.id}
               baseUrl={this.props.meta.previewDir}
               viewMode={this.props.viewMode}
-              isNsfw={this.props.meta.isNsfw}
+              isNsfw={this.props.meta.isNsfw && !settingsUtils.settings.showNsfw}
             />
           </Card.Body>
           <Title
             name={this.props.meta.name}
             isFeatured={this.props.meta.featured}
           />
-          {this.props.meta.isNsfw && !settingsUtils.settings.showNsfw && <NsfwWarning />}
           {cardBody}
           <InstallButton
             installInProgress={this.state.saving}

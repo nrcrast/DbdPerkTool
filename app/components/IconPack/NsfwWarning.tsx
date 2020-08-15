@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const NsfwWarningHeader = styled.h5`
+const NsfwWarningHeader = styled.h4`
   color: red;
 `;
 
 const NsfwWarning = styled.p`
   font-style: italic;
+  font-weight: bold;
   color: red;
 `;
 

@@ -20,6 +20,8 @@ type MyProps = {
   cardBuilder: any;
   installedPackSettingsKey: string;
   packQuery: any;
+  showHeaderBar?: boolean;
+  paginate?: boolean;
 };
 type MyState = {
   errorModalShow: boolean;
@@ -185,6 +187,8 @@ export default class PackDisplay extends Component<MyProps, MyState> {
   }
 
   render() {
+    const showHeaderBar = !(this.props.showHeaderBar === false);
+    const paginate = !(this.props.paginate === false);
     if (this.state.isLoading) {
       return (
         <Spinner
@@ -227,52 +231,56 @@ export default class PackDisplay extends Component<MyProps, MyState> {
 
     return (
       <PackDisplayContainer>
-        <PackDisplayHeader
-          currentPage={this.state.page}
-          numPages={Math.ceil(cards.length / this.state.pageSize)}
-          initialPageSize={this.state.pageSize}
-          initialSortKey={this.state.sortKey}
-          initialViewMode={this.state.viewMode}
-          onSearchFilter={(text: string) => {
-            this.setState({ searchFilter: text });
-          }}
-          onSortKeySet={(text: string) => {
-            this.setState({ sortKey: text });
-          }}
-          initialFilterText={this.state.searchFilter}
-          onViewModeSet={(mode: string) => {
-            this.setState({ viewMode: mode });
-          }}
-          onPageSizeSet={(size: number) => {
-            this.setState({ pageSize: size, page: 0 });
-          }}
-        />
-        <DeckWrapper ref={this.deckWrapperRef}>{deck}</DeckWrapper>
-        <PaginatorWrapper>
-          <ReactPaginate
-            previousLabel={'Previous'}
-            nextLabel={'Next'}
-            breakLabel={'...'}
-            pageCount={Math.ceil(cards.length / this.state.pageSize)}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={15}
-            forcePage={this.state.page}
-            onPageChange={arg => {
-              this.deckWrapperRef.current.scrollTo(0, 0);
-              this.setState({ page: arg.selected });
+        {showHeaderBar && (
+          <PackDisplayHeader
+            currentPage={this.state.page}
+            numPages={Math.ceil(cards.length / this.state.pageSize)}
+            initialPageSize={this.state.pageSize}
+            initialSortKey={this.state.sortKey}
+            initialViewMode={this.state.viewMode}
+            onSearchFilter={(text: string) => {
+              this.setState({ searchFilter: text });
             }}
-            breakClassName={'page-item'}
-            breakLinkClassName={'page-link'}
-            containerClassName={'pagination'}
-            pageClassName={'page-item'}
-            pageLinkClassName={'page-link'}
-            previousClassName={'page-item'}
-            previousLinkClassName={'page-link'}
-            nextClassName={'page-item'}
-            nextLinkClassName={'page-link'}
-            activeClassName={'active'}
+            onSortKeySet={(text: string) => {
+              this.setState({ sortKey: text });
+            }}
+            initialFilterText={this.state.searchFilter}
+            onViewModeSet={(mode: string) => {
+              this.setState({ viewMode: mode });
+            }}
+            onPageSizeSet={(size: number) => {
+              this.setState({ pageSize: size, page: 0 });
+            }}
           />
-        </PaginatorWrapper>
+        )}
+        <DeckWrapper ref={this.deckWrapperRef}>{deck}</DeckWrapper>
+        {paginate && (
+          <PaginatorWrapper>
+            <ReactPaginate
+              previousLabel={'Previous'}
+              nextLabel={'Next'}
+              breakLabel={'...'}
+              pageCount={Math.ceil(cards.length / this.state.pageSize)}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={15}
+              forcePage={this.state.page}
+              onPageChange={arg => {
+                this.deckWrapperRef.current.scrollTo(0, 0);
+                this.setState({ page: arg.selected });
+              }}
+              breakClassName={'page-item'}
+              breakLinkClassName={'page-link'}
+              containerClassName={'pagination'}
+              pageClassName={'page-item'}
+              pageLinkClassName={'page-link'}
+              previousClassName={'page-item'}
+              previousLinkClassName={'page-link'}
+              nextClassName={'page-item'}
+              nextLinkClassName={'page-link'}
+              activeClassName={'active'}
+            />
+          </PaginatorWrapper>
+        )}
         <ErrorModal
           title={errorModalTitle}
           text={errorModalText}

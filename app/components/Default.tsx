@@ -34,7 +34,7 @@ export default class Perks extends Component<MyProps, MyState> {
 
   render() {
     return (
-      <PackDisplay packQuery={{}} cardBuilder={this.fromPacksBuildCards} />
+      <PackDisplay paginate={false} showHeaderBar={false} showpackQuery={{}} cardBuilder={this.fromPacksBuildCards} />
     );
   }
 }
