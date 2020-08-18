@@ -7,29 +7,35 @@ const languageMap: { [key: string]: string } = {
   'perks/cannibal/iconperks_knockout.png': 'Killer / Knock Out',
   'perks/dlc2/iconperks_decisivestrike.png': 'Survivor / Decisive Strike',
   'perks/dlc2/iconperks_dyinglight.png': 'Killer / Dying Light',
-  'perks/dlc2/iconperks_objectofobsession.png': 'Survivor / Object of Obsession',
+  'perks/dlc2/iconperks_objectofobsession.png':
+    'Survivor / Object of Obsession',
   'perks/dlc2/iconperks_playwithyourfood.png': 'Killer / Play with your food',
-  'perks/dlc2/iconperks_savethebestforlast.png': 'Killer / Save the best for last',
+  'perks/dlc2/iconperks_savethebestforlast.png':
+    'Killer / Save the best for last',
   'perks/dlc2/iconperks_solesurvivor.png': 'Survivor / Sole Survivor',
   'perks/dlc3/iconperks_aceinthehole.png': 'Survivor / Ace in the Hole',
   'perks/dlc3/iconperks_devourhope.png': 'Killer / Hex: Devour Hope',
   'perks/dlc3/iconperks_openhanded.png': 'Survivor / Open-Handed',
   'perks/dlc3/iconperks_ruin.png': 'Killer / Hex: Ruin',
   'perks/dlc3/iconperks_thethirdseal.png': 'Killer / Hex: The Third Seal',
-  'perks/dlc3/iconperks_thrillofthehunt.png': 'Killer / Hex: Thrill of the Hunt',
+  'perks/dlc3/iconperks_thrillofthehunt.png':
+    'Killer / Hex: Thrill of the Hunt',
   'perks/dlc3/iconperks_uptheante.png': 'Survivor / Up the Ante',
   'perks/dlc4/iconperks_alert.png': 'Survivor / Alert',
   'perks/dlc4/iconperks_generatorovercharge.png': 'Killer / Overcharge',
   'perks/dlc4/iconperks_lithe.png': 'Survivor / Lithe',
   'perks/dlc4/iconperks_monitorandabuse.png': 'Killer / Monitor & Abuse',
-  'perks/dlc4/iconperks_overwhelmingpresence.png': 'Killer / Overwhelming Presence',
+  'perks/dlc4/iconperks_overwhelmingpresence.png':
+    'Killer / Overwhelming Presence',
   'perks/dlc4/iconperks_technician.png': 'Survivor / Technician',
   'perks/dlc5/iconperks_beastofprey.png': 'Killer / Beast of Prey',
   'perks/dlc5/iconperks_deadhard.png': 'Survivor / Dead Hard',
   'perks/dlc5/iconperks_huntresslullaby.png': 'Killer / Hex: Huntress Lullaby',
   'perks/dlc5/iconperks_nomither.png': 'Survivor / No Mither',
-  'perks/dlc5/iconperks_territorialimperative.png': 'Killer / Territorial Imperative',
-  'perks/dlc5/iconperks_weregonnaliveforever.png': "Survivor / We're Gonna Live Forever",
+  'perks/dlc5/iconperks_territorialimperative.png':
+    'Killer / Territorial Imperative',
+  'perks/dlc5/iconperks_weregonnaliveforever.png':
+    "Survivor / We're Gonna Live Forever",
   'perks/england/iconperks_bloodwarden.png': 'Killer / Blood Warden',
   'perks/england/iconperks_fireup.png': 'Killer / Fire Up',
   'perks/england/iconperks_pharmacy.png': 'Survivor / Pharmacy',
@@ -106,7 +112,8 @@ const languageMap: { [key: string]: string } = {
   'perks/iconperks_whispers.png': 'Killer / Whispers',
   'perks/kate/iconperks_boilover.png': 'Survivor / Boil Over',
   'perks/kate/iconperks_dancewithme.png': 'Survivor / Dance With Me',
-  'perks/kate/iconperks_windowsofopportunity.png': 'Survivor / Windows of Opportunity',
+  'perks/kate/iconperks_windowsofopportunity.png':
+    'Survivor / Windows of Opportunity',
   'perks/kenya/iconperks_aftercare.png': 'Survivor / Aftercare',
   'perks/kenya/iconperks_breakdown.png': 'Survivor / Breakdown',
   'perks/kenya/iconperks_discordance.png': 'Killer / Discordance',
@@ -116,7 +123,8 @@ const languageMap: { [key: string]: string } = {
   'perks/l4d/iconperks_borrowedtime.png': 'Survivor / Borrowed Time',
   'perks/l4d/iconperks_leftbehind.png': 'Survivor / Left Behind',
   'perks/l4d/iconperks_unbreakable.png': 'Survivor / Unbreakable',
-  'perks/mali/iconperks_corruptintervention.png': 'Killer / Corrupt Intervention',
+  'perks/mali/iconperks_corruptintervention.png':
+    'Killer / Corrupt Intervention',
   'perks/mali/iconperks_darkdevotion.png': 'Killer / Dark Devotion',
   'perks/mali/iconperks_headon.png': 'Survivor / Head On',
   'perks/mali/iconperks_infectiousfright.png': 'Killer / Infectious Fright',
@@ -134,7 +142,8 @@ const languageMap: { [key: string]: string } = {
   'perks/qatar/iconperks_mindbreaker.png': 'Survivor / Mindbreaker',
   'perks/qatar/iconperks_secondwind.png': 'Survivor / Second Wind',
   'perks/qatar/iconperks_surge.png': 'Survivor / Surge',
-  'perks/sweden/iconperks_anymeansnecessary.png': 'Survivor / Any Means Necessary',
+  'perks/sweden/iconperks_anymeansnecessary.png':
+    'Survivor / Any Means Necessary',
   'perks/sweden/iconperks_bloodecho.png': 'Killer / Blood Echo',
   'perks/sweden/iconperks_breakout.png': 'Survivor / Breakout',
   'perks/sweden/iconperks_luckybreak.png': 'Survivor / Lucky Break',
@@ -149,9 +158,17 @@ const languageMap: { [key: string]: string } = {
   'perks/wales/iconperks_bloodpact.png': 'Survivor / Blood Pact',
   'perks/wales/iconperks_deathbound.png': 'Killer / Deathbound',
   'perks/wales/iconperks_forcedpenance.png': 'Killer / Forced Penance',
-  'perks/wales/iconperks_repressedalliance.png': 'Survivor / Repressed Alliance',
+  'perks/wales/iconperks_repressedalliance.png':
+    'Survivor / Repressed Alliance',
   'perks/wales/iconperks_soulguard.png': 'Survivor / Soul Guard',
-  'perks/wales/iconperks_trailoftorment.png': 'Killer / Trail of Torment'
+  'perks/wales/iconperks_trailoftorment.png': 'Killer / Trail of Torment',
+  'perks/yemen/iconperks_builttolast.png': 'Survivor / Built To Last',
+  'perks/yemen/iconperks_desperatemeasures.png':
+    'Survivor / Desperate Measures',
+  'perks/yemen/iconperks_dragonsgrip.png': "Killer / Dragon's Grip",
+  'perks/yemen/iconperks_hexbloodfavor.png': 'Killer / Hex: Blood Favor',
+  'perks/yemen/iconperks_hexundying.png': 'Killer / Hex: Undying',
+  'perks/yemen/iconperks_visionary.png': 'Survivor / Visionary'
 };
 
 export default function getLanguage(tag) {

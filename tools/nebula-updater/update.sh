@@ -9,6 +9,10 @@ echo "===== Blue ====="
 mkdir -p Custom/Blue
 mv "Monochrome Perks (choose the color)"/"BLUE perks" Custom/Blue/Perks
 
+echo "===== Light Blue ====="
+mkdir -p Custom/LightBlue
+mv "Monochrome Perks (choose the color)"/"LIGHT BLUE perks" Custom/LightBlue/Perks
+
 echo "===== Dark Blue ====="
 mkdir -p Custom/DarkBlue
 mv "Monochrome Perks (choose the color)"/"DARK BLUE perks" Custom/DarkBlue/Perks

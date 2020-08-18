@@ -774,7 +774,42 @@ const addons: { [key: string]: string } = {
   'itemaddons/xipre/iconaddon_steeltoeboots.png':
     'Killer / Hillbilly / Steel toe Boots',
   'itemaddons/xipre/iconaddon_tunedcarburetor.png':
-    'Killer / Hillbilly / Tuned Carburetor'
+    'Killer / Hillbilly / Tuned Carburetor',
+  'itemaddons/yemen/iconaddon_adrenalinevial.png':
+    'Killer / Blight / Adrenaline Vial',
+  'itemaddons/yemen/iconaddon_alchemistsring.png':
+    "Killer / Blight / Alchemist's Ring",
+  'itemaddons/yemen/iconaddon_blightedcrow.png':
+    'Killer / Blight / Blighted Crow',
+  'itemaddons/yemen/iconaddon_blightedrat.png': 'Killer / Blight / Blighed Rat',
+  'itemaddons/yemen/iconaddon_cankerthorn.png':
+    'Killer / Blight / Canker Thorn',
+  'itemaddons/yemen/iconaddon_chippedmonocle.png':
+    'Killer / Blight / Chipped Monocle',
+  'itemaddons/yemen/iconaddon_compoundseven.png':
+    'Killer / Blight / Compound Seven',
+  'itemaddons/yemen/iconaddon_compoundthirtythree.png':
+    'Killer / Blight / Compound Thirty-Three',
+  'itemaddons/yemen/iconaddon_compoundtwentyone.png':
+    'Killer / Blight / Compond Twenty-One',
+  'itemaddons/yemen/iconaddon_foxglove.png': 'Killer / Blight / Foxglove',
+  'itemaddons/yemen/iconaddon_iridescentblighttag.png':
+    'Killer / Blight / Iridescent Blight Tag',
+  'itemaddons/yemen/iconaddon_placebotablet.png':
+    'Killer / Blight / Placebo Tablet',
+  'itemaddons/yemen/iconaddon_plaguebile.png': 'Killer / Blight / Plague Bile',
+  'itemaddons/yemen/iconaddon_pustuladust.png':
+    'Killer / Blight / Pustula Dust',
+  'itemaddons/yemen/iconaddon_rosetonic.png': 'Killer / Blight / Rose Tonic',
+  'itemaddons/yemen/iconaddon_shreddednotes.png':
+    'Killer / Blight / Shredded Notes',
+  'itemaddons/yemen/iconaddon_soulchemical.png':
+    'Killer / Blight / Soul Chemical',
+  'itemaddons/yemen/iconaddon_summoningstone.png':
+    'Killer / Blight / Summoning Stone',
+  'itemaddons/yemen/iconaddon_umbrasalts.png': 'Killer / Blight / Umbra Salts',
+  'itemaddons/yemen/iconaddon_vigosjournal.png':
+    "Killer / Blight / Vigo's Journal"
 };
 
 export default function getLanguage(filePath: string) {

@@ -1,3 +1,4 @@
+import log from 'electron-log';
 import getLanguageItemAddon from './ItemAddons';
 import getLanguagePortrait from './Portraits';
 import getLanguageActions from './Actions';
@@ -14,6 +15,10 @@ import getLanguagePowers from './Powers';
 import getLanguageStatus from './StatusEffects';
 import getLanguageStoreTabs from './StoreTabs';
 
+function getDefaultLanguage(filePath: string) {
+  return filePath;
+}
+
 export default function getLanguage(filePath: string) {
   return (
     getLanguageActions(filePath) ||
@@ -23,14 +28,14 @@ export default function getLanguage(filePath: string) {
     getLanguageArchive(filePath) ||
     getLanguageAuric(filePath) ||
     getLanguageDaily(filePath) ||
-	getLanguageEmblems(filePath) ||
-	getLanguageHelp(filePath) ||
-	getLanguageItems(filePath) ||
-	getLanguageOfferings(filePath) ||
-	getLanguagePerks(filePath) ||
-	getLanguagePowers(filePath) || 
-	getLanguageStatus(filePath) ||
-	getLanguageStoreTabs(filePath) ||
-    filePath
+    getLanguageEmblems(filePath) ||
+    getLanguageHelp(filePath) ||
+    getLanguageItems(filePath) ||
+    getLanguageOfferings(filePath) ||
+    getLanguagePerks(filePath) ||
+    getLanguagePowers(filePath) ||
+    getLanguageStatus(filePath) ||
+    getLanguageStoreTabs(filePath) ||
+    getDefaultLanguage(filePath)
   );
 }

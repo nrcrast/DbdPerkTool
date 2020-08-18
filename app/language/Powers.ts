@@ -1,6 +1,7 @@
 const languageMap: { [key: string]: string } = {
   'powers/cannibal/iconpowers_bubbaschainsaw.png':
     "Cannibal / Bubba's Chainsaw",
+  'powers/cannibal/iconpowers_tantrum.png': 'Cannibal / Tantrum',
   'powers/dlc2/iconpowers_stalker1.png': 'Shape / Stalker 1',
   'powers/dlc2/iconpowers_stalker2.png': 'Shape / Stalker 2',
   'powers/dlc2/iconpowers_stalker3.png': 'Shape / Stalker 3',
@@ -29,7 +30,8 @@ const languageMap: { [key: string]: string } = {
     'Deathslinger / The Redeemer (Chain Break)',
   'powers/ukraine/iconpowers_uk.png': 'Deathslinger / The Redeemer',
   'powers/wales/iconpowers_wales_ritesofjudgement.png':
-    'Executioner / Rites of Judgement'
+    'Executioner / Rites of Judgement',
+    'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption'
 };
 
 export default function getLanguage(tag) {
