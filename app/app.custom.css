@@ -213,6 +213,41 @@ a:hover {
   overflow-y: auto;
 }
 
+.sidenav-logo {
+  max-width: 70px;
+}
+
+.menu-entry {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  color: white;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.menu-entry:hover {
+  cursor: pointer;
+  color: white;
+  background: rgba(35, 164, 164, 0.4);
+}
+
+.menu-entry-active {
+  background: rgba(35, 164, 164, 0.2);
+}
+
+.menu-image {
+  width: 30px;
+  height: auto;
+}
+
+.user-profile-placeholder {
+  max-width:100px;
+  height: auto;
+}
+
 .ribbon-wrapper {
   width: 110px;
   height: 130px;

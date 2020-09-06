@@ -7,6 +7,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
+import settingsUtil from '../settings/Settings';
 
 type MyProps = { author: String; show: boolean; onHide: any; onShowPacks: any };
 type MyState = { authorData: any };
@@ -21,7 +22,7 @@ export default class AuthorModal extends Component<MyProps, MyState> {
     if (this.props.author !== prevProps.author) {
       try {
         const resp = await axios.get(
-          'https://dead-by-daylight-icon-toolbox.herokuapp.com/author',
+          `${settingsUtil.get('targetServer')}/author`,
           {
             params: {
               author: this.props.author

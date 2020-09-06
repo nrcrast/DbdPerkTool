@@ -11,12 +11,12 @@ type MyProps = {
 };
 
 const NavTextWrapper = styled.h3`
-  margin-bottom: 0px;
 `;
 
 const NavWrapper = styled.div`
   display: flex;
   align-items:center;
+  justify-content: center;
 `;
 
 const NavIcon = styled.i`

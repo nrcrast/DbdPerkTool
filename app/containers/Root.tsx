@@ -7,6 +7,7 @@ import { History } from 'history';
 import { Store } from '../reducers/types';
 import Routes from '../Routes';
 import TopNav from '../components/TopNav';
+import SideNav from '../components/SideNav'
 import Row from 'react-bootstrap/Row';
 import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
@@ -29,7 +30,7 @@ const Content = styled.div`
 
 const MainContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
 `;
 
@@ -65,7 +66,7 @@ const Root = ({ store, history }: Props) => {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <MainContainer>
-          <TopNav />
+          <SideNav />
           <Content>
             <Row className="main-content shadow p-1 m-3 justify-content-center">
               <Routes />

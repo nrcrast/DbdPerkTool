@@ -11,6 +11,7 @@ import SuccessModal from './SuccessModal';
 import log from 'electron-log';
 import axios from 'axios';
 import PackMeta from '../models/PackMeta';
+import settingsUtil from '../settings/Settings';
 
 const { dialog } = require('electron').remote;
 
@@ -101,7 +102,7 @@ export default class Create extends Component<MyProps, MyState> {
 
   async componentDidMount() {
     const packs = await axios.get(
-      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs?all=true'
+      `${settingsUtil.get('targetServer')}/packs?all=true`,
     );
     this.setState({ packs: packs.data });
   }

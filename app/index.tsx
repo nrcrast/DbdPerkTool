@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   settingsUtil.settings.lastUpdate = lastUpdate.data;
   await settingsUtil.save();
 
+  logger.info(`Target Server: ${settingsUtil.get('targetServer')}`);
+
   render(
     <AppContainer>
       <Root store={store} history={history} />

@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import Tree from 'rc-tree';
 import axios from 'axios';
 import getLanguage from '../../../language/Language';
+import settingsUtil from '../../../settings/Settings';
 
 type FileTreeNode = {
   key: string;
@@ -51,7 +52,7 @@ export default class PerkPackInstallOptionsModal extends Component<
     if (this.props.show !== prevProps.show) {
       const packDetails = (
         await axios.get(
-          'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
+          `${settingsUtil.get('targetServer')}/pack`,
           {
             params: {
               packId: this.props.meta.id,

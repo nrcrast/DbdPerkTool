@@ -1,5 +1,6 @@
 import DeadByDaylight from '../steam/DeadByDaylight';
 import electron from 'electron';
+import log from 'electron-log';
 import path from 'path';
 import { default as fsWithCallbacks } from 'fs';
 const fs = fsWithCallbacks.promises;
@@ -12,6 +13,7 @@ type SettingSchema = {
   autoUpdate: boolean;
   showCreate: boolean;
   showNsfw: boolean;
+  targetServer: string;
 };
 
 class Settings {
@@ -23,6 +25,7 @@ class Settings {
       (electron.app || electron.remote.app).getPath('userData'),
       'dbdPerkToolSettings.json'
     );
+    log.info(`Settings Path: ${this.settingsPath}`);
     this.defaultSettings = {
       lastUpdate: '',
       dbdInstallPath: '',
@@ -31,8 +34,17 @@ class Settings {
       autoUpdate: false,
       showCreate: false,
       showNsfw: false,
+      targetServer: 'https://dead-by-daylight-icon-toolbox.herokuapp.com'
     };
     this.settings = { ...this.defaultSettings };
+  }
+
+  get(key: string) {
+    if (!this.settings[key]) {
+      return this.defaultSettings[key];
+    } else {
+      return this.settings[key];
+    }
   }
 
   async setDefaultSettings() {

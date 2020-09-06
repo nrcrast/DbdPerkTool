@@ -87,10 +87,9 @@ export default class PackDisplay extends Component<MyProps, MyState> {
 
   async componentDidMount() {
     // Get packs
-    const packs = await axios.get(
-      'https://dead-by-daylight-icon-toolbox.herokuapp.com/packs',
-      { params: this.props.packQuery || undefined }
-    );
+    const packs = await axios.get(`${settingsUtil.get('targetServer')}/packs`, {
+      params: this.props.packQuery || undefined
+    });
     this.setState({
       isLoading: false,
       packs: packs.data
