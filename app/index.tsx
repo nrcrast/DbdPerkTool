@@ -8,6 +8,7 @@ import settingsUtil from './settings/Settings';
 import './app.global.css';
 import axios from 'axios';
 import logger from 'electron-log';
+import api from './api/Api';
 
 const _setImmediate = setImmediate;
 process.once('loaded', function() {
@@ -50,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   settingsUtil.settings.lastUpdate = lastUpdate.data;
   await settingsUtil.save();
+  await api.initialize();
 
   logger.info(`Target Server: ${settingsUtil.get('targetServer')}`);
 

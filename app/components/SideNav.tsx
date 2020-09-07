@@ -13,6 +13,8 @@ import settingsUtil from '../settings/Settings';
 import TopNavPageIcon from './TopNavPageIcon';
 import MenuEntry from './Nav/MenuEntry';
 
+const { BrowserWindow } = electron.remote;
+
 const NavContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -67,7 +69,7 @@ export default function SideNav() {
     shell.openExternal(e.target.href);
   }
   const [activeTab, setActiveTab] = useState(routes.PERKS);
-  const isSignedIn = true;
+  const [signedIn, setSignedIn] = useState(false);
   console.log('Active Tab: ' + activeTab);
   return (
     <NavContentWrapper>
@@ -105,7 +107,7 @@ export default function SideNav() {
           setActiveTab(target);
         }}
       />
-      {isSignedIn && (
+      {signedIn && (
         <div>
           <MenuEntry
             text="Upload Pack"
@@ -148,17 +150,55 @@ export default function SideNav() {
           }}
         />
         <MenuEntry
-          text={isSignedIn ? 'Sign Out' : 'Sign In'}
+          text={signedIn ? 'Sign Out' : 'Sign In'}
           image={
-            isSignedIn ? './img/menu_sign_out.png' : './img/menu_sign_in.png'
+            signedIn ? './img/menu_sign_out.png' : './img/menu_sign_in.png'
           }
           currentActive={activeTab}
           to={routes.HOME}
           onClick={(target: string) => {
             setActiveTab(target);
+
+            const authWindow = new BrowserWindow({
+              width: 800,
+              height: 600,
+              show: false,
+              'node-integration': false,
+              'web-security': false
+            });
+
+            // This is just an example url - follow the guide for whatever service you are using
+            const authUrl = 'http://127.0.0.1:5000/auth/steam';
+
+            authWindow.loadURL(authUrl);
+            authWindow.show();
+            // 'will-navigate' is an event emitted when the window.location changes
+            // newUrl should contain the tokens you need
+            authWindow.webContents.on('did-redirect-navigation', function(
+              event,
+              newUrl
+            ) {
+              if (
+                newUrl.startsWith('http://localhost:5000/auth/steam/return')
+              ) {
+                authWindow.webContents
+                  .executeJavaScript(`document.querySelector('pre').innerText`)
+                  .then(result => {
+                    const jwtToken = JSON.parse(result);
+                    if(jwtToken.jwtToken) {
+                      setSignedIn(true);
+                    }
+                    authWindow.close();
+                  });
+              }
+            });
+
+            authWindow.on('closed', function() {
+              authWindow = null;
+            });
           }}
         />
-        {isSignedIn && (
+        {signedIn && (
           <MenuEntry
             text="My Profile"
             image="./img/menu_profile.png"
