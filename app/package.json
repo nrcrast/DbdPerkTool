@@ -15,5 +15,6 @@
   },
   "license": "MIT",
   "dependencies": {
+    "keytar": "^6.0.1"
   }
 }

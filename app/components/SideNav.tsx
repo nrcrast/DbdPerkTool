@@ -12,6 +12,7 @@ import Image from 'react-bootstrap/Image';
 import settingsUtil from '../settings/Settings';
 import TopNavPageIcon from './TopNavPageIcon';
 import MenuEntry from './Nav/MenuEntry';
+import api from '../api/Api';
 
 const { BrowserWindow } = electron.remote;
 
@@ -63,14 +64,67 @@ const NavigationLabel = styled.h4`
 
 const NavDivider = styled.hr``;
 
+async function signIn(onJwt) {
+  const authWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    show: false,
+    'node-integration': false,
+    'web-security': false
+  });
+
+  // This is just an example url - follow the guide for whatever service you are using
+  const authUrl = 'http://127.0.0.1:5000/auth/steam';
+
+  authWindow.loadURL(authUrl);
+  authWindow.show();
+  // 'will-navigate' is an event emitted when the window.location changes
+  // newUrl should contain the tokens you need
+  authWindow.webContents.on('did-redirect-navigation', async function(
+    event,
+    newUrl
+  ) {
+    if (newUrl.startsWith('http://localhost:5000/auth/steam/return')) {
+      const result = await authWindow.webContents.executeJavaScript(
+        `document.querySelector('pre').innerText`
+      );
+
+      const jwtToken = JSON.parse(result);
+      if (jwtToken.jwtToken) {
+        onJwt(jwtToken);
+        authWindow.close();
+      }
+      authWindow.close();
+    }
+  });
+}
+
 export default function SideNav() {
   function openDonate(e) {
     e.preventDefault();
     shell.openExternal(e.target.href);
   }
   const [activeTab, setActiveTab] = useState(routes.PERKS);
-  const [signedIn, setSignedIn] = useState(false);
+  const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
+
+  api.on('loggedIn', () => {
+    setSignedIn(true);
+  });
+
+  let userIcon = (
+    <Image src="./img/user.png" className="user-profile-placeholder" />
+  );
+  if (signedIn) {
+    userIcon = (
+      <Image
+        src={api.currentUser.steamAvatarUrl}
+        className="user-profile-placeholder"
+        roundedCircle
+      />
+    );
+  }
+
   return (
     <NavContentWrapper>
       <LogoWrapper>
@@ -155,47 +209,18 @@ export default function SideNav() {
             signedIn ? './img/menu_sign_out.png' : './img/menu_sign_in.png'
           }
           currentActive={activeTab}
-          to={routes.HOME}
-          onClick={(target: string) => {
-            setActiveTab(target);
-
-            const authWindow = new BrowserWindow({
-              width: 800,
-              height: 600,
-              show: false,
-              'node-integration': false,
-              'web-security': false
-            });
-
-            // This is just an example url - follow the guide for whatever service you are using
-            const authUrl = 'http://127.0.0.1:5000/auth/steam';
-
-            authWindow.loadURL(authUrl);
-            authWindow.show();
-            // 'will-navigate' is an event emitted when the window.location changes
-            // newUrl should contain the tokens you need
-            authWindow.webContents.on('did-redirect-navigation', function(
-              event,
-              newUrl
-            ) {
-              if (
-                newUrl.startsWith('http://localhost:5000/auth/steam/return')
-              ) {
-                authWindow.webContents
-                  .executeJavaScript(`document.querySelector('pre').innerText`)
-                  .then(result => {
-                    const jwtToken = JSON.parse(result);
-                    if(jwtToken.jwtToken) {
-                      setSignedIn(true);
-                    }
-                    authWindow.close();
-                  });
-              }
-            });
-
-            authWindow.on('closed', function() {
-              authWindow = null;
-            });
+          onClick={async (target: string) => {
+            if (!signedIn) {
+              signIn(async (jwt) => {
+                if (jwt) {
+                  await api.setLoggedIn(jwt);
+                  setSignedIn(true);
+                }
+              });
+            } else {
+              await api.setLoggedOut();
+              setSignedIn(false);
+            }
           }}
         />
         {signedIn && (
@@ -211,7 +236,8 @@ export default function SideNav() {
         )}
 
         <UserProfileWrapper>
-          <Image src="./img/user.png" className="user-profile-placeholder" />
+          {userIcon}
+          {signedIn && <h5>{api.currentUser.steamDisplayName}</h5>}
         </UserProfileWrapper>
       </BottomEntries>
     </NavContentWrapper>
