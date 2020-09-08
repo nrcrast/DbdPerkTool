@@ -1,18 +1,12 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext } from 'react';
 import electron from 'electron';
 import { shell } from 'electron';
-import { Link } from 'react-router-dom';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Button from 'react-bootstrap/Button';
 import styled from 'styled-components';
 import routes from '../constants/routes.json';
-import TopNavPage from './TopNavPage';
 import Image from 'react-bootstrap/Image';
-import settingsUtil from '../settings/Settings';
-import TopNavPageIcon from './TopNavPageIcon';
 import MenuEntry from './Nav/MenuEntry';
 import api from '../api/Api';
+import UserContext from '../context/UserContext';
 
 const { BrowserWindow } = electron.remote;
 
@@ -104,6 +98,7 @@ export default function SideNav() {
     e.preventDefault();
     shell.openExternal(e.target.href);
   }
+  const userContext = useContext(UserContext);
   const [activeTab, setActiveTab] = useState(routes.PERKS);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
@@ -214,12 +209,14 @@ export default function SideNav() {
               signIn(async (jwt) => {
                 if (jwt) {
                   await api.setLoggedIn(jwt);
+                  userContext.setUser(api.currentUser);
                   setSignedIn(true);
                 }
               });
             } else {
               await api.setLoggedOut();
               setSignedIn(false);
+              userContext.setUser(null);
             }
           }}
         />

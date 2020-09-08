@@ -32,13 +32,30 @@ class Api extends EventEmitter {
     }
   }
 
+  isLoggedIn() {
+    return this.currentUser !== null && this.currentUser !== undefined;
+  }
+
   async setLoggedIn(jwtResp) {
     this.executor.setJwt(new Jwt(jwtResp), jwtResp.refreshToken);
     await this.executor.saveJwt();
     await this.getUser();
   }
 
+  async updateFavorite(packId, newValue) {
+    if (newValue) {
+      await this.executor.apis.default.addFavorite({
+        id: packId
+      });
+    } else {
+      await this.executor.apis.default.deleteFavorite({
+        id: packId
+      });
+    }
+  }
+
   async setLoggedOut() {
+    this.currentUser = null;
     delete this.executor.jwt;
     await this.executor.deleteJwt();
   }

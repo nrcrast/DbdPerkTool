@@ -64,7 +64,7 @@ export default class ApiExecutor extends SwaggerClient {
   }
 
   async refreshJwt() {
-    const jwtData = await this.apis.auth.refreshToken(
+    const jwtData = await this.apis.default.refreshToken(
       {},
       { requestBody: { refreshToken: this.refreshToken } }
     );

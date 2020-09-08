@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
@@ -7,7 +7,7 @@ import { History } from 'history';
 import { Store } from '../reducers/types';
 import Routes from '../Routes';
 import TopNav from '../components/TopNav';
-import SideNav from '../components/SideNav'
+import SideNav from '../components/SideNav';
 import Row from 'react-bootstrap/Row';
 import styled from 'styled-components';
 import { ipcRenderer } from 'electron';
@@ -16,6 +16,8 @@ import UpdateYesNoDialog from '../components/update/UpdateYesNoDialog';
 import UpdateProgress from '../components/update/UpdateProgress';
 import settingsUtil from '../settings/Settings';
 import Button from 'react-bootstrap/Button';
+import UserContext from '../context/UserContext';
+import api from '../api/Api';
 
 type Props = {
   store: Store;
@@ -39,6 +41,7 @@ const Root = ({ store, history }: Props) => {
   const [latestVersion, setLatestVersion] = useState('');
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
+  const [currentUser, setCurrentUser] = useState(api.currentUser);
 
   const onUpdateModalClose = (doUpdate: boolean) => {
     log.info('Do Update: ', doUpdate);
@@ -65,20 +68,32 @@ const Root = ({ store, history }: Props) => {
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <MainContainer>
-          <SideNav />
-          <Content>
-            <Row className="main-content shadow p-1 m-3 justify-content-center">
-              <Routes />
-            </Row>
-          </Content>
-          <UpdateYesNoDialog
-            version={latestVersion}
-            show={showUpdateModal}
-            onClose={onUpdateModalClose}
-          />
-          <UpdateProgress progress={updateProgress} show={showProgressModal} />
-        </MainContainer>
+        <UserContext.Provider
+          value={{
+            user: currentUser,
+            setUser: user => {
+              setCurrentUser(user);
+            }
+          }}
+        >
+          <MainContainer>
+            <SideNav />
+            <Content>
+              <Row className="main-content shadow p-1 m-3 justify-content-center">
+                <Routes />
+              </Row>
+            </Content>
+            <UpdateYesNoDialog
+              version={latestVersion}
+              show={showUpdateModal}
+              onClose={onUpdateModalClose}
+            />
+            <UpdateProgress
+              progress={updateProgress}
+              show={showProgressModal}
+            />
+          </MainContainer>
+        </UserContext.Provider>
       </ConnectedRouter>
     </Provider>
   );

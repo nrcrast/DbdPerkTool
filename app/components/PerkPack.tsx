@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext } from 'react';
 import log from 'electron-log';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -16,6 +16,8 @@ import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
 import NsfwWarning from './IconPack/NsfwWarning';
 import settingsUtils from '../settings/Settings';
+import api from '../api/Api';
+import UserContext from '../context/UserContext';
 
 type MyProps = {
   id: string;
@@ -29,174 +31,151 @@ type MyProps = {
 };
 type MyState = {
   saving: boolean;
-  isExpanded: boolean;
-  saveProgress: number;
   showInstallOpts: boolean;
   showDetails: boolean;
 };
 
-export default class PerkPack extends Component<MyProps, MyState> {
-  constructor(params: MyProps) {
-    super(params);
-    this.state = {
-      saving: false,
-      saveProgress: 0,
-      isExpanded: false,
-      showInstallOpts: false,
-      showDetails: false
-    };
-  }
+export default function PerkPack(props: MyProps) {
+  const [saving, setSaving] = useState(false);
+  const [showInstallOpts, setShowInstallOpts] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const userContext = useContext(UserContext);
 
-  installProgressCb(progress: number) {
-    this.setState({ saveProgress: progress });
-  }
-
-  async doInstall(id: string, progressCb: any, opts: any) {
-    const pack = new PerkPackModel(PackMetaMapper.fromRaw(this.props.meta));
+  const doInstall = async (id: string, progressCb: any, opts: any) => {
+    const pack = new PerkPackModel(PackMetaMapper.fromRaw(props.meta));
     try {
       await pack.install(progressCb, opts);
-      this.props.onInstallComplete(id);
+      props.onInstallComplete(id);
     } catch (e) {
-      this.props.onError(`Error installing pack ${id}: ${e}`);
+      props.onError(`Error installing pack ${id}: ${e}`);
     }
-  }
+  };
 
-  async installPack(opts: Array<string>) {
-    this.setState({
-      saving: true,
-      saveProgress: 0
-    });
-    await this.doInstall(this.props.id, null, opts);
-    this.setState({
-      saving: false,
-      saveProgress: 0
-    });
-  }
+  const installPack = async (opts: Array<string>) => {
+    setSaving(true);
+    await doInstall(props.id, null, opts);
+    setSaving(false);
+  };
 
-  render() {
-    const urls = [...Array(4).keys()].map(i => {
-      return `perks_${i}.png`;
-    });
-    const expandArrow = this.state.isExpanded ? (
-      <i className="fas fa-arrow-up"></i>
-    ) : (
-      <i className="fas fa-arrow-down"></i>
-    );
+  const urls = [...Array(4).keys()].map(i => {
+    return `perks_${i}.png`;
+  });
 
-    let cardBody = (
-      <Card.Body className="mb-0">
-        <Row className="mb-2">
-          <Col>
-              <b>Author:</b>{' '}
-              <Author
-                onClick={(name: string) => {
-                  this.props.onAuthorClick(name);
-                }}
-                name={this.props.meta.author}
-              />
-          </Col>
-          <Col>
-              <b>Downloads:</b> {this.props.meta.downloads}
-          </Col>
-        </Row>
-        <Row className="mb-2">
-          <Col>
-            <b>Latest Chapter:</b>{' '}
-            <LatestChapter
-              name={this.props.meta.latestChapter}
-              onClick={() => {
-                this.props.setFilter(this.props.meta.latestChapter);
-              }}
-            />
-          </Col>
-        </Row>
-
-        <Has
-          portraits={this.props.meta.hasPortraits}
-          powers={this.props.meta.hasPowers}
-          items={this.props.meta.hasItems}
-          statusEffects={this.props.meta.hasStatusEffects}
-          addons={this.props.meta.hasItemAddOns}
-          offerings={this.props.meta.hasFavors}
-        />
-      </Card.Body>
-    );
-
-    if (this.props.viewMode === 'Compact') {
-      cardBody = (
-        <Card.Body>
+  let cardBody = (
+    <Card.Body className="mb-0">
+      <Row className="mb-2">
+        <Col>
           <b>Author:</b>{' '}
           <Author
             onClick={(name: string) => {
-              this.props.onAuthorClick(name);
+              props.onAuthorClick(name);
             }}
-            name={this.props.meta.author}
+            name={props.meta.author}
           />
-          <br />
+        </Col>
+        <Col>
+          <b>Downloads:</b> {props.meta.downloads}
+        </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col>
           <b>Latest Chapter:</b>{' '}
           <LatestChapter
-            name={this.props.meta.latestChapter}
+            name={props.meta.latestChapter}
             onClick={() => {
-              this.props.setFilter(this.props.meta.latestChapter);
+              props.setFilter(props.meta.latestChapter);
             }}
           />
-        </Card.Body>
-      );
-    }
+        </Col>
+      </Row>
 
-    const margin = this.props.viewMode === 'Normal' ? 'm-3' : 'mb-3';
-    const featured = this.props.meta.featured ? 'pack-featured' : '';
-    return (
-      <div>
-        <Card
-          className={`${margin} ${featured} ml-0 mr-0 text-center shadow perk-card border-0`}
-        >
-          <Card.Body>
-            <MainPreview
-              urls={urls}
-              id={this.props.id}
-              baseUrl={this.props.meta.previewDir}
-              viewMode={this.props.viewMode}
-              isNsfw={this.props.meta.isNsfw && !settingsUtils.settings.showNsfw}
-            />
-          </Card.Body>
-          <Title
-            name={this.props.meta.name}
-            isFeatured={this.props.meta.featured}
-          />
-          {cardBody}
-          <InstallButton
-            installInProgress={this.state.saving}
-            onClick={() => {
-              this.setState({ showInstallOpts: true });
-            }}
-          />
-          <Button
-            variant="dark"
-            className="m-1"
-            onClick={() => {
-              this.setState({ showDetails: true });
-            }}
-          >
-            Details
-          </Button>
-        </Card>
-        <Details
-          show={this.state.showDetails}
-          onHide={() => this.setState({ showDetails: false })}
-          id={this.props.id}
-          meta={this.props.meta}
-        />
-        <InstallOptionsModal
-          show={this.state.showInstallOpts}
-          onConfirm={(opts: Array<string>) => {
-            this.setState({ showInstallOpts: false });
-            this.installPack(opts);
+      <Has
+        portraits={props.meta.hasPortraits}
+        powers={props.meta.hasPowers}
+        items={props.meta.hasItems}
+        statusEffects={props.meta.hasStatusEffects}
+        addons={props.meta.hasItemAddOns}
+        offerings={props.meta.hasFavors}
+      />
+    </Card.Body>
+  );
+
+  if (props.viewMode === 'Compact') {
+    cardBody = (
+      <Card.Body>
+        <b>Author:</b>{' '}
+        <Author
+          onClick={(name: string) => {
+            props.onAuthorClick(name);
           }}
-          onHide={() => this.setState({ showInstallOpts: false })}
-          meta={this.props.meta}
+          name={props.meta.author}
         />
-      </div>
+        <br />
+        <b>Latest Chapter:</b>{' '}
+        <LatestChapter
+          name={props.meta.latestChapter}
+          onClick={() => {
+            props.setFilter(props.meta.latestChapter);
+          }}
+        />
+      </Card.Body>
     );
   }
+
+  const margin = props.viewMode === 'Normal' ? 'm-3' : 'mb-3';
+  const featured = props.meta.featured ? 'pack-featured' : '';
+
+  return (
+    <div>
+      <Card
+        className={`${margin} ${featured} ml-0 mr-0 text-center shadow perk-card border-0`}
+      >
+        <Card.Body>
+          <MainPreview
+            urls={urls}
+            id={props.id}
+            baseUrl={props.meta.previewDir}
+            viewMode={props.viewMode}
+            isNsfw={props.meta.isNsfw && !settingsUtils.settings.showNsfw}
+          />
+        </Card.Body>
+        <Title
+          name={props.meta.name}
+          isFeatured={props.meta.featured}
+          id={props.id}
+        />
+        {cardBody}
+        <InstallButton
+          installInProgress={saving}
+          onClick={() => {
+            setShowInstallOpts(true);
+          }}
+        />
+        <Button
+          variant="dark"
+          className="m-1"
+          onClick={() => {
+            setShowDetails(true);
+          }}
+        >
+          Details
+        </Button>
+      </Card>
+      <Details
+        show={showDetails}
+        onHide={() => setShowDetails(false)}
+        id={props.id}
+        meta={props.meta}
+      />
+      <InstallOptionsModal
+        show={showInstallOpts}
+        onConfirm={(opts: Array<string>) => {
+          setShowInstallOpts(false);
+          installPack(opts);
+        }}
+        onHide={() => setShowInstallOpts(false)}
+        meta={props.meta}
+      />
+    </div>
+  );
 }

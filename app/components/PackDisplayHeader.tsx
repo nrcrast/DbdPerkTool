@@ -1,10 +1,12 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useDebouncedCallback } from 'use-debounce';
 import log from 'electron-log';
 import styled from 'styled-components';
+import { show } from '../app.bootstrap.min.css';
+import UserContext from '../context/UserContext';
 
 type MyProps = {
   onSortKeySet: Function;
@@ -15,6 +17,8 @@ type MyProps = {
   initialViewMode: string;
   onPageSizeSet: Function;
   initialPageSize: number;
+  initialShowFavorites: boolean;
+  onShowFavoritesSet: Function;
 };
 
 const Container = styled.div`
@@ -27,11 +31,31 @@ const DropdownButtonWrapper = styled.div`
   margin-right: 3px;
 `;
 
+const ShowFavoritesWrapper = styled.div`
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const ShowFavoritesStarWrapper = styled.span`
+  color: #d4af37;
+  margin-right: 4px;
+
+  &:hover {
+    color: yellow;
+    cursor: pointer;
+  }
+`;
+
 export default function PackDisplayHeader(props: MyProps) {
+  const userContext = useContext(UserContext);
   const [searchText, setSearchText] = useState(props.initialFilterText);
   const [sortKeyText, setSortKeyText] = useState(props.initialSortKey);
   const [viewModeText, setViewModeText] = useState(props.initialViewMode);
   const [pageSizeText, setPageSizeText] = useState(props.initialPageSize);
+  const [showFavorites, setShowFavorites] = useState(
+    props.initialShowFavorites
+  );
 
   // The idea here is to only actually run the search after the user is finished typing
   const [debounceSearchCallback] = useDebouncedCallback(text => {
@@ -62,6 +86,10 @@ export default function PackDisplayHeader(props: MyProps) {
   useEffect(() => setSearchText(props.initialFilterText), [
     props.initialFilterText
   ]);
+
+  const favoriteStarClass = showFavorites
+    ? 'fas fa-star fa-lg'
+    : 'far fa-star fa-lg';
 
   return (
     <Container>
@@ -145,11 +173,26 @@ export default function PackDisplayHeader(props: MyProps) {
         </DropdownButton>
       </DropdownButtonWrapper>
 
+      {userContext.user && (
+        <ShowFavoritesWrapper>
+          <ShowFavoritesStarWrapper
+            onClick={() => {
+              const newShowFavorites = !showFavorites;
+              setShowFavorites(newShowFavorites);
+              props.onShowFavoritesSet(newShowFavorites);
+            }}
+          >
+            <i className={favoriteStarClass} />
+          </ShowFavoritesStarWrapper>
+          <h5>Show Favorites</h5>
+        </ShowFavoritesWrapper>
+      )}
+
       <Form.Control
         style={{
           maxWidth: '400px',
           minWidth: '100px',
-          marginLeft: 'auto',
+          marginLeft: 'auto'
         }}
         type="text"
         placeholder="Search"
