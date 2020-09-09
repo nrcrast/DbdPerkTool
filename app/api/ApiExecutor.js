@@ -68,7 +68,7 @@ export default class ApiExecutor extends SwaggerClient {
       {},
       { requestBody: { refreshToken: this.refreshToken } }
     );
-    this.setJwt(new Jwt(jwtData));
+    this.setJwt(new Jwt(jwtData), jwtData.refreshToken);
     await this.saveJwt();
   }
 

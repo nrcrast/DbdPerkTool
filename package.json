@@ -202,6 +202,7 @@
     "yarn": "^1.21.1"
   },
   "dependencies": {
+    "@casl/ability": "^4.1.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@hot-loader/react-dom": "^16.13.0",
     "@sindresorhus/slugify": "^0.11.0",

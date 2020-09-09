@@ -43,6 +43,8 @@ const Root = ({ store, history }: Props) => {
   const [updateProgress, setUpdateProgress] = useState(0);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
 
+  log.info(`Current User: `, currentUser);
+
   const onUpdateModalClose = (doUpdate: boolean) => {
     log.info('Do Update: ', doUpdate);
     setShowUpdateModal(false);

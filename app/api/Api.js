@@ -1,13 +1,23 @@
 /* eslint-disable max-classes-per-file */
-import EventEmitter from 'events';
+import { AbilityBuilder, Ability } from '@casl/ability';
 import log from 'electron-log';
 import settingsUtil from '../settings/Settings.ts';
 import Jwt from './Jwt';
 import ApiExecutor from './ApiExecutor';
 
-class Api extends EventEmitter {
+function defineAbilitiesFor(user) {
+  const { can, cannot, rules } = new AbilityBuilder();
+
+  if (user.role === 'TrustedCreator') {
+    can('manage', 'PerkPack');
+  } else if (user.role === 'Administrator') {
+    can('manage', 'all');
+  }
+  return new Ability(rules);
+}
+
+class Api {
   constructor() {
-    super();
     this.currentUser = null;
   }
 
@@ -23,12 +33,12 @@ class Api extends EventEmitter {
     try {
       const user = await this.executor.apis.default.getUser();
       if (user.username) {
+        user.abilities = defineAbilitiesFor(user);
         this.currentUser = user;
-        this.emit('loggedIn', user);
         log.info('User Logged In: ', user);
       }
     } catch (e) {
-      log.info('User not logged in!');
+      log.info('User not logged in!', e);
     }
   }
 

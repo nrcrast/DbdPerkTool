@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
+import fs from 'fs-extra';
 import PackDir from '../packdir/PackDir';
 import PackGenerator from '../packgenerator/PackGenerator';
 import PlainTextInput from './Form/PlainTextInput';
@@ -12,6 +13,7 @@ import log from 'electron-log';
 import axios from 'axios';
 import PackMeta from '../models/PackMeta';
 import settingsUtil from '../settings/Settings';
+import api from '../api/Api';
 
 const { dialog } = require('electron').remote;
 
@@ -52,6 +54,33 @@ export default class Create extends Component<MyProps, MyState> {
     };
   }
 
+  async uploadZip(sourceFile) {
+    const file = await fs.readFile(sourceFile);
+    const uploadUrl = await api.executor.apis.default.getUploadServer();
+    await axios.post(`${uploadUrl}/v2/packs`, file, {
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        Authorization: `Bearer ${api.executor.jwt.token}`
+      },
+      onUploadProgress: progressEvent => {
+        const totalLength = progressEvent.lengthComputable
+          ? progressEvent.total
+          : progressEvent.target.getResponseHeader('content-length') ||
+            progressEvent.target.getResponseHeader(
+              'x-decompressed-content-length'
+            );
+        console.log('onUploadProgress', totalLength);
+        if (totalLength !== null) {
+          console.log(
+            `Progress: ${Math.round(
+              (progressEvent.loaded * 100) / totalLength
+            )}`
+          );
+        }
+      }
+    });
+  }
+
   async doCreate(e) {
     e.preventDefault();
     const packDir = new PackDir(this.state.packDir);
@@ -86,6 +115,7 @@ export default class Create extends Component<MyProps, MyState> {
 
     try {
       const outputZip = await generator.generate();
+      await this.uploadZip(outputZip);
       this.setState({
         saving: false,
         successText: `Your pack has been generated at ${outputZip}`,
@@ -102,7 +132,7 @@ export default class Create extends Component<MyProps, MyState> {
 
   async componentDidMount() {
     const packs = await axios.get(
-      `${settingsUtil.get('targetServer')}/packs?all=true`,
+      `${settingsUtil.get('targetServer')}/packs?all=true`
     );
     this.setState({ packs: packs.data });
   }

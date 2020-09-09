@@ -7,6 +7,7 @@ import Image from 'react-bootstrap/Image';
 import MenuEntry from './Nav/MenuEntry';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
+import settingsUtil from '../settings/Settings';
 
 const { BrowserWindow } = electron.remote;
 
@@ -68,7 +69,7 @@ async function signIn(onJwt) {
   });
 
   // This is just an example url - follow the guide for whatever service you are using
-  const authUrl = 'http://127.0.0.1:5000/auth/steam';
+  const authUrl = `${settingsUtil.get('targetServer')}/auth/steam`;
 
   authWindow.loadURL(authUrl);
   authWindow.show();
@@ -78,7 +79,7 @@ async function signIn(onJwt) {
     event,
     newUrl
   ) {
-    if (newUrl.startsWith('http://localhost:5000/auth/steam/return')) {
+    if (newUrl.startsWith(`${authUrl}/return`)) {
       const result = await authWindow.webContents.executeJavaScript(
         `document.querySelector('pre').innerText`
       );
@@ -102,10 +103,6 @@ export default function SideNav() {
   const [activeTab, setActiveTab] = useState(routes.PERKS);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
-
-  api.on('loggedIn', () => {
-    setSignedIn(true);
-  });
 
   let userIcon = (
     <Image src="./img/user.png" className="user-profile-placeholder" />
@@ -158,24 +155,28 @@ export default function SideNav() {
       />
       {signedIn && (
         <div>
-          <MenuEntry
-            text="Upload Pack"
-            currentActive={activeTab}
-            to={routes.CREATE}
-            image="./img/menu_add.png"
-            onClick={(target: string) => {
-              setActiveTab(target);
-            }}
-          />
-          <MenuEntry
-            text="My Packs"
-            currentActive={activeTab}
-            to={routes.CREATE}
-            image="./img/menu_mypacks.png"
-            onClick={(target: string) => {
-              setActiveTab(target);
-            }}
-          />
+          {userContext.user.abilities.can('create', 'PerkPack') && (
+            <MenuEntry
+              text="Upload Pack"
+              currentActive={activeTab}
+              to={routes.CREATE}
+              image="./img/menu_add.png"
+              onClick={(target: string) => {
+                setActiveTab(target);
+              }}
+            />
+          )}
+          {userContext.user.abilities.can('update', 'PerkPack') && (
+            <MenuEntry
+              text="My Packs"
+              currentActive={activeTab}
+              to={routes.CREATE}
+              image="./img/menu_mypacks.png"
+              onClick={(target: string) => {
+                setActiveTab(target);
+              }}
+            />
+          )}
         </div>
       )}
 
@@ -206,7 +207,7 @@ export default function SideNav() {
           currentActive={activeTab}
           onClick={async (target: string) => {
             if (!signedIn) {
-              signIn(async (jwt) => {
+              signIn(async jwt => {
                 if (jwt) {
                   await api.setLoggedIn(jwt);
                   userContext.setUser(api.currentUser);

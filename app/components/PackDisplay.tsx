@@ -64,19 +64,6 @@ const PaginatorWrapper = styled.div`
   background: rgba(48, 48, 48, 0.5);
 `;
 
-function chunkArray(myArray: Array<any>, chunkSize: number) {
-  const arrayLength = myArray.length;
-  const tempArray = [];
-
-  for (let index = 0; index < arrayLength; index += chunkSize) {
-    const myChunk = myArray.slice(index, index + chunkSize);
-    // Do something if you want with the group
-    tempArray.push(myChunk);
-  }
-
-  return tempArray;
-}
-
 function strcmpIgnoreCase(a, b) {
   return a.toUpperCase().localeCompare(b.toUpperCase());
 }
@@ -97,7 +84,7 @@ export default function PackDisplay(props: MyProps) {
   const [searchFilter, setSearchFilter] = useState('');
   const [sortKey, setSortKey] = useState('Downloads');
   const [errorText, setErrorText] = useState('');
-  const [showAuthorPage, setShowAuthorPage] = useState('');
+  const [showAuthorPage, setShowAuthorPage] = useState(false);
   const [currentAuthor, setCurrentAuthor] = useState('');
   const [viewMode, setViewMode] = useState('Normal');
   const [packs, setPacks] = useState([]);

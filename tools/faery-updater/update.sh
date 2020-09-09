@@ -104,4 +104,9 @@ cp -r ./"$PERKS"/"Faery's Galaxy Perks - Red Edition" ./Custom/Red/Perks
 cp -r ./"$ITEMS"/"Red" ./Custom/Red/Items
 cp -r ./"$POWERS"/"Red" ./Custom/Red/Powers
 cp -r ./"$STATUS"/"Red" ./Custom/Red/StatusEffects
+
+echo "===== Ombre ====="
+mkdir -p Custom/Ombre
+cp -r ./"$PERKS"/"Faery's Galaxy Perks - Ombre Edition"/"- OMBRE PACK -" ./Custom/Ombre/Perks
+
 popd
