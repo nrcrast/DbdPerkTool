@@ -1,8 +1,9 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import fs from 'fs-extra';
 import PackDir from '../packdir/PackDir';
 import PackGenerator from '../packgenerator/PackGenerator';
@@ -13,48 +14,48 @@ import log from 'electron-log';
 import axios from 'axios';
 import PackMeta from '../models/PackMeta';
 import settingsUtil from '../settings/Settings';
+import styled from 'styled-components';
 import api from '../api/Api';
+import UserContext from '../context/UserContext';
+
+axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
 const { dialog } = require('electron').remote;
 
 type MyProps = {};
-type MyState = {
-  unsaved: boolean;
-  packDir: string;
-  errorModalShow: boolean;
-  successModalShow: boolean;
-  title: string;
-  author: string;
-  email: string;
-  saving: boolean;
-  errorText: string;
-  description: string;
-  isNsfw: boolean;
-  successText: string;
-  packs: Array<PackMeta>;
-};
 
-export default class Create extends Component<MyProps, MyState> {
-  constructor(params: MyProps) {
-    super(params);
-    this.state = {
-      unsaved: false,
-      packDir: '',
-      errorModalShow: false,
-      successModalShow: false,
-      title: '',
-      author: '',
-      email: '',
-      saving: false,
-      isNsfw: false,
-      description: '',
-      errorText: '',
-      successText: '',
-      packs: []
-    };
-  }
+const CreateButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
-  async uploadZip(sourceFile) {
+export default function Create(props: MyProps) {
+  const [packDir, setPackDir] = useState('');
+  const [errorModalShow, setErrorModalShow] = useState(false);
+  const [successModalShow, setSuccessModalShow] = useState(false);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveProgress, setSaveProgress] = useState(0);
+  const [isNsfw, setIsNsfw] = useState(false);
+  const [description, setDescription] = useState('');
+  const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
+  const [packs, setPacks] = useState([]);
+  const userContext = useContext(UserContext);
+
+  const loadPacks = async () => {
+    const packs = await axios.get(
+      `${settingsUtil.get('targetServer')}/packs?all=true`
+    );
+    setPacks(packs.data);
+  };
+
+  useEffect(() => {
+    loadPacks();
+  }, []);
+
+  const uploadZip = async (sourceFile: string) => {
     const file = await fs.readFile(sourceFile);
     const uploadUrl = await api.executor.apis.default.getUploadServer();
     await axios.post(`${uploadUrl}/v2/packs`, file, {
@@ -71,186 +72,154 @@ export default class Create extends Component<MyProps, MyState> {
             );
         console.log('onUploadProgress', totalLength);
         if (totalLength !== null) {
-          console.log(
-            `Progress: ${Math.round(
-              (progressEvent.loaded * 100) / totalLength
-            )}`
+          setSaveProgress(
+            Math.round((progressEvent.loaded * 100) / totalLength)
           );
         }
       }
     });
-  }
+  };
 
-  async doCreate(e) {
+  const doCreate = async e => {
     e.preventDefault();
-    const packDir = new PackDir(this.state.packDir);
+    const packDirModel = new PackDir(packDir);
 
-    log.info(this.state);
-
-    const validationStatus = await packDir.validate();
+    const validationStatus = await packDirModel.validate();
 
     if (validationStatus.isValid === false) {
-      this.setState({
-        errorModalShow: true,
-        errorText: validationStatus.failReason
-      });
+      setErrorText(validationStatus.failReason);
+      setErrorModalShow(true);
       return;
     }
 
-    log.info(`Contents: `, await packDir.getMeta());
+    log.debug('Contents: ', await packDirModel.getMeta());
 
-    this.setState({
-      saving: true
-    });
+    setSaveProgress(0);
+    setSaving(true);
 
     const generator = new PackGenerator(
-      packDir,
+      packDirModel,
       undefined,
-      this.state.title,
-      this.state.author,
-      this.state.description,
-      this.state.isNsfw,
+      title,
+      author,
+      description,
+      isNsfw,
       validationStatus.skipFiles
     );
 
     try {
       const outputZip = await generator.generate();
-      await this.uploadZip(outputZip);
-      this.setState({
-        saving: false,
-        successText: `Your pack has been generated at ${outputZip}`,
-        successModalShow: true
-      });
+      // This is just a little hack to update the JWT if necessary before the upload
+      // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
+      // logic
+      await api.getUser();
+      await uploadZip(outputZip);
+      setSuccessText(
+        `Your pack has been uploaded. Zip has also been generated at ${outputZip}`
+      );
+      setSaving(false);
+      setSuccessModalShow(true);
     } catch (e) {
-      this.setState({
-        saving: false,
-        errorText: `Error generating Pack: ${e}`,
-        errorModalShow: true
-      });
+      setErrorText(`Error generating or uploading Pack: ${e}`);
+      setSaving(false);
+      setErrorModalShow(true);
     }
-  }
+  };
 
-  async componentDidMount() {
-    const packs = await axios.get(
-      `${settingsUtil.get('targetServer')}/packs?all=true`
-    );
-    this.setState({ packs: packs.data });
-  }
+  const handleFormChanged = async () => {};
 
-  async handleFormChanged() {}
-
-  async pickPackDir() {
+  const pickPackDir = async () => {
     const dir = await dialog.showOpenDialog({
       properties: ['openDirectory']
     });
 
     if (!dir.canceled && dir.filePaths.length > 0) {
-      this.setState({
-        packDir: dir.filePaths[0]
-      });
+      setPackDir(dir.filePaths[0]);
     }
-  }
+  };
 
-  handlePackDirChanged(event: any) {
-    this.setState({
-      packDir: event.target.value
-    });
-  }
+  const errorModalTitle = 'Error generating pack';
+  const errorModalText = errorText;
+  const successModalTitle = 'Success';
 
-  handleNsfwChanged(event: any) {
-    this.setState({
-      isNsfw: event.target.checked
-    });
-  }
+  return (
+    <Col className="col-8">
+      <Form
+        className="md-form"
+        onSubmit={doCreate}
+        onChange={handleFormChanged}
+      >
+        <PlainTextInput
+          label="Title"
+          onChange={(selected: any) => {
+            const data = selected[0] || '';
+            const packName = data.label || data;
+            const targetPack: PackMeta = packs.find(
+              pack => pack.name === packName
+            );
 
-  render() {
-    const errorModalTitle = 'Error generating pack';
-    const errorModalText = this.state.errorText;
-    const successModalTitle = 'Success';
-    return (
-      <Col className="col-8">
-        <Form
-          className="md-form"
-          onSubmit={this.doCreate.bind(this)}
-          onChange={this.handleFormChanged.bind(this)}
-        >
-          <PlainTextInput
-            label="Title"
-            onChange={(selected: any) => {
-              const data = selected[0] || '';
-              const packName = data.label || data;
-              const targetPack: PackMeta = this.state.packs.find(
-                pack => pack.name === packName
-              );
-
-              console.log(targetPack);
-
-              if (targetPack) {
-                this.setState({
-                  title: packName,
-                  description: targetPack.description,
-                  author: targetPack.author,
-                  email: targetPack.email
-                });
-              } else {
-                this.setState({ title: packName });
-              }
-            }}
-            options={this.state.packs.map(pack => pack.name).sort()}
-          />
-          <PlainTextInput
-            label="Description"
+            if (targetPack) {
+              setTitle(packName);
+              setDescription(targetPack.description);
+              setAuthor(targetPack.author);
+              setIsNsfw(targetPack.isNsfw);
+            } else {
+              setTitle(packName);
+            }
+          }}
+          options={packs.map(pack => pack.name).sort()}
+        />
+        <PlainTextInput
+          label="Description"
+          onChange={e => {
+            setDescription(e.target.value);
+          }}
+          value={description}
+        />
+        <PlainTextInput
+          label="Author"
+          onChange={e => {
+            setAuthor(e.target.value);
+          }}
+          value={author}
+        />
+        <Form.Group>
+          <Form.Check
+            type="checkbox"
+            label="NSFW"
+            checked={isNsfw}
             onChange={e => {
-              this.setState({ description: e.target.value });
+              setIsNsfw(e.target.checked);
             }}
-            value={this.state.description}
           />
-          <PlainTextInput
-            label="Author"
-            onChange={e => {
-              this.setState({ author: e.target.value });
-            }}
-            value={this.state.author}
-          />
-          <PlainTextInput
-            label="Email"
-            onChange={e => {
-              this.setState({ email: e.target.value });
-            }}
-            value={this.state.email}
-          />
-          <Form.Group>
-            <Form.Check
-              type="checkbox"
-              label="NSFW"
-              checked={this.state.isNsfw}
-              onChange={this.handleNsfwChanged.bind(this)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Row>
-              <Form.Label column sm="5" className="field-label-text">
-                Pack Directory Location
-              </Form.Label>
-            </Form.Row>
-            <Form.Row>
-              <Col sm="10">
-                <Form.Control
-                  type="plaintext"
-                  value={this.state.packDir}
-                  className="dbd-input-field"
-                  onChange={this.handlePackDirChanged.bind(this)}
-                />
-              </Col>
-              <Col>
-                <Button variant="dark" onClick={this.pickPackDir.bind(this)}>
-                  Browse
-                </Button>
-              </Col>
-            </Form.Row>
-          </Form.Group>
+        </Form.Group>
+        <Form.Group>
+          <Form.Row>
+            <Form.Label column sm="5" className="field-label-text">
+              Pack Directory Location
+            </Form.Label>
+          </Form.Row>
+          <Form.Row>
+            <Col sm="10">
+              <Form.Control
+                type="plaintext"
+                value={packDir}
+                className="dbd-input-field"
+                onChange={e => {
+                  setPackDir(e.target.value);
+                }}
+              />
+            </Col>
+            <Col>
+              <Button variant="dark" onClick={pickPackDir}>
+                Browse
+              </Button>
+            </Col>
+          </Form.Row>
+        </Form.Group>
 
-          <Button variant="dark" type="submit">
+        <CreateButtonWrapper>
+          <Button variant="dark" type="submit" className="mb-1">
             <Spinner
               as="span"
               animation="border"
@@ -258,24 +227,27 @@ export default class Create extends Component<MyProps, MyState> {
               role="status"
               aria-hidden="true"
               className="mr-2"
-              hidden={!this.state.saving}
+              hidden={!saving}
             />
-            Create Pack
+            Upload Pack
           </Button>
-        </Form>
-        <ErrorModal
-          title={errorModalTitle}
-          text={errorModalText}
-          show={this.state.errorModalShow}
-          onHide={() => this.setState({ errorModalShow: false })}
-        />
-        <SuccessModal
-          title={successModalTitle}
-          text={this.state.successText}
-          show={this.state.successModalShow}
-          onHide={() => this.setState({ successModalShow: false })}
-        />
-      </Col>
-    );
-  }
+          {saving && (
+            <ProgressBar now={saveProgress} label={`${saveProgress}%`} />
+          )}
+        </CreateButtonWrapper>
+      </Form>
+      <ErrorModal
+        title={errorModalTitle}
+        text={errorModalText}
+        show={errorModalShow}
+        onHide={() => setErrorModalShow(false)}
+      />
+      <SuccessModal
+        title={successModalTitle}
+        text={successText}
+        show={successModalShow}
+        onHide={() => setSuccessModalShow(false)}
+      />
+    </Col>
+  );
 }

@@ -9,6 +9,20 @@ import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import settingsUtil from '../settings/Settings';
 
+import ToolboxLogo from '../img/toolbox-logo.png';
+import UserImage from '../img/user.png';
+import MenuDefaultImage from '../img/menu_default.png';
+import MenuPortrait from '../img/menu_portrait.png';
+import MenuProfile from '../img/menu_profile.png';
+import MenuAbout from '../img/menu_about.png';
+import MenuAdd from '../img/menu_add.png';
+import MenuPerk from '../img/menu_perk.png';
+import MenuMyPacks from '../img/menu_mypacks.png';
+import MenuSettings from '../img/menu_settings.png';
+import MenuSignOut from '../img/menu_sign_out.png';
+import MenuSignIn from '../img/menu_sign_in.png';
+
+
 const { BrowserWindow } = electron.remote;
 
 const NavContentWrapper = styled.div`
@@ -105,7 +119,7 @@ export default function SideNav() {
   console.log('Active Tab: ' + activeTab);
 
   let userIcon = (
-    <Image src="./img/user.png" className="user-profile-placeholder" />
+    <Image src={UserImage} className="user-profile-placeholder" />
   );
   if (signedIn) {
     userIcon = (
@@ -120,7 +134,7 @@ export default function SideNav() {
   return (
     <NavContentWrapper>
       <LogoWrapper>
-        <Image src="./img/toolbox-logo.png" className="sidenav-logo" />
+        <Image src={ToolboxLogo} className="sidenav-logo" />
         <LogoLabel>{`Dead By Daylight Icon Toolbox v${(
           electron.app || electron.remote.app
         ).getVersion()}`}</LogoLabel>
@@ -128,7 +142,7 @@ export default function SideNav() {
       {/* <NavigationLabel>Navigation</NavigationLabel> */}
       <MenuEntry
         text="Icon Packs"
-        image="./img/menu_perk.png"
+        image={MenuPerk}
         currentActive={activeTab}
         to={routes.PERKS}
         onClick={(target: string) => {
@@ -137,7 +151,7 @@ export default function SideNav() {
       />
       <MenuEntry
         text="Portrait Packs"
-        image="./img/menu_portrait.png"
+        image={MenuPortrait}
         currentActive={activeTab}
         to={routes.PORTRAITS}
         onClick={(target: string) => {
@@ -146,7 +160,7 @@ export default function SideNav() {
       />
       <MenuEntry
         text="Install Default Icons"
-        image="./img/menu_default.png"
+        image={MenuDefaultImage}
         currentActive={activeTab}
         to={routes.DEFAULT}
         onClick={(target: string) => {
@@ -160,7 +174,7 @@ export default function SideNav() {
               text="Upload Pack"
               currentActive={activeTab}
               to={routes.CREATE}
-              image="./img/menu_add.png"
+              image={MenuAdd}
               onClick={(target: string) => {
                 setActiveTab(target);
               }}
@@ -170,8 +184,8 @@ export default function SideNav() {
             <MenuEntry
               text="My Packs"
               currentActive={activeTab}
-              to={routes.CREATE}
-              image="./img/menu_mypacks.png"
+              to={routes.MY_PACKS}
+              image={MenuMyPacks}
               onClick={(target: string) => {
                 setActiveTab(target);
               }}
@@ -183,7 +197,7 @@ export default function SideNav() {
       <BottomEntries>
         <MenuEntry
           text="Settings"
-          image="./img/menu_settings.png"
+          image={MenuSettings}
           currentActive={activeTab}
           to={routes.SETTINGS}
           onClick={(target: string) => {
@@ -192,7 +206,7 @@ export default function SideNav() {
         />
         <MenuEntry
           text="About"
-          image="./img/menu_about.png"
+          image={MenuAbout}
           currentActive={activeTab}
           to={routes.HOME}
           onClick={(target: string) => {
@@ -202,7 +216,7 @@ export default function SideNav() {
         <MenuEntry
           text={signedIn ? 'Sign Out' : 'Sign In'}
           image={
-            signedIn ? './img/menu_sign_out.png' : './img/menu_sign_in.png'
+            signedIn ? MenuSignOut : MenuSignIn
           }
           currentActive={activeTab}
           onClick={async (target: string) => {
@@ -224,7 +238,7 @@ export default function SideNav() {
         {signedIn && (
           <MenuEntry
             text="My Profile"
-            image="./img/menu_profile.png"
+            image={MenuProfile}
             currentActive={activeTab}
             to={routes.HOME}
             onClick={(target: string) => {

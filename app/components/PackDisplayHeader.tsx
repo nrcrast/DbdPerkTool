@@ -32,6 +32,8 @@ const DropdownButtonWrapper = styled.div`
 `;
 
 const ShowFavoritesWrapper = styled.div`
+  padding-left: 8px;
+  padding-right: 8px;
   display: flex;
   margin-left: auto;
   margin-right: auto;

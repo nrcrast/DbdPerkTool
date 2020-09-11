@@ -14,6 +14,7 @@ type SettingSchema = {
   showCreate: boolean;
   showNsfw: boolean;
   targetServer: string;
+  writeToTxt: boolean;
 };
 
 class Settings {
@@ -34,6 +35,7 @@ class Settings {
       autoUpdate: false,
       showCreate: false,
       showNsfw: false,
+      writeToTxt: false,
       targetServer: 'https://dead-by-daylight-icon-toolbox.herokuapp.com'
     };
     this.settings = { ...this.defaultSettings };

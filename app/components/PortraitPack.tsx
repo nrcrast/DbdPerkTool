@@ -14,6 +14,7 @@ import Title from './IconPack/Title';
 import NsfwWarning from './IconPack/NsfwWarning';
 import Details from './IconPack/PortraitPack/Details';
 import settingsUtils from '../settings/Settings';
+import styled from 'styled-components';
 
 type MyProps = {
   id: string;
@@ -31,13 +32,17 @@ type MyState = {
   showDetails: boolean;
 };
 
+const PortraitPreviewWrapper = styled.div`
+  padding-top: 30px;
+`;
+
 export default class PortraitPack extends Component<MyProps, MyState> {
   constructor(params: MyProps) {
     super(params);
     this.state = {
       saving: false,
       saveProgress: 0,
-      showDetails: false,
+      showDetails: false
     };
   }
 
@@ -134,18 +139,23 @@ export default class PortraitPack extends Component<MyProps, MyState> {
       <Card
         className={`${featured} m-3 ml-0 mr-0 text-center shadow perk-card border-0`}
       >
-        <Card.Body className="p-2">
-          <MainPreview
-            viewMode={this.props.viewMode}
-            urls={urls}
-            id={this.props.id}
-            baseUrl={this.props.meta.previewDir}
-            isNsfw={this.props.meta.isNsfw && !settingsUtils.settings.showNsfw}
-          />
-        </Card.Body>
+        <PortraitPreviewWrapper>
+          <Card.Body className="p-2">
+            <MainPreview
+              viewMode={this.props.viewMode}
+              urls={urls}
+              id={this.props.id}
+              baseUrl={this.props.meta.previewDir}
+              isNsfw={
+                this.props.meta.isNsfw && !settingsUtils.settings.showNsfw
+              }
+            />
+          </Card.Body>
+        </PortraitPreviewWrapper>
         <Title
           name={this.props.meta.name}
           isFeatured={this.props.meta.featured}
+          id={this.props.id}
         />
         {cardBody}
         <InstallButton

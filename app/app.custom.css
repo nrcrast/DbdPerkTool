@@ -208,6 +208,10 @@ a:hover {
   overflow: hidden;
 }
 
+.progress-bar {
+  background: #23a4a4;
+}
+
 .modal-body {
   max-height: calc(100vh - 210px);
   overflow-y: auto;

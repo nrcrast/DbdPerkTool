@@ -4,5 +4,6 @@
   "PERKS": "/",
   "CREATE": "/create",
   "PORTRAITS": "/portraits",
-  "DEFAULT": "/default"
+  "DEFAULT": "/default",
+  "MY_PACKS": "/mypacks"
 }

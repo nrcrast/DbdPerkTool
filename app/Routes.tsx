@@ -8,6 +8,7 @@ import SettingsPage from './containers/SettingsPage';
 import CreatePage from './containers/CreatePage';
 import PortraitPage from './containers/PortraitPage';
 import DefaultPage from './containers/DefaultPage';
+import MyPacksPage from './containers/MyPacksPage';
 
 export default function Routes() {
   return (
@@ -19,6 +20,7 @@ export default function Routes() {
         <Route exact path={routes.SETTINGS} component={SettingsPage} />
         <Route exact path={routes.CREATE} component={CreatePage} />
         <Route exact path={routes.DEFAULT} component={DefaultPage} />
+        <Route exact path={routes.MY_PACKS} component={MyPacksPage}/>
       </Switch>
     </App>
   );

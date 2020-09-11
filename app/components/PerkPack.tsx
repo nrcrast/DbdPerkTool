@@ -1,5 +1,8 @@
 import React, { Component, useState, useContext } from 'react';
+import fs from 'fs-extra';
 import log from 'electron-log';
+import path from 'path';
+import { app, remote, shell } from 'electron';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
@@ -45,6 +48,18 @@ export default function PerkPack(props: MyProps) {
     const pack = new PerkPackModel(PackMetaMapper.fromRaw(props.meta));
     try {
       await pack.install(progressCb, opts);
+
+      if (settingsUtils.settings.writeToTxt === true) {
+        const writePackTxtPath = path.resolve(
+          (app || remote.app).getPath('userData'),
+          'currentperkpack.txt'
+        );
+        await fs.writeFile(
+          writePackTxtPath,
+          `Current Perk Pack: ${props.meta.author} - ${props.meta.name}`
+        );
+      }
+
       props.onInstallComplete(id);
     } catch (e) {
       props.onError(`Error installing pack ${id}: ${e}`);
