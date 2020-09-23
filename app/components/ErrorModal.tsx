@@ -25,7 +25,7 @@ export default function ErrorModal(props: MyProps) {
 		  </p>
 		</Modal.Body>
 		<Modal.Footer>
-		  <Button onClick={props.onHide}>Close</Button>
+		  <Button variant="secondary" onClick={props.onHide}>Close</Button>
 		</Modal.Footer>
 	  </Modal>
 	);

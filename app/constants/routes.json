@@ -5,5 +5,7 @@
   "CREATE": "/create",
   "PORTRAITS": "/portraits",
   "DEFAULT": "/default",
-  "MY_PACKS": "/mypacks"
+  "MY_PACKS": "/mypacks",
+  "MY_PROFILE": "/myprofile",
+  "ADMIN": "/admin"
 }

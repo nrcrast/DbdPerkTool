@@ -22,10 +22,9 @@ const TooltipWrapper = styled.div`
   align-items: center;
 `;
 
-async function doSave(installPath, autoUpdate, showCreate, showNsfw, writeToTxt) {
+async function doSave(installPath, autoUpdate, showNsfw, writeToTxt) {
   settingsUtil.settings.dbdInstallPath = installPath;
-  settingsUtil.settings.autoUpdate = autoUpdate;
-  settingsUtil.settings.showCreate = showCreate;
+  settingsUtil.settings.updateWithoutAsking = autoUpdate;
   settingsUtil.settings.showNsfw = showNsfw;
   settingsUtil.settings.writeToTxt = writeToTxt;
   await settingsUtil.save();
@@ -39,7 +38,6 @@ function openLogs() {
 export default function Settings(props: MyProps) {
   const [installPath, setInstallPath] = useState('');
   const [autoUpdate, setAutoUpdate] = useState(false);
-  const [showCreate, setShowCreate] = useState(false);
   const [showNsfw, setShowNsfw] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
   const [writePackToTxt, setWritePackToTxt] = useState(false);
@@ -57,8 +55,7 @@ export default function Settings(props: MyProps) {
     await settingsUtil.read();
     const { settings } = settingsUtil;
     setInstallPath(settings.dbdInstallPath);
-    setAutoUpdate(settings.autoUpdate || false);
-    setShowCreate(settings.showCreate || false);
+    setAutoUpdate(settings.updateWithoutAsking || true);
     setShowNsfw(settings.showNsfw || false);
     setWritePackToTxt(settings.writeToTxt || false);
   };
@@ -73,7 +70,7 @@ export default function Settings(props: MyProps) {
       <Form
         onSubmit={async e => {
           e.preventDefault();
-          await doSave(installPath, autoUpdate, showCreate, showNsfw, writePackToTxt);
+          await doSave(installPath, autoUpdate, showNsfw, writePackToTxt);
           setUnsaved(false);
         }}
         onChange={() => setUnsaved(true)}
@@ -90,16 +87,6 @@ export default function Settings(props: MyProps) {
             checked={autoUpdate}
             onChange={e => {
               setAutoUpdate(e.target.checked);
-            }}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="Show Create Tab (Requires Restart)"
-            checked={showCreate}
-            onChange={e => {
-              setShowCreate(e.target.checked);
             }}
           />
         </Form.Group>
@@ -133,11 +120,11 @@ export default function Settings(props: MyProps) {
           </TooltipWrapper>
         </Form.Group>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <Button variant="dark" type="submit">
+          <Button variant="secondary" type="submit">
             {saveButtonValue}
           </Button>
           <Button
-            variant="dark"
+            variant="secondary"
             style={{ marginLeft: 'auto', marginRight: '3px' }}
             onClick={async () => {
               await settingsUtil.setDefaultSettings();
@@ -147,7 +134,7 @@ export default function Settings(props: MyProps) {
           >
             Reset to Default
           </Button>
-          <Button variant="dark" onClick={() => openLogs()}>
+          <Button variant="secondary" onClick={() => openLogs()}>
             Open Logs
           </Button>
         </div>

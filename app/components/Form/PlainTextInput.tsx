@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 type MyProps = {
   onChange: Function;
+  onInputChange: Function;
   options: any;
   value: string;
   label: string;
@@ -28,7 +29,9 @@ export default function PlainTextInput(props: MyProps) {
     input = (
       <Typeahead
         onChange={props.onChange}
+        onInputChange={props.onInputChange}
         allowNew={true}
+        labelKey='name'
         options={props.options}
       />
     );

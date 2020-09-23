@@ -1,19 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import PerkPack from './PerkPack';
 import PackDisplay from './PackDisplay';
+import UserContext from '../context/UserContext';
 
 type MyProps = {};
 type MyState = {};
 
-export default class Perks extends Component<MyProps, MyState> {
-  constructor(params: {}) {
-    super(params);
-    this.state = {};
-  }
+export default function Perks() {
+  const userContext = useContext(UserContext);
 
-  fromPacksBuildCards(packs, opts) {
+  const fromPacksBuildCards = (packs, opts) => {
     return packs
-      .filter(pack => pack.id !== 'Dead-By-Daylight-Default-Icons')
+      .filter(
+        pack =>
+          pack.id !== 'Dead-By-Daylight-Default-Icons'
+      )
       .map(pack => {
         return (
           <PerkPack
@@ -30,11 +31,9 @@ export default class Perks extends Component<MyProps, MyState> {
           />
         );
       });
-  }
+  };
 
-  render() {
-    return (
-      <PackDisplay packQuery={{}} cardBuilder={this.fromPacksBuildCards} />
-    );
-  }
+    return <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} />;
+  
 }
+

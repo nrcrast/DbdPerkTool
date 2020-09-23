@@ -9,7 +9,7 @@ import settingsUtil from '../../../settings/Settings';
 type FileTreeNode = {
   key: string;
   title: string;
-  children: Array<FileTreeNode>
+  children: Array<FileTreeNode>;
 };
 
 type FileTree = Array<FileTreeNode>;
@@ -51,15 +51,12 @@ export default class PerkPackInstallOptionsModal extends Component<
   async componentDidUpdate(prevProps: MyProps) {
     if (this.props.show !== prevProps.show) {
       const packDetails = (
-        await axios.get(
-          `${settingsUtil.get('targetServer')}/pack`,
-          {
-            params: {
-              packId: this.props.meta.id,
-              download: false
-            }
+        await axios.get(`${settingsUtil.get('targetServer')}/pack`, {
+          params: {
+            packId: this.props.meta.id,
+            download: false
           }
-        )
+        })
       ).data;
       this.buildTreeDataFrom(packDetails.files);
       this.setState({
@@ -90,8 +87,8 @@ export default class PerkPackInstallOptionsModal extends Component<
   }
 
   buildTreeDataFrom(fileList: Array<string>) {
-    const tree:FileTree = [];
-    const checkedKeys:Array<string> = [];
+    const tree: FileTree = [];
+    const checkedKeys: Array<string> = [];
 
     fileList.forEach(file => {
       const parent = file.slice(0, file.indexOf('/'));
@@ -155,6 +152,7 @@ export default class PerkPackInstallOptionsModal extends Component<
         <Modal.Footer>
           <div style={{ marginRight: 'auto' }}>
             <Button
+              variant="secondary"
               style={{ marginRight: '3px' }}
               onClick={() => {
                 this.setState({ checkedKeys: [] });
@@ -163,6 +161,7 @@ export default class PerkPackInstallOptionsModal extends Component<
               Select None
             </Button>
             <Button
+              variant="secondary"
               onClick={() => {
                 this.setState({ checkedKeys: [...this.state.allKeys] });
               }}
@@ -171,6 +170,7 @@ export default class PerkPackInstallOptionsModal extends Component<
             </Button>
           </div>
           <Button
+            variant="secondary"
             onClick={() => {
               this.onConfirm();
             }}

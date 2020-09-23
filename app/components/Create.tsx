@@ -17,6 +17,7 @@ import settingsUtil from '../settings/Settings';
 import styled from 'styled-components';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
+import NoAuthorProfile from './NoAuthorProfile';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -44,6 +45,13 @@ export default function Create(props: MyProps) {
   const [packs, setPacks] = useState([]);
   const userContext = useContext(UserContext);
 
+  if (!userContext.user.authorProfile) {
+    return <NoAuthorProfile />;
+  }
+
+  const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
+  console.log('Auto author: ' + autoAuthor);
+
   const loadPacks = async () => {
     const packs = await axios.get(
       `${settingsUtil.get('targetServer')}/packs?all=true`
@@ -54,31 +62,6 @@ export default function Create(props: MyProps) {
   useEffect(() => {
     loadPacks();
   }, []);
-
-  const uploadZip = async (sourceFile: string) => {
-    const file = await fs.readFile(sourceFile);
-    const uploadUrl = await api.executor.apis.default.getUploadServer();
-    await axios.post(`${uploadUrl}/v2/packs`, file, {
-      headers: {
-        'Content-Type': 'application/octet-stream',
-        Authorization: `Bearer ${api.executor.jwt.token}`
-      },
-      onUploadProgress: progressEvent => {
-        const totalLength = progressEvent.lengthComputable
-          ? progressEvent.total
-          : progressEvent.target.getResponseHeader('content-length') ||
-            progressEvent.target.getResponseHeader(
-              'x-decompressed-content-length'
-            );
-        console.log('onUploadProgress', totalLength);
-        if (totalLength !== null) {
-          setSaveProgress(
-            Math.round((progressEvent.loaded * 100) / totalLength)
-          );
-        }
-      }
-    });
-  };
 
   const doCreate = async e => {
     e.preventDefault();
@@ -101,7 +84,7 @@ export default function Create(props: MyProps) {
       packDirModel,
       undefined,
       title,
-      author,
+      autoAuthor ? userContext.user.authorProfile.name : author,
       description,
       isNsfw,
       validationStatus.skipFiles
@@ -113,7 +96,9 @@ export default function Create(props: MyProps) {
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
       await api.getUser();
-      await uploadZip(outputZip);
+      await api.uploadZip(outputZip, progress => {
+        setSaveProgress(progress);
+      });
       setSuccessText(
         `Your pack has been uploaded. Zip has also been generated at ${outputZip}`
       );
@@ -151,23 +136,23 @@ export default function Create(props: MyProps) {
       >
         <PlainTextInput
           label="Title"
-          onChange={(selected: any) => {
-            const data = selected[0] || '';
-            const packName = data.label || data;
-            const targetPack: PackMeta = packs.find(
-              pack => pack.name === packName
-            );
-
-            if (targetPack) {
-              setTitle(packName);
-              setDescription(targetPack.description);
-              setAuthor(targetPack.author);
-              setIsNsfw(targetPack.isNsfw);
-            } else {
-              setTitle(packName);
-            }
+          onInputChange={(text: string, event: Event) => {
+            setTitle(text);
           }}
-          options={packs.map(pack => pack.name).sort()}
+          onChange={(selected: any) => {
+            if (selected && selected.length > 0) {
+              const targetPack = selected[0];
+              if(!targetPack.customOption) {
+                setTitle(targetPack.name);
+                setDescription(targetPack.description);
+                setAuthor(targetPack.author);
+                setIsNsfw(targetPack.isNsfw);
+              } else {
+                setTitle(targetPack.name);
+              }
+            } 
+          }}
+          options={packs.sort()}
         />
         <PlainTextInput
           label="Description"
@@ -176,13 +161,16 @@ export default function Create(props: MyProps) {
           }}
           value={description}
         />
-        <PlainTextInput
-          label="Author"
-          onChange={e => {
-            setAuthor(e.target.value);
-          }}
-          value={author}
-        />
+        {!autoAuthor && (
+          <PlainTextInput
+            label="Author"
+            onChange={e => {
+              setAuthor(e.target.value);
+            }}
+            value={author}
+          />
+        )}
+
         <Form.Group>
           <Form.Check
             type="checkbox"
@@ -211,7 +199,7 @@ export default function Create(props: MyProps) {
               />
             </Col>
             <Col>
-              <Button variant="dark" onClick={pickPackDir}>
+              <Button variant="secondary" onClick={pickPackDir}>
                 Browse
               </Button>
             </Col>
@@ -219,7 +207,7 @@ export default function Create(props: MyProps) {
         </Form.Group>
 
         <CreateButtonWrapper>
-          <Button variant="dark" type="submit" className="mb-1">
+          <Button variant="secondary" type="submit" className="mb-1">
             <Spinner
               as="span"
               animation="border"

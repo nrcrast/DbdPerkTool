@@ -6,7 +6,7 @@ type MyProps = {
 };
 
 export default function Author(props: MyProps) {
-  const authorLinks = props.name.split('+').map<React.ReactNode>((author, index) => {
+  const authorLinks = props.name.split(/\+|&/).map(author => author.trim()).map<React.ReactNode>((author, index) => {
     const authorTrimmed = author.trim();
     return (
       <a

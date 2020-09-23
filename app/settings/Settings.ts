@@ -10,11 +10,11 @@ type SettingSchema = {
   installedPack: string;
   installedPortraitPack: string;
   lastUpdate: string;
-  autoUpdate: boolean;
-  showCreate: boolean;
+  updateWithoutAsking: boolean;
   showNsfw: boolean;
   targetServer: string;
   writeToTxt: boolean;
+  lastNotificationRead: string;
 };
 
 class Settings {
@@ -32,9 +32,9 @@ class Settings {
       dbdInstallPath: '',
       installedPack: '',
       installedPortraitPack: '',
-      autoUpdate: false,
-      showCreate: false,
+      updateWithoutAsking: true,
       showNsfw: false,
+      lastNotificationRead: '',
       writeToTxt: false,
       targetServer: 'https://dead-by-daylight-icon-toolbox.herokuapp.com'
     };

@@ -10,7 +10,7 @@ type MyProps = {
 export default function PackInstallButton(props: MyProps) {
   return (
     <Button
-      variant="dark"
+      variant="secondary"
       onClick={() => {
         props.onClick();
       }}

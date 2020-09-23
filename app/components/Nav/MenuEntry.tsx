@@ -19,7 +19,7 @@ const ImageWrapper = styled.span`
 
 export default function MenuEntry(props: MyProps) {
   const active = props.currentActive === props.to;
-  const className = active ? 'menu-entry menu-entry-active' : 'menu-entry';
+  const className = active ? 'menu-entry menu-entry-active w-100' : 'menu-entry w-100';
   if (props.image) {
     return (
       <Link

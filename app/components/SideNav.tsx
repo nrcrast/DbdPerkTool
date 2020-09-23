@@ -4,10 +4,14 @@ import { shell } from 'electron';
 import styled from 'styled-components';
 import routes from '../constants/routes.json';
 import Image from 'react-bootstrap/Image';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import MenuEntry from './Nav/MenuEntry';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import settingsUtil from '../settings/Settings';
+import ConfirmationModal from './ConfirmationModal';
+import Social from './Social';
 
 import ToolboxLogo from '../img/toolbox-logo.png';
 import UserImage from '../img/user.png';
@@ -22,7 +26,6 @@ import MenuSettings from '../img/menu_settings.png';
 import MenuSignOut from '../img/menu_sign_out.png';
 import MenuSignIn from '../img/menu_sign_in.png';
 
-
 const { BrowserWindow } = electron.remote;
 
 const NavContentWrapper = styled.div`
@@ -30,15 +33,7 @@ const NavContentWrapper = styled.div`
   flex-direction: column;
   width: 200px;
   padding-left: 10px;
-`;
-
-const NavWrapper = styled.div`
-  width: 100%;
-`;
-
-const NavButtonContentWrapper = styled.div`
-  display: flex;
-  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
 `;
 
 const LogoWrapper = styled.div`
@@ -57,6 +52,12 @@ const UserProfileWrapper = styled.div`
   text-align: center;
 `;
 
+const SignInWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
 const BottomEntries = styled.div`
   display: flex;
   flex-direction: column;
@@ -67,17 +68,13 @@ const LogoLabel = styled.p`
   text-align: center;
 `;
 
-const NavigationLabel = styled.h4`
-  text-align: center;
-`;
-
-const NavDivider = styled.hr``;
-
 async function signIn(onJwt) {
   const authWindow = new BrowserWindow({
     width: 800,
     height: 600,
     show: false,
+    //frame: false,
+    autoHideMenuBar: true,
     'node-integration': false,
     'web-security': false
   });
@@ -114,13 +111,12 @@ export default function SideNav() {
     shell.openExternal(e.target.href);
   }
   const userContext = useContext(UserContext);
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [activeTab, setActiveTab] = useState(routes.PERKS);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
 
-  let userIcon = (
-    <Image src={UserImage} className="user-profile-placeholder" />
-  );
+  let userIcon = <Image src={UserImage} className="user-profile-placeholder" />;
   if (signedIn) {
     userIcon = (
       <Image
@@ -131,6 +127,13 @@ export default function SideNav() {
     );
   }
 
+  const renderTooltip = props => (
+    <Tooltip id="writepack-tooltip" {...props}>
+      Sign in via Steam for features such as adding packs to your favorites and
+      uploading your own!
+    </Tooltip>
+  );
+
   return (
     <NavContentWrapper>
       <LogoWrapper>
@@ -138,6 +141,7 @@ export default function SideNav() {
         <LogoLabel>{`Dead By Daylight Icon Toolbox v${(
           electron.app || electron.remote.app
         ).getVersion()}`}</LogoLabel>
+        <Social />
       </LogoWrapper>
       {/* <NavigationLabel>Navigation</NavigationLabel> */}
       <MenuEntry
@@ -194,6 +198,18 @@ export default function SideNav() {
         </div>
       )}
 
+      {signedIn && userContext.user.abilities.can('manage', 'all') && (
+        <MenuEntry
+          text="Admin"
+          currentActive={activeTab}
+          to={routes.ADMIN}
+          icon="fas fa-user-shield fa-lg"
+          onClick={(target: string) => {
+            setActiveTab(target);
+          }}
+        />
+      )}
+
       <BottomEntries>
         <MenuEntry
           text="Settings"
@@ -213,45 +229,64 @@ export default function SideNav() {
             setActiveTab(target);
           }}
         />
-        <MenuEntry
-          text={signedIn ? 'Sign Out' : 'Sign In'}
-          image={
-            signedIn ? MenuSignOut : MenuSignIn
-          }
-          currentActive={activeTab}
-          onClick={async (target: string) => {
-            if (!signedIn) {
-              signIn(async jwt => {
-                if (jwt) {
-                  await api.setLoggedIn(jwt);
-                  userContext.setUser(api.currentUser);
-                  setSignedIn(true);
-                }
-              });
-            } else {
-              await api.setLoggedOut();
-              setSignedIn(false);
-              userContext.setUser(null);
-            }
-          }}
-        />
         {signedIn && (
           <MenuEntry
             text="My Profile"
             image={MenuProfile}
             currentActive={activeTab}
-            to={routes.HOME}
+            to={routes.MY_PROFILE}
             onClick={(target: string) => {
               setActiveTab(target);
             }}
           />
         )}
+        <SignInWrapper>
+          <MenuEntry
+            text={signedIn ? 'Sign Out' : 'Sign In'}
+            image={signedIn ? MenuSignOut : MenuSignIn}
+            currentActive={activeTab}
+            onClick={async (target: string) => {
+              if (!signedIn) {
+                signIn(async jwt => {
+                  if (jwt) {
+                    await api.setLoggedIn(jwt);
+                    userContext.setUser(api.currentUser);
+                    setSignedIn(true);
+                  }
+                });
+              } else {
+                setShowSignOutConfirm(true);
+              }
+            }}
+          />
+          {!signedIn && (
+            <OverlayTrigger
+              placement="right"
+              delay={{ show: 250, hide: 400 }}
+              overlay={renderTooltip}
+            >
+              <i className="fas fa-question-circle fa-lg ml-2"></i>
+            </OverlayTrigger>
+          )}
+        </SignInWrapper>
 
         <UserProfileWrapper>
           {userIcon}
           {signedIn && <h5>{api.currentUser.steamDisplayName}</h5>}
         </UserProfileWrapper>
       </BottomEntries>
+      <ConfirmationModal
+        show={showSignOutConfirm}
+        onHide={() => setShowSignOutConfirm(false)}
+        title="Sign Out"
+        text="Are you sure you want to Sign Out?"
+        onConfirm={async () => {
+          await api.setLoggedOut();
+          setSignedIn(false);
+          userContext.setUser(null);
+          setShowSignOutConfirm(false);
+        }}
+      />
     </NavContentWrapper>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
@@ -16,7 +16,11 @@ import UpdateYesNoDialog from '../components/update/UpdateYesNoDialog';
 import UpdateProgress from '../components/update/UpdateProgress';
 import settingsUtil from '../settings/Settings';
 import Button from 'react-bootstrap/Button';
+import DeadByDaylight from '../steam/DeadByDaylight';
+import ConfirmationModal from '../components/ConfirmationModal';
 import UserContext from '../context/UserContext';
+import Notification from '../components/Notification';
+import axios from 'axios';
 import api from '../api/Api';
 
 type Props = {
@@ -41,6 +45,16 @@ const Root = ({ store, history }: Props) => {
   const [latestVersion, setLatestVersion] = useState('');
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
+  const [packs, setCurrentPacks] = useState([]);
+  const [showUpdateDbdPath, setShowUpdateDbdPath] = useState(false);
+  const [detectedDbdPath, setDetectedDbdPath] = useState('');
+  const [notification, setNotification] = useState({
+    show: false,
+    title: '',
+    text: '',
+    id: ''
+  });
+  const [portraits, setCurrentPortraits] = useState([]);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
 
   log.info(`Current User: `, currentUser);
@@ -53,7 +67,7 @@ const Root = ({ store, history }: Props) => {
   };
 
   ipcRenderer.on('update-available', (event, arg) => {
-    if (settingsUtil.settings.autoUpdate) {
+    if (settingsUtil.settings.updateWithoutAsking) {
       onUpdateModalClose(true);
     } else {
       setShowUpdateModal(true);
@@ -67,11 +81,75 @@ const Root = ({ store, history }: Props) => {
     setUpdateProgress(parseInt(arg.percent));
   });
 
+  const refreshPacks = async () => {
+    const packs = await axios.get(
+      `${settingsUtil.get('targetServer')}/packs`,
+      {}
+    );
+    setCurrentPacks(packs.data);
+  };
+
+  const refreshPortraits = async () => {
+    const packs = await axios.get(`${settingsUtil.get('targetServer')}/packs`, {
+      params: { hasPortraits: true }
+    });
+    setCurrentPortraits(packs.data);
+  };
+
+  const popNotification = async () => {
+    const notification = await api.popNotification();
+
+    if (notification) {
+      setNotification({
+        show: true,
+        id: notification._id,
+        text: notification.text,
+        title: notification.name
+      });
+    }
+  };
+
+  const checkDbdPath = async () => {
+    const dbd = new DeadByDaylight();
+
+    try {
+      const dbdPath = await dbd.getInstallPath();
+      if (dbdPath !== settingsUtil.settings.dbdInstallPath) {
+        setDetectedDbdPath(dbdPath);
+        setShowUpdateDbdPath(true);
+      }
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    checkDbdPath();
+    popNotification();
+    refreshPacks();
+    refreshPortraits();
+  }, []);
+
+  // Every 30 seconds, check for pack changes!
+  useEffect(() => {
+    const interval = setInterval(() => {
+      api.checkForPackChanges().then(newHash => {
+        if (newHash) {
+          refreshPacks();
+          refreshPortraits();
+        }
+      });
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <UserContext.Provider
           value={{
+            portraits,
+            packs,
+            refreshPacks,
+            refreshPortraits,
             user: currentUser,
             setUser: user => {
               setCurrentUser(user);
@@ -81,7 +159,7 @@ const Root = ({ store, history }: Props) => {
           <MainContainer>
             <SideNav />
             <Content>
-              <Row className="main-content shadow p-1 m-3 justify-content-center">
+              <Row className="main-content shadow m-2 justify-content-center">
                 <Routes />
               </Row>
             </Content>
@@ -93,6 +171,33 @@ const Root = ({ store, history }: Props) => {
             <UpdateProgress
               progress={updateProgress}
               show={showProgressModal}
+            />
+            <Notification
+              show={notification.show}
+              id={notification.id}
+              title={notification.title}
+              text={notification.text}
+              onHide={async () => {
+                setNotification({ show: false, id: '', text: '', title: '' });
+                try {
+                  await popNotification();
+                } catch (err) {
+                  logger.error(err);
+                }
+              }}
+            />
+            <ConfirmationModal
+              show={showUpdateDbdPath}
+              onConfirm={async () => {
+                setShowUpdateDbdPath(false);
+                settingsUtil.settings.dbdInstallPath = detectedDbdPath;
+                await settingsUtil.save();
+              }}
+              onHide={() => {
+                setShowUpdateDbdPath(false);
+              }}
+              title="Dead by Daylight Path Change Detected"
+              text={`The Toolbox has detected that your Dead by Daylight install location has changed to ${detectedDbdPath} from ${settingsUtil.settings.dbdInstallPath}. If you would like to update this setting in the toolbox now, click Yes. Otherwise, click No to ignore.`}
             />
           </MainContainer>
         </UserContext.Provider>

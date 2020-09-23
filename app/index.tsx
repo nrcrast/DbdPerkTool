@@ -40,17 +40,7 @@ mainWindow.webContents.session.clearCache(function() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   await settingsUtil.read();
-  const lastUpdate = await axios.get(
-    'https://dead-by-daylight-icon-toolbox.herokuapp.com/lastUpdate'
-  );
-  logger.info(`Last Update: ${lastUpdate.data} Current Update: ${settingsUtil.settings.lastUpdate}`);
-  if (lastUpdate.data !== settingsUtil.settings.lastUpdate) {
-    logger.info('Clearing cache!');
-    mainWindow.webContents.session.clearCache(() => {});
-  }
-
-  settingsUtil.settings.lastUpdate = lastUpdate.data;
-  await settingsUtil.save();
+  await api.checkForPackChanges();
   await api.initialize();
 
   logger.info(`Target Server: ${settingsUtil.get('targetServer')}`);

@@ -1,10 +1,22 @@
 body {
+  background-color: black;
+  overflow-y: hidden;
+}
+
+body::after {
+  content: "";
   background-image: url('img/bg.jpg');
   background-attachment: fixed;
-  background-color: black;
+
   background-size: cover; /* <------ */
   background-repeat: no-repeat;
-  overflow-y: hidden;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;   
 }
 
 body,
@@ -19,28 +31,77 @@ html {
 }
 
 .main-content {
-  background: rgba(48, 48, 48, 0.1);
   height: 100%;
 }
 
-.main-navbar {
-  background: rgba(48, 48, 48, 0.5);
-  max-height: 38px;
-}
-
 .perk-card {
-  border-radius: 0;
-  background: rgba(48, 48, 48, 0.5);
+  border-radius: 1;
+  background: rgba(0, 0, 0, 0.5);
   max-width: 500px;
+  margin-bottom: 1em;
+  border: 1px solid rgba(35, 164, 164, 0.4);
 }
 
 .nav-tabs .nav-link {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  border: 0;
+  outline: 0;
+}
+
+.nav-tabs .nav-link:hover {
+  background-color: rgba(35, 164, 164, 0.4);
+}
+
+.nav-tabs .nav-link:focus {
+  background-color: rgba(35, 164, 164, 0.4);
+}
+
+.nav-tabs .nav-link.active {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: rgba(35, 164, 164, 0.2);
+  border: 0;
 }
 
 .modal-content {
+  border: 0;
   border-radius: 0;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.modal-footer {
+  border: 0;
+}
+
+.modal-body {
+  overflow-x: hidden;
+}
+
+.modal-body .list-group-item {
+  background: rgba(35, 164, 164, 0.2);
+  margin: 1px;
+  border: 0;
+}
+
+.modal-header {
+  border-bottom: 0;
+}
+
+.modal-content ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content ::-webkit-scrollbar-thumb {
+  background-color: #23a4a4; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid rgba(0, 0, 0, 0.9); /* creates padding around scroll thumb */
+}
+
+.dropdown-menu {
+  border: 0;
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.9);
 }
 
 .pack-featured {
@@ -66,6 +127,34 @@ html {
   height: 50%;
 }
 
+.button {
+  border-width: 0;
+}
+
+.btn-info {
+  border-width: 0;
+  background: #23a4a4;
+}
+
+.btn-info:not(:disabled):not(.disabled):active {
+  border-width: 0;
+  background: #23a4a4;
+}
+
+.btn-info:focus {
+  border-width: 0;
+  background: #23a4a4;
+}
+
+.btn-info:active {
+  border-width: 0;
+  background: #23a4a4;
+}
+
+.btn-info:hover {
+  background: #478694;
+}
+
 code {
   color: #23a4a4;
 }
@@ -81,7 +170,7 @@ a:hover {
 
 .topnav-button {
   display: inline-flex;
-  align-items: center; 
+  align-items: center;
   margin-left: 5px;
   max-height: 25px;
   font-weight: bold;
@@ -182,6 +271,16 @@ a:hover {
   border: none;
 }
 
+.show >.btn-secondary.dropdown-toggle {
+  background-color: #478694;
+  border: none;
+}
+
+.btn-secondary:not(:disabled):not(.disabled):active, .show >.btn-secondary.dropdown-toggle {
+  background-color: #478694;
+  border: none;
+}
+
 .btn-secondary:hover {
   background-color: #478694;
   border: none;
@@ -217,6 +316,24 @@ a:hover {
   overflow-y: auto;
 }
 
+.author-link-remove {
+  color: #d97427;
+}
+
+.author-link-remove:hover {
+  color: #a37c5d;
+  cursor: pointer;
+}
+
+.author-link-add {
+  color: #23a4a4;
+}
+
+.author-link-add:hover {
+  color: #478694;
+  cursor: pointer;
+}
+
 .sidenav-logo {
   max-width: 70px;
 }
@@ -230,6 +347,7 @@ a:hover {
   margin-bottom: 3px;
   padding: 5px;
   font-weight: bold;
+  border-width: 0;
 }
 
 .menu-entry:hover {
@@ -242,14 +360,25 @@ a:hover {
   background: rgba(35, 164, 164, 0.2);
 }
 
+.menu-entry-active:focus {
+  border-width: 0;
+  outline: 0;
+}
+
 .menu-image {
   width: 30px;
   height: auto;
 }
 
 .user-profile-placeholder {
-  max-width:100px;
+  max-width: 100px;
   height: auto;
+}
+
+.my-profile-avatar {
+  max-width: 100px;
+  height: auto;
+  max-height: 100px;
 }
 
 .ribbon-wrapper {
@@ -287,15 +416,15 @@ a:hover {
 }
 
 ::-webkit-scrollbar {
-  width: 12px;               /* width of the entire scrollbar */
+  width: 12px; /* width of the entire scrollbar */
 }
 ::-webkit-scrollbar-track {
-  background: #303030;        /* color of the tracking area */
+  background: #303030; /* color of the tracking area */
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #23a4a4;    /* color of the scroll thumb */
-  border-radius: 20px;       /* roundness of the scroll thumb */
-  border: 3px solid #303030;  /* creates padding around scroll thumb */
+  background-color: #23a4a4; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid #303030; /* creates padding around scroll thumb */
 }
 
 #react-paginate ul {

@@ -1,6 +1,8 @@
 import React, { Component, useState, useContext } from 'react';
+import { subject } from '@casl/ability';
 import fs from 'fs-extra';
 import log from 'electron-log';
+import { DateTime } from 'luxon';
 import path from 'path';
 import { app, remote, shell } from 'electron';
 import Button from 'react-bootstrap/Button';
@@ -21,6 +23,7 @@ import NsfwWarning from './IconPack/NsfwWarning';
 import settingsUtils from '../settings/Settings';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
+import AdminControls from './IconPack/AdminControls';
 
 type MyProps = {
   id: string;
@@ -76,6 +79,8 @@ export default function PerkPack(props: MyProps) {
     return `perks_${i}.png`;
   });
 
+  const lastUpdateStr = DateTime.fromISO(props.meta.lastUpdate).toRelative();
+
   let cardBody = (
     <Card.Body className="mb-0">
       <Row className="mb-2">
@@ -101,6 +106,11 @@ export default function PerkPack(props: MyProps) {
               props.setFilter(props.meta.latestChapter);
             }}
           />
+        </Col>
+      </Row>
+      <Row className="mb-2">
+        <Col>
+          <b>Last Update:</b> {lastUpdateStr}
         </Col>
       </Row>
 
@@ -133,18 +143,29 @@ export default function PerkPack(props: MyProps) {
             props.setFilter(props.meta.latestChapter);
           }}
         />
+        <Row className="mb-2">
+          <Col>
+            <b>Last Update:</b> {lastUpdateStr}
+          </Col>
+        </Row>
       </Card.Body>
     );
   }
 
-  const margin = props.viewMode === 'Normal' ? 'm-3' : 'mb-3';
   const featured = props.meta.featured ? 'pack-featured' : '';
+
+  let adminButtons = null;
+
+  if (
+    userContext.user &&
+    userContext.user.abilities.can('manage', subject('PerkPack', props.meta))
+  ) {
+    adminButtons = <AdminControls id={props.id} meta={props.meta} />;
+  }
 
   return (
     <div>
-      <Card
-        className={`${margin} ${featured} ml-0 mr-0 text-center shadow perk-card border-0`}
-      >
+      <Card className={`${featured} ml-0 mr-0 text-center shadow perk-card`}>
         <Card.Body>
           <MainPreview
             urls={urls}
@@ -167,7 +188,7 @@ export default function PerkPack(props: MyProps) {
           }}
         />
         <Button
-          variant="dark"
+          variant="secondary"
           className="m-1"
           onClick={() => {
             setShowDetails(true);
@@ -175,6 +196,7 @@ export default function PerkPack(props: MyProps) {
         >
           Details
         </Button>
+        {adminButtons}
       </Card>
       <Details
         show={showDetails}

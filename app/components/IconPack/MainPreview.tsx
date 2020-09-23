@@ -34,7 +34,7 @@ function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
   const images = props.urls.map<React.ReactNode>((url, index) => {
     return (
       <Col key={uuid()}>
-        <Image className={imageClass} src={`${props.baseUrl}${url}`} fluid />
+        <Image key={Date.now()} className={imageClass} src={`${props.baseUrl}${url}`} fluid />
       </Col>
     );
   });
@@ -57,7 +57,7 @@ function buildCompactPreview(props: MyProps, additionalImgClasses: string) {
   const images = props.urls.map<React.ReactNode>((url, index) => {
     return (
       <Carousel.Item key={uuid()}>
-        <Image className={imageClass} src={`${props.baseUrl}${url}`} fluid />
+        <Image key={Date.now()} className={imageClass} src={`${props.baseUrl}${url}`} fluid />
       </Carousel.Item>
     );
   });

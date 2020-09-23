@@ -97,7 +97,7 @@ export default function PackDisplayHeader(props: MyProps) {
     <Container>
       <DropdownButtonWrapper>
         <DropdownButton
-          variant="dark"
+          variant="secondary"
           id="sortDropDown"
           title={
             <span>
@@ -126,7 +126,7 @@ export default function PackDisplayHeader(props: MyProps) {
       </DropdownButtonWrapper>
       <DropdownButtonWrapper>
         <DropdownButton
-          variant="dark"
+          variant="secondary"
           id="viewModeDropDown"
           title={
             <span>
@@ -153,7 +153,7 @@ export default function PackDisplayHeader(props: MyProps) {
       </DropdownButtonWrapper>
       <DropdownButtonWrapper>
         <DropdownButton
-          variant="dark"
+          variant="secondary"
           id="viewModeDropDown"
           title={`Packs Per Page (${pageSizeText})`}
         >

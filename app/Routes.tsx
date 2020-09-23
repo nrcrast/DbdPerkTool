@@ -9,6 +9,8 @@ import CreatePage from './containers/CreatePage';
 import PortraitPage from './containers/PortraitPage';
 import DefaultPage from './containers/DefaultPage';
 import MyPacksPage from './containers/MyPacksPage';
+import MyProfilePage from './containers/MyProfilePage';
+import AdminPage from './containers/AdminPage';
 
 export default function Routes() {
   return (
@@ -21,6 +23,8 @@ export default function Routes() {
         <Route exact path={routes.CREATE} component={CreatePage} />
         <Route exact path={routes.DEFAULT} component={DefaultPage} />
         <Route exact path={routes.MY_PACKS} component={MyPacksPage}/>
+        <Route exact path={routes.MY_PROFILE} component={MyProfilePage}/>
+        <Route exact path={routes.ADMIN} component={AdminPage}/>
       </Switch>
     </App>
   );

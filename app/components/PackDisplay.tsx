@@ -20,7 +20,7 @@ axios.defaults.adapter = require('axios/lib/adapters/http');
 type MyProps = {
   cardBuilder: any;
   installedPackSettingsKey: string;
-  packQuery: any;
+  packs: any;
   showHeaderBar?: boolean;
   paginate?: boolean;
 };
@@ -61,7 +61,7 @@ const PaginatorWrapper = styled.div`
   margin-top: 3px;
   padding: 3px;
   width: 100%;
-  background: rgba(48, 48, 48, 0.5);
+  background: rgba(0, 0, 0, 0.5);
 `;
 
 function strcmpIgnoreCase(a, b) {
@@ -80,14 +80,12 @@ function getPackChapterNum(pack) {
 
 export default function PackDisplay(props: MyProps) {
   const [errorModalShow, setErrorModalShow] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchFilter, setSearchFilter] = useState('');
   const [sortKey, setSortKey] = useState('Downloads');
   const [errorText, setErrorText] = useState('');
   const [showAuthorPage, setShowAuthorPage] = useState(false);
   const [currentAuthor, setCurrentAuthor] = useState('');
   const [viewMode, setViewMode] = useState('Normal');
-  const [packs, setPacks] = useState([]);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(12);
   const [successModalShow, setSuccessModalShow] = useState(false);
@@ -95,18 +93,6 @@ export default function PackDisplay(props: MyProps) {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const userContext = useContext(UserContext);
   const deckWrapperRef = React.createRef();
-
-  const loadPerks = async () => {
-    const packs = await axios.get(`${settingsUtil.get('targetServer')}/packs`, {
-      params: props.packQuery || undefined
-    });
-    setPacks(packs.data);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    loadPerks();
-  }, []);
 
   const doSearchFilter = (text: string) => {
     const escapedRegex = searchFilter.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -184,23 +170,14 @@ export default function PackDisplay(props: MyProps) {
     return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
   };
 
+  console.log('PACK DISPLAY');
+
   const showHeaderBar = !(props.showHeaderBar === false);
   const paginate = !(props.paginate === false);
-  if (isLoading) {
-    return (
-      <Spinner
-        as="span"
-        animation="border"
-        role="status"
-        aria-hidden="true"
-        className="mr-2"
-        hidden={!isLoading}
-      />
-    );
-  }
   const errorModalTitle = 'Error';
   const errorModalText = errorText;
 
+  const packs = [...props.packs];
   packs.sort(packSortComparator);
 
   const filteredPacks = packs.filter(pack => isPackIncluded(pack));
@@ -220,6 +197,7 @@ export default function PackDisplay(props: MyProps) {
       setShowAuthorPage(true);
     },
     onSetFilter: (text: string) => {
+      setPage(0);
       setSearchFilter(text);
     }
   });
@@ -235,6 +213,7 @@ export default function PackDisplay(props: MyProps) {
           initialSortKey={sortKey}
           initialViewMode={viewMode}
           onSearchFilter={(text: string) => {
+            setPage(0);
             setSearchFilter(text);
           }}
           onSortKeySet={(text: string) => {
@@ -250,6 +229,7 @@ export default function PackDisplay(props: MyProps) {
           }}
           onShowFavoritesSet={favoritesOnly => {
             setFavoritesOnly(favoritesOnly);
+            setPage(0);
           }}
         />
       )}
@@ -298,6 +278,7 @@ export default function PackDisplay(props: MyProps) {
         author={currentAuthor}
         onHide={() => setShowAuthorPage(false)}
         onShowPacks={() => {
+          setPage(0);
           setShowAuthorPage(false);
           setSearchFilter(currentAuthor);
         }}
