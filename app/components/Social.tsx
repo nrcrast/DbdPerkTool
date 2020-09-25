@@ -16,7 +16,7 @@ type MyProps = {
 };
 
 const SocialWrapper = styled.div`
-margin-bottom: 10px;
+  margin-bottom: 10px;
 `;
 const BadgeWrapper = styled.div`
   display: flex;
@@ -68,7 +68,16 @@ export default function Social(props: MyProps) {
           }}
         ></Badge>
       </BadgeWrapper>
-      <Button variant="danger" onClick={() => {openLink(patreonLink)}}>Please consider donating!<br/><small>Your donations keep this tool alive</small></Button>
+      <Button
+        variant="danger"
+        onClick={() => {
+          openLink(patreonLink);
+        }}
+      >
+        Please consider donating!
+        <br />
+        <small>Your donations keep this tool alive</small>
+      </Button>
     </SocialWrapper>
   );
 }

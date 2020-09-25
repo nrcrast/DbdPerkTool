@@ -265,7 +265,7 @@ export default function SideNav() {
               delay={{ show: 250, hide: 400 }}
               overlay={renderTooltip}
             >
-              <i className="fas fa-question-circle fa-lg ml-2"></i>
+              <i className="fas fa-question-circle fa-lg ml-2 mr-2"></i>
             </OverlayTrigger>
           )}
         </SignInWrapper>

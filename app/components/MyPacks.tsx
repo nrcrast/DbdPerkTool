@@ -20,7 +20,7 @@ export default function MyPacks() {
       pack =>
         userContext.user.abilities.can('manage', subject('PerkPack', pack))
     );
-    console.log(myPacks);
+
     return myPacks
       .map(pack => {
         if(pack.hasPerks) {
@@ -66,7 +66,7 @@ export default function MyPacks() {
       ...userContext.packs,
       ...portraitOnlyPacks
     ];
-    console.log(combinedPacks);
+
     return (
       <PackDisplay packs={combinedPacks} cardBuilder={fromPacksBuildCards} />
     );

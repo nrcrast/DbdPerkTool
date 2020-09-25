@@ -15,6 +15,8 @@ import PlainTextInput from './Form/PlainTextInput';
 import log from 'electron-log';
 import { app, remote, shell } from 'electron';
 
+const mainWindow = remote.getCurrentWindow();
+
 type MyProps = {};
 
 const TooltipWrapper = styled.div`
@@ -42,10 +44,13 @@ export default function Settings(props: MyProps) {
   const [unsaved, setUnsaved] = useState(false);
   const [writePackToTxt, setWritePackToTxt] = useState(false);
 
-  const writePackTxtPath = path.resolve((app || remote.app).getPath('userData'), 'currentperkpack.txt');
+  const writePackTxtPath = path.resolve(
+    (app || remote.app).getPath('userData'),
+    'currentperkpack.txt'
+  );
   const writePackTxtTooltipMsg = `Write current installed pack name and author to .txt file located at ${writePackTxtPath}`;
 
-  const renderTooltip = (props) => (
+  const renderTooltip = props => (
     <Tooltip id="writepack-tooltip" {...props}>
       {writePackTxtTooltipMsg}
     </Tooltip>
@@ -134,8 +139,23 @@ export default function Settings(props: MyProps) {
           >
             Reset to Default
           </Button>
-          <Button variant="secondary" onClick={() => openLogs()}>
+          <Button
+            variant="secondary"
+            style={{ marginRight: '3px' }}
+            onClick={() => openLogs()}
+          >
             Open Logs
+          </Button>
+          <Button
+            variant="secondary"
+            style={{ marginRight: '3px' }}
+            onClick={async () => {
+              await mainWindow.webContents.session.clearCache();
+              (app || remote.app).relaunch();
+              (app || remote.app).exit();
+            }}
+          >
+            Clear Cache (and restart)
           </Button>
         </div>
       </Form>

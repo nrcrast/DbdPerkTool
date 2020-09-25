@@ -48,6 +48,7 @@ export default function PerkPack(props: MyProps) {
   const userContext = useContext(UserContext);
 
   const doInstall = async (id: string, progressCb: any, opts: any) => {
+    log.debug(`Installing Pack ${id}`);
     const pack = new PerkPackModel(PackMetaMapper.fromRaw(props.meta));
     try {
       await pack.install(progressCb, opts);

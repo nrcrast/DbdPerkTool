@@ -36,7 +36,11 @@ export default class PerkPack extends IconPack {
       return copying;
     };
 
+    log.debug('Desired Files: ', opts);
+    log.debug(`Src Path: ${sourcePath} DestPath: ${destPath}`);
+
     await copy(sourcePath, destPath, { filter: filterFn, overwrite: true });
+    log.debug('Copy complete...');
   }
 
   async saveInstalledPackId() {

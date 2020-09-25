@@ -38,6 +38,9 @@ export default class Home extends Component<MyProps, MyState> {
           tab to see Portrait-Only packs!
         </p>
 
+        <h3>Tutorial</h3>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/PBIHgcy8SLI" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
         <h3>Help</h3>
         <p>
           You can get help at the Dead By Daylight Icon Toolbox{' '}

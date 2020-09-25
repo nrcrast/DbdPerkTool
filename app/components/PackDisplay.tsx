@@ -170,8 +170,6 @@ export default function PackDisplay(props: MyProps) {
     return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
   };
 
-  console.log('PACK DISPLAY');
-
   const showHeaderBar = !(props.showHeaderBar === false);
   const paginate = !(props.paginate === false);
   const errorModalTitle = 'Error';

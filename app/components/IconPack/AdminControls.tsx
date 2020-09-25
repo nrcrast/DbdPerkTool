@@ -54,7 +54,7 @@ export default function AdminControls(props: MyProps) {
       return;
     }
 
-    log.debug('Contents: ', await packDirModel.getMeta());
+    log.debug('Pack Contents: ', await packDirModel.getMeta());
 
     setUpdatePercent(0);
 
@@ -75,7 +75,6 @@ export default function AdminControls(props: MyProps) {
       // logic
       await api.getUser();
       await api.uploadZip(outputZip, progress => {
-        console.log('Update progress: ' + progress);
         setUpdatePercent(progress);
       });
       setSuccessText(

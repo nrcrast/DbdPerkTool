@@ -46,7 +46,7 @@ class Api {
       if (user.username) {
         user.abilities = defineAbilitiesFor(user);
         this.currentUser = user;
-        log.info('User Logged In: ', user);
+        log.info(`User logged in: ${user.username} - ${user.steamDisplayName}`);
         return this.currentUser;
       }
     } catch (e) {
@@ -104,6 +104,12 @@ class Api {
   }
 
   async uploadZip(sourceFile, onProgress) {
+    const fileDetails = fs.statSync(sourceFile);
+
+    if(fileDetails.size / 1000000.0 > 110) {
+      throw Error('File is too large. Must be less than 110MB!');
+    }
+
     const file = await fs.readFile(sourceFile);
     // This is just a little hack to update the JWT if necessary before the upload
     // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh

@@ -57,8 +57,6 @@ const Root = ({ store, history }: Props) => {
   const [portraits, setCurrentPortraits] = useState([]);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
 
-  log.info(`Current User: `, currentUser);
-
   const onUpdateModalClose = (doUpdate: boolean) => {
     log.info('Do Update: ', doUpdate);
     setShowUpdateModal(false);

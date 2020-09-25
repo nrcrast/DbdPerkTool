@@ -350,6 +350,20 @@ a:hover {
   border-width: 0;
 }
 
+@media only screen and (max-height: 800px) {
+  .menu-entry {
+    display: flex;
+    align-items: center;
+    min-height: 0px;
+    margin: 1px;
+    padding: 0px;
+    padding-left: 2px;
+    color: white;
+    font-weight: bold;
+    border-width: 0;
+  }
+}
+
 .menu-entry:hover {
   cursor: pointer;
   color: white;

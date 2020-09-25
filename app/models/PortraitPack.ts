@@ -6,7 +6,16 @@ import settingsUtil from '../settings/Settings';
 
 export default class PortraitPack extends IconPack {
   async copyFilesTo(sourcePath: string, destPath: string) {
-    return fs.copy(path.resolve(sourcePath, 'CharPortraits'), path.resolve(destPath, 'CharPortraits'));
+    log.debug(
+      `Copying all files from ${path.resolve(
+        sourcePath,
+        'CharPortraits'
+      )} to ${path.resolve(destPath, 'CharPortraits')}`
+    );
+    return fs.copy(
+      path.resolve(sourcePath, 'CharPortraits'),
+      path.resolve(destPath, 'CharPortraits')
+    );
   }
 
   async saveInstalledPackId() {

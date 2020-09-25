@@ -49,11 +49,8 @@ export default function MyProfile(props: MyProps) {
   );
 
   const addLink = () => {
-    console.log('Adding link');
     setLinks([...links, { label: '', link: '' }]);
   };
-
-  console.log('Links: ', links);
 
   const authorLinks = links.map((link, index) => {
     return (
@@ -66,7 +63,6 @@ export default function MyProfile(props: MyProps) {
           link.link = linkText;
         }}
         onRemove={() => {
-          console.log('Index: ', index);
           const newLinks = [...links];
           newLinks.splice(index, 1);
           setLinks(newLinks);
@@ -87,7 +83,6 @@ export default function MyProfile(props: MyProps) {
       <Form
         onSubmit={async e => {
           e.preventDefault();
-          console.log(`Saving Links: `, links);
           await api.executor.apis.default.putUser(
             {},
             {

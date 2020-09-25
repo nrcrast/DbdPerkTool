@@ -50,7 +50,6 @@ export default function Create(props: MyProps) {
   }
 
   const autoAuthor = userContext.user.abilities.cannot('manage', 'all');
-  console.log('Auto author: ' + autoAuthor);
 
   const loadPacks = async () => {
     const packs = await axios.get(
@@ -74,9 +73,6 @@ export default function Create(props: MyProps) {
       setErrorModalShow(true);
       return;
     }
-
-    log.debug('Contents: ', await packDirModel.getMeta());
-
     setSaveProgress(0);
     setSaving(true);
 
@@ -91,10 +87,12 @@ export default function Create(props: MyProps) {
     );
 
     try {
+      log.debug('Generating output zip');
       const outputZip = await generator.generate();
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
+      log.debug('Output zip generated. Uploading...');
       await api.getUser();
       await api.uploadZip(outputZip, progress => {
         setSaveProgress(progress);
@@ -105,6 +103,7 @@ export default function Create(props: MyProps) {
       setSaving(false);
       setSuccessModalShow(true);
     } catch (e) {
+      log.debug(`Error uploading pack: `, e.response);
       setErrorText(`Error generating or uploading Pack: ${e}`);
       setSaving(false);
       setErrorModalShow(true);
