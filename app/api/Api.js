@@ -84,6 +84,7 @@ class Api {
   }
 
   async popNotification() {
+    logger.info('Poppingn notification');
     return this.executor.apis.default.popNotification({since: settingsUtil.settings.lastNotificationRead});
   }
 
@@ -106,8 +107,8 @@ class Api {
   async uploadZip(sourceFile, onProgress) {
     const fileDetails = fs.statSync(sourceFile);
 
-    if(fileDetails.size / 1000000.0 > 110) {
-      throw Error('File is too large. Must be less than 110MB!');
+    if(fileDetails.size / 1000000.0 > 150) {
+      throw Error('File is too large. Must be less than 150MB!');
     }
 
     const file = await fs.readFile(sourceFile);

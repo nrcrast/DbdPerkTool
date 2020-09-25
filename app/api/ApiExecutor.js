@@ -72,9 +72,25 @@ export default class ApiExecutor extends SwaggerClient {
     await this.saveJwt();
   }
 
+  hasSecurity(opts) {
+		let path = null;
+
+		if (opts.method === 'GET') {
+			path = opts.spec.paths[opts.pathName].get;
+		} else if (opts.method === 'PUT') {
+			path = opts.spec.paths[opts.pathName].put;
+		} else if (opts.method === 'DELETE') {
+			path = opts.spec.paths[opts.pathName].delete;
+		} else {
+			path = opts.spec.paths[opts.pathName].post;
+		}
+
+		return path.security && path.security.length > 0;
+	}
+
   async execute(opts) {
     const currentApi = this;
-    if (this.jwtNeedsRefresh() && opts.operationId !== 'refreshToken') {
+    if (this.hasSecurity(opts) && this.jwtNeedsRefresh() && opts.operationId !== 'refreshToken') {
       await this.refreshJwt();
     }
 
