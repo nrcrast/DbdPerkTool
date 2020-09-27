@@ -2,7 +2,7 @@
 
 The Dead By Daylight Icon Toolbox is a desktop Windows application designed to make the process of browsing for & installing Perks (and Icons/Char Portraits) easy. It also includes functionality to generate icon pack bundles to be included in the Perk respository. The tool will autodetect your Dead By Daylight installation location in most cases.
 
-If you've installed Dead By Daylight from the Windows Store (why?), then you will have to set the path manually via the Settings tab.
+If you've installed Dead By Daylight from the Windows Store (why?), then you will not be able to use this tool. The Windows Store installs applications as _read only_, so the files are unable to be modified. 
 
 ## Web Page
 Main tool web page can be found [here](https://nrcrast.github.io/DbdPerkTool/).
