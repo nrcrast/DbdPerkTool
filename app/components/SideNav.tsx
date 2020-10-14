@@ -1,4 +1,4 @@
-import React, { Component, useState, useContext } from 'react';
+import React, { Component, useState, useContext, useEffect } from 'react';
 import electron from 'electron';
 import { shell } from 'electron';
 import styled from 'styled-components';
@@ -25,6 +25,8 @@ import MenuMyPacks from '../img/menu_mypacks.png';
 import MenuSettings from '../img/menu_settings.png';
 import MenuSignOut from '../img/menu_sign_out.png';
 import MenuSignIn from '../img/menu_sign_in.png';
+import MenuAdmin from '../img/menu_admin.png';
+import MenuVote from '../img/menu_vote.png';
 
 const { BrowserWindow } = electron.remote;
 
@@ -112,6 +114,7 @@ export default function SideNav() {
   }
   const userContext = useContext(UserContext);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+  const [showVote, setShowVote] = useState(false);
   const [activeTab, setActiveTab] = useState(routes.PERKS);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
@@ -133,6 +136,15 @@ export default function SideNav() {
       uploading your own!
     </Tooltip>
   );
+
+  const getServerConfig = async () => {
+    const config = await api.executor.apis.default.getConfig();
+    setShowVote(config.voteActive);
+  };
+
+  useEffect(() => {
+    getServerConfig();
+  }, []);
 
   return (
     <NavContentWrapper>
@@ -171,6 +183,18 @@ export default function SideNav() {
           setActiveTab(target);
         }}
       />
+      {showVote && (
+        <MenuEntry
+          text="Featured Pack Vote"
+          image={MenuVote}
+          currentActive={activeTab}
+          to={routes.VOTE}
+          onClick={(target: string) => {
+            setActiveTab(target);
+          }}
+        />
+      )}
+
       {signedIn && (
         <div>
           {userContext.user.abilities.can('create', 'PerkPack') && (
@@ -203,7 +227,7 @@ export default function SideNav() {
           text="Admin"
           currentActive={activeTab}
           to={routes.ADMIN}
-          icon="fas fa-user-shield fa-lg"
+          image={MenuAdmin}
           onClick={(target: string) => {
             setActiveTab(target);
           }}

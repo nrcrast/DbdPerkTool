@@ -4,7 +4,7 @@ import slugify from '@sindresorhus/slugify';
 type MyProps = {};
 
 export default function PatronList(props: MyProps) {
-  const patronList = ['WEIRDONINJATACO', 'Barbieat', 'Cakey', 'Cherry'].map<React.ReactNode>(patron => {
+  const patronList = ['WEIRDONINJATACO', 'Barbieat', 'Cakey', 'Cherry', 'Diz', 'Joe', 'Leticia'].map<React.ReactNode>(patron => {
     return (
       <p key={`patron-${slugify(patron)}`} className="text-center">
         <small>{patron}</small>

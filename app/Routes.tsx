@@ -2,15 +2,16 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import routes from './constants/routes.json';
 import App from './containers/App';
-import HomePage from './containers/HomePage';
-import PerkPage from './containers/PerkPage';
-import SettingsPage from './containers/SettingsPage';
-import CreatePage from './containers/CreatePage';
-import PortraitPage from './containers/PortraitPage';
-import DefaultPage from './containers/DefaultPage';
-import MyPacksPage from './containers/MyPacksPage';
-import MyProfilePage from './containers/MyProfilePage';
-import AdminPage from './containers/AdminPage';
+import HomePage from './components/Home';
+import PerkPage from './components/Perks';
+import SettingsPage from './components/Settings';
+import CreatePage from './components/Create';
+import PortraitPage from './components/Portraits';
+import DefaultPage from './components/Default';
+import MyPacksPage from './components/MyPacks';
+import MyProfilePage from './components/MyProfile';
+import AdminPage from './components/Admin/Admin';
+import VotePage from './components/Vote/Vote';
 
 export default function Routes() {
   return (
@@ -25,6 +26,7 @@ export default function Routes() {
         <Route exact path={routes.MY_PACKS} component={MyPacksPage}/>
         <Route exact path={routes.MY_PROFILE} component={MyProfilePage}/>
         <Route exact path={routes.ADMIN} component={AdminPage}/>
+        <Route exact path={routes.VOTE} component={VotePage}/>
       </Switch>
     </App>
   );

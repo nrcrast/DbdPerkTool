@@ -5,7 +5,7 @@ body {
 
 body::after {
   content: "";
-  background-image: url('img/bg.jpg');
+  background-image: url('https://dead-by-daylight-icon-toolbox.herokuapp.com/static/img/bg.jpg');
   background-attachment: fixed;
 
   background-size: cover; /* <------ */
@@ -96,6 +96,32 @@ html {
   background-color: #23a4a4; /* color of the scroll thumb */
   border-radius: 20px; /* roundness of the scroll thumb */
   border: 3px solid rgba(0, 0, 0, 0.9); /* creates padding around scroll thumb */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background: rgba(35, 164, 164, 0.15);
+}
+
+.list-group-item:first-child {
+  border-radius: 0px;
+}
+
+.list-group-item:last-child {
+  border-radius: 0px;
+}
+
+.list-group-item {
+  background: rgba(0, 0, 0, 0.9);
+  margin: 0px;
+  border-radius: 0px;
+}
+
+.list-group-item:hover {
+  background-color: rgba(35, 164, 164, 0.9);
+}
+
+.list-group-item.active {
+  background-color: rgba(35, 164, 164, 0.9);
 }
 
 .dropdown-menu {
@@ -427,6 +453,12 @@ a:hover {
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   background-color: #23a4a4;
+}
+
+.vote-img-preview {
+  max-height: 75px;
+  max-width: 75px;
+  margin-right: 10px;
 }
 
 ::-webkit-scrollbar {
