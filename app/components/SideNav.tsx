@@ -27,6 +27,7 @@ import MenuSignOut from '../img/menu_sign_out.png';
 import MenuSignIn from '../img/menu_sign_in.png';
 import MenuAdmin from '../img/menu_admin.png';
 import MenuVote from '../img/menu_vote.png';
+import MenuFeatured from '../img/menu_featured.png';
 
 const { BrowserWindow } = electron.remote;
 
@@ -115,7 +116,7 @@ export default function SideNav() {
   const userContext = useContext(UserContext);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showVote, setShowVote] = useState(false);
-  const [activeTab, setActiveTab] = useState(routes.PERKS);
+  const [activeTab, setActiveTab] = useState(routes.FEATURED);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
 
@@ -155,21 +156,22 @@ export default function SideNav() {
         ).getVersion()}`}</LogoLabel>
         <Social />
       </LogoWrapper>
+      
       {/* <NavigationLabel>Navigation</NavigationLabel> */}
       <MenuEntry
-        text="Icon Packs"
-        image={MenuPerk}
+        text="Featured Packs"
+        image={MenuFeatured}
         currentActive={activeTab}
-        to={routes.PERKS}
+        to={routes.FEATURED}
         onClick={(target: string) => {
           setActiveTab(target);
         }}
       />
       <MenuEntry
-        text="Portrait Packs"
-        image={MenuPortrait}
+        text="All Packs"
+        image={MenuPerk}
         currentActive={activeTab}
-        to={routes.PORTRAITS}
+        to={routes.PERKS}
         onClick={(target: string) => {
           setActiveTab(target);
         }}

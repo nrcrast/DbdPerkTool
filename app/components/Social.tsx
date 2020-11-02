@@ -74,7 +74,7 @@ export default function Social(props: MyProps) {
           openLink(patreonLink);
         }}
       >
-        Please consider donating!
+        Click here to donate!
         <br />
         <small>Your donations keep this tool alive</small>
       </Button>

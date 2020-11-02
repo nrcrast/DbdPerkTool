@@ -11,7 +11,7 @@ export default function UpdateProgress(props) {
       }}
     >
       <Modal.Header>
-        <Modal.Title>Download Progress</Modal.Title>
+        <Modal.Title>DBD Icon Toolbox Update Download Progress</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <ProgressBar now={props.progress} label={`${props.progress}%`} animated></ProgressBar>

@@ -12,13 +12,13 @@ import MyPacksPage from './components/MyPacks';
 import MyProfilePage from './components/MyProfile';
 import AdminPage from './components/Admin/Admin';
 import VotePage from './components/Vote/Vote';
+import FeaturedPage from './components/Featured';
 
 export default function Routes() {
   return (
     <App>
       <Switch>
         <Route exact path={routes.PERKS} component={PerkPage} />
-        <Route exact path={routes.PORTRAITS} component={PortraitPage} />
         <Route exact path={routes.HOME} component={HomePage} />
         <Route exact path={routes.SETTINGS} component={SettingsPage} />
         <Route exact path={routes.CREATE} component={CreatePage} />
@@ -27,6 +27,7 @@ export default function Routes() {
         <Route exact path={routes.MY_PROFILE} component={MyProfilePage}/>
         <Route exact path={routes.ADMIN} component={AdminPage}/>
         <Route exact path={routes.VOTE} component={VotePage}/>
+        <Route exact path={routes.FEATURED} component={FeaturedPage}/>
       </Switch>
     </App>
   );

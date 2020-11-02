@@ -65,12 +65,8 @@ const Root = ({ store, history }: Props) => {
   };
 
   ipcRenderer.on('update-available', (event, arg) => {
-    if (settingsUtil.settings.updateWithoutAsking) {
-      onUpdateModalClose(true);
-    } else {
       setShowUpdateModal(true);
       setLatestVersion(arg.version);
-    }
   });
 
   ipcRenderer.on('update-progress', (event, arg) => {

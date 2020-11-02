@@ -26,7 +26,7 @@ const TooltipWrapper = styled.div`
 
 async function doSave(installPath, autoUpdate, showNsfw, writeToTxt) {
   settingsUtil.settings.dbdInstallPath = installPath;
-  settingsUtil.settings.updateWithoutAsking = autoUpdate;
+  settingsUtil.settings.autoUpdate = autoUpdate;
   settingsUtil.settings.showNsfw = showNsfw;
   settingsUtil.settings.writeToTxt = writeToTxt;
   await settingsUtil.save();
@@ -60,7 +60,7 @@ export default function Settings(props: MyProps) {
     await settingsUtil.read();
     const { settings } = settingsUtil;
     setInstallPath(settings.dbdInstallPath);
-    setAutoUpdate(settings.updateWithoutAsking || true);
+    setAutoUpdate(settings.autoUpdate || true);
     setShowNsfw(settings.showNsfw || false);
     setWritePackToTxt(settings.writeToTxt || false);
   };
@@ -85,16 +85,6 @@ export default function Settings(props: MyProps) {
           value={installPath}
           onChange={e => setInstallPath(e.target.value)}
         />
-        <Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="Auto-Update"
-            checked={autoUpdate}
-            onChange={e => {
-              setAutoUpdate(e.target.checked);
-            }}
-          />
-        </Form.Group>
         <Form.Group>
           <Form.Check
             type="checkbox"

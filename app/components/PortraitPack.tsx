@@ -1,102 +1,101 @@
 import React, { Component, useState, useContext } from 'react';
 import { subject } from '@casl/ability';
+import fs from 'fs-extra';
+import log from 'electron-log';
+import { DateTime } from 'luxon';
+import path from 'path';
+import { app, remote, shell } from 'electron';
+import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Image from 'react-bootstrap/Image';
-import Button from 'react-bootstrap/Button';
-import PortraitPackModel from '../models/PortraitPack';
-import PackMetaMapper from '../models/PackMetaMapper';
+import Has from './IconPack/PerkPack/Has';
+import Details from './IconPack/PerkPack/Details';
+import InstallOptionsModal from './IconPack/PerkPack/InstallOptionsModal';
 import InstallButton from './IconPack/InstallButton';
+import PerkPackModel from '../models/PerkPack';
+import PackMetaMapper from '../models/PackMetaMapper';
 import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
 import NsfwWarning from './IconPack/NsfwWarning';
-import Details from './IconPack/PortraitPack/Details';
 import settingsUtils from '../settings/Settings';
-import styled from 'styled-components';
+import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import AdminControls from './IconPack/AdminControls';
-import { DateTime } from 'luxon';
 
 type MyProps = {
   id: string;
   downloads: number;
-  setFilter: any;
   meta: any;
   onAuthorClick: any;
+  setFilter: any;
   onError: any;
   onInstallComplete: any;
   viewMode: string;
 };
 type MyState = {
   saving: boolean;
-  saveProgress: number;
+  showInstallOpts: boolean;
   showDetails: boolean;
 };
 
-const PortraitPreviewWrapper = styled.div`
-  padding-top: 30px;
-`;
-
 export default function PortraitPack(props: MyProps) {
   const [saving, setSaving] = useState(false);
-  const [saveProgress, setSaveProgress] = useState(0);
+  const [showInstallOpts, setShowInstallOpts] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const userContext = useContext(UserContext);
 
-  const doInstall = async (id: string, progressCb: any) => {
-    const pack = new PortraitPackModel(PackMetaMapper.fromRaw(props.meta));
+  const doInstall = async (id: string, progressCb: any, opts: any) => {
+    log.debug(`Installing Pack ${id}`);
+    const pack = new PerkPackModel(PackMetaMapper.fromRaw(props.meta));
     try {
-      await pack.install(progressCb, {});
+      await pack.install(progressCb, opts);
+
+      if (settingsUtils.settings.writeToTxt === true) {
+        const writePackTxtPath = path.resolve(
+          (app || remote.app).getPath('userData'),
+          'currentperkpack.txt'
+        );
+        await fs.writeFile(
+          writePackTxtPath,
+          `Current Perk Pack: ${props.meta.author} - ${props.meta.name}`
+        );
+      }
+
       props.onInstallComplete(id);
     } catch (e) {
       props.onError(`Error installing pack ${id}: ${e}`);
     }
   };
 
-  const installPack = async () => {
+  const installPack = async (opts: Array<string>) => {
     setSaving(true);
-    setSaveProgress(0);
-    await doInstall(props.id, () => {});
+    await doInstall(props.id, null, opts);
     setSaving(false);
-    setSaveProgress(0);
   };
 
   const urls = [...Array(4).keys()].map(i => {
     return `portraits_${i}.png`;
   });
 
-  let adminButtons = null;
-
-  if (
-    userContext.user &&
-    userContext.user.abilities.can('manage', subject('PerkPack', props.meta))
-  ) {
-    adminButtons = <AdminControls id={props.id} meta={props.meta} />;
-  }
-
   const lastUpdateStr = DateTime.fromISO(props.meta.lastUpdate).toRelative();
 
   let cardBody = (
     <Card.Body className="mb-0">
-      <Row>
+      <Row className="mb-2">
         <Col>
-          <p>
-            <b>Author:</b>{' '}
-            <Author
-              onClick={(name: string) => {
-                props.onAuthorClick(name);
-              }}
-              name={props.meta.author}
-            />
-          </p>
+          <b>Author:</b>{' '}
+          <Author
+            onClick={(name: string) => {
+              props.onAuthorClick(name);
+            }}
+            name={props.meta.author}
+          />
         </Col>
         <Col>
-          <p>
-            <b>Downloads:</b> {props.meta.downloads}
-          </p>
+          <b>Downloads:</b> {props.meta.downloads}
         </Col>
       </Row>
       <Row className="mb-2">
@@ -115,12 +114,22 @@ export default function PortraitPack(props: MyProps) {
           <b>Last Update:</b> {lastUpdateStr}
         </Col>
       </Row>
+
+      <Has
+        perks={props.meta.hasPerks}
+        portraits={props.meta.hasPortraits}
+        powers={props.meta.hasPowers}
+        items={props.meta.hasItems}
+        statusEffects={props.meta.hasStatusEffects}
+        addons={props.meta.hasItemAddOns}
+        offerings={props.meta.hasFavors}
+      />
     </Card.Body>
   );
 
   if (props.viewMode === 'Compact') {
     cardBody = (
-      <Card.Body className="mb-0">
+      <Card.Body>
         <b>Author:</b>{' '}
         <Author
           onClick={(name: string) => {
@@ -147,42 +156,65 @@ export default function PortraitPack(props: MyProps) {
 
   const featured = props.meta.featured ? 'pack-featured' : '';
 
+  let adminButtons = null;
+
+  if (
+    userContext.user &&
+    userContext.user.abilities.can('manage', subject('PerkPack', props.meta))
+  ) {
+    adminButtons = <AdminControls id={props.id} meta={props.meta} />;
+  }
+
   return (
-    <Card className={`${featured} ml-0 mr-0 text-center shadow perk-card`}>
-      <PortraitPreviewWrapper>
-        <Card.Body className="p-2">
+    <div>
+      <Card className={`${featured} ml-0 mr-0 text-center shadow perk-card`}>
+        <Card.Body>
           <MainPreview
-            viewMode={props.viewMode}
             urls={urls}
             id={props.id}
             baseUrl={props.meta.previewDir}
+            viewMode={props.viewMode}
             isNsfw={props.meta.isNsfw && !settingsUtils.settings.showNsfw}
           />
         </Card.Body>
-      </PortraitPreviewWrapper>
-      <Title
-        name={props.meta.name}
-        isFeatured={props.meta.featured}
-        id={props.id}
-      />
-      {cardBody}
-      <InstallButton installInProgress={saving} onClick={installPack} />
-      <Button
-        variant="secondary"
-        className="m-1"
-        onClick={() => {
-          setShowDetails(true);
-        }}
-      >
-        Details
-      </Button>
+        <Title
+          name={props.meta.name}
+          isFeatured={props.meta.featured}
+          id={props.id}
+        />
+        {cardBody}
+        <InstallButton
+          installInProgress={saving}
+          onClick={() => {
+            setShowInstallOpts(true);
+          }}
+        />
+        <Button
+          variant="secondary"
+          className="m-1"
+          onClick={() => {
+            setShowDetails(true);
+          }}
+        >
+          Details
+        </Button>
+        {adminButtons}
+      </Card>
       <Details
         show={showDetails}
         onHide={() => setShowDetails(false)}
         id={props.id}
         meta={props.meta}
       />
-      {adminButtons}
-    </Card>
+      <InstallOptionsModal
+        show={showInstallOpts}
+        onConfirm={(opts: Array<string>) => {
+          setShowInstallOpts(false);
+          installPack(opts);
+        }}
+        onHide={() => setShowInstallOpts(false)}
+        meta={props.meta}
+      />
+    </div>
   );
 }

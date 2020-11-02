@@ -116,6 +116,7 @@ export default function PerkPack(props: MyProps) {
       </Row>
 
       <Has
+        perks={props.meta.hasPerks}
         portraits={props.meta.hasPortraits}
         powers={props.meta.hasPowers}
         items={props.meta.hasItems}

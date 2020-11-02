@@ -1,12 +1,12 @@
 {
   "HOME": "/home",
   "SETTINGS": "/settings",
-  "PERKS": "/",
+  "PERKS": "/perks",
   "CREATE": "/create",
-  "PORTRAITS": "/portraits",
   "DEFAULT": "/default",
   "MY_PACKS": "/mypacks",
   "MY_PROFILE": "/myprofile",
   "ADMIN": "/admin",
-  "VOTE": "/vote"
+  "VOTE": "/vote",
+  "FEATURED": "/"
 }

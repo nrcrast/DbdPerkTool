@@ -10,6 +10,7 @@ type MyProps = {
   statusEffects: boolean;
   offerings: boolean;
   addons: boolean;
+  perks: boolean;
 };
 type MyState = {};
 
@@ -17,6 +18,9 @@ export default function PerkPackHas(props: MyProps) {
   return (
     <div>
       <Row className="justify-content-center no-gutters">
+      <Col className="col-md">
+          <HasItem label="Perks" has={props.perks} />
+        </Col>
         <Col className="col-md">
           <HasItem label="Portraits" has={props.portraits} />
         </Col>

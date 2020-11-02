@@ -90,7 +90,7 @@ class Api {
 
   async checkForPackChanges() {
     const lastUpdate = await axios.get(
-      'https://dead-by-daylight-icon-toolbox.herokuapp.com/lastUpdate'
+      `${settingsUtil.settings.targetServer}/lastUpdate`
     );
 
     if (lastUpdate.data !== settingsUtil.settings.lastUpdate) {
@@ -116,7 +116,7 @@ class Api {
     // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
     // logic
     await this.getUser();
-    const uploadUrl = await this.executor.apis.default.getUploadServer();
+    const uploadUrl = settingsUtil.settings.uploadServer || await this.executor.apis.default.getUploadServer();
     await axios.post(`${uploadUrl}/v2/packs`, file, {
       headers: {
         'Content-Type': 'application/octet-stream',

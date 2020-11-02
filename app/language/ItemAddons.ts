@@ -809,7 +809,13 @@ const addons: { [key: string]: string } = {
     'Killer / Blight / Summoning Stone',
   'itemaddons/yemen/iconaddon_umbrasalts.png': 'Killer / Blight / Umbra Salts',
   'itemaddons/yemen/iconaddon_vigosjournal.png':
-    "Killer / Blight / Vigo's Journal"
+    "Killer / Blight / Vigo's Journal",
+  'itemaddons/zambia/iconaddon_blightedserum.png':
+    '2020 Halloween / Blighted Serum',
+  'itemaddons/zambia/iconaddon_blightedsyringe.png':
+    '2020 Halloween / Blighted Syringe',
+  'itemaddons/zambia/iconaddon_brokenflashlightbulb.png':
+    '2020 Halloween / Broken Flashlight Bulb'
 };
 
 export default function getLanguage(filePath: string) {

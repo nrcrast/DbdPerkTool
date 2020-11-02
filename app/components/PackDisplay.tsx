@@ -13,6 +13,7 @@ import ErrorModal from './ErrorModal';
 import SuccessModal from './SuccessModal';
 import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
+import PackDisplayFilters from './PackDisplayFilters';
 import UserContext from '../context/UserContext';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
@@ -81,6 +82,7 @@ function getPackChapterNum(pack) {
 export default function PackDisplay(props: MyProps) {
   const [errorModalShow, setErrorModalShow] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
+  const [filters, setFilters] = useState([]);
   const [sortKey, setSortKey] = useState('Downloads');
   const [errorText, setErrorText] = useState('');
   const [showAuthorPage, setShowAuthorPage] = useState(false);
@@ -128,6 +130,16 @@ export default function PackDisplay(props: MyProps) {
       }
     }
 
+    // Handle filter checkboxes
+    if(show) {
+      for(let i = 0; i < filters.length; i += 1) {
+        if(pack[filters[i]] !== true) {
+          show = false;
+          break;
+        }
+      }
+    }
+
     return show;
   };
 
@@ -148,12 +160,12 @@ export default function PackDisplay(props: MyProps) {
 
   const packSortComparator = (a, b) => {
     const key = sortKey;
-    // Featured packs always take precedence
-    if (a.featured && !b.featured) {
-      return -1;
-    } else if (b.featured && !a.featured) {
-      return 1;
-    }
+    // // Featured packs always take precedence
+    // if (a.featured && !b.featured) {
+    //   return -1;
+    // } else if (b.featured && !a.featured) {
+    //   return 1;
+    // }
 
     if (key === 'Name') {
       return strcmpIgnoreCase(a.name, b.name);
@@ -204,6 +216,7 @@ export default function PackDisplay(props: MyProps) {
   return (
     <PackDisplayContainer>
       {showHeaderBar && (
+        <div>
         <PackDisplayHeader
           currentPage={page}
           numPages={Math.ceil(cards.length / pageSize)}
@@ -230,7 +243,12 @@ export default function PackDisplay(props: MyProps) {
             setPage(0);
           }}
         />
+        <PackDisplayFilters initialFilters={filters} onFiltersSet={(newFilters:[string]) => {
+          setFilters(newFilters);
+        }}/>
+        </div>
       )}
+      
       <DeckWrapper ref={deckWrapperRef}>{deck}</DeckWrapper>
       {paginate && (
         <PaginatorWrapper>
