@@ -61,14 +61,8 @@ export default function MyPacks() {
   if (!userAuthorProfile) {
     return <NoAuthorProfile/>
   } else {
-    const portraitOnlyPacks = userContext.portraits.filter(pack => pack.hasPerks === false);
-    const combinedPacks = [
-      ...userContext.packs,
-      ...portraitOnlyPacks
-    ];
-
     return (
-      <PackDisplay packs={combinedPacks} cardBuilder={fromPacksBuildCards} />
+      <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} />
     );
   }
 }

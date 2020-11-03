@@ -96,7 +96,6 @@ export default function AdminControls(props: MyProps) {
       if (doDelete) {
         await api.executor.apis.default.deletePack({ id: props.id });
         await userContext.refreshPacks();
-        await userContext.refreshPortraits();
       }
     } catch (e) {
       setErrorText(e.message);
@@ -196,7 +195,6 @@ export default function AdminControls(props: MyProps) {
                 { requestBody: { name, description: desc } }
               );
               await userContext.refreshPacks();
-              await userContext.refreshPortraits();
             } catch (e) {
               setErrorText(e.message);
               setShowError(true);

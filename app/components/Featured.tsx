@@ -52,12 +52,8 @@ export default function Featured() {
       }
     });
   };
-  const portraitOnlyPacks = userContext.portraits.filter(
-    pack => pack.hasPerks === false
-  );
-  const combinedPacks = [...userContext.packs, ...portraitOnlyPacks];
 
   return (
-    <PackDisplay packs={combinedPacks} cardBuilder={fromPacksBuildCards} />
+    <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} />
   );
 }

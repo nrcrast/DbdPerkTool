@@ -54,7 +54,6 @@ const Root = ({ store, history }: Props) => {
     text: '',
     id: ''
   });
-  const [portraits, setCurrentPortraits] = useState([]);
   const [currentUser, setCurrentUser] = useState(api.currentUser);
 
   const onUpdateModalClose = (doUpdate: boolean) => {
@@ -77,17 +76,10 @@ const Root = ({ store, history }: Props) => {
 
   const refreshPacks = async () => {
     const packs = await axios.get(
-      `${settingsUtil.get('targetServer')}/packs`,
+      `${settingsUtil.get('targetServer')}/packs?all=true`,
       {}
     );
     setCurrentPacks(packs.data);
-  };
-
-  const refreshPortraits = async () => {
-    const packs = await axios.get(`${settingsUtil.get('targetServer')}/packs`, {
-      params: { hasPortraits: true }
-    });
-    setCurrentPortraits(packs.data);
   };
 
   const popNotification = async () => {
@@ -119,7 +111,6 @@ const Root = ({ store, history }: Props) => {
     checkDbdPath();
     popNotification();
     refreshPacks();
-    refreshPortraits();
   }, []);
 
   // Every 30 seconds, check for pack changes!
@@ -128,7 +119,6 @@ const Root = ({ store, history }: Props) => {
       api.checkForPackChanges().then(newHash => {
         if (newHash) {
           refreshPacks();
-          refreshPortraits();
         }
       });
     }, 30000);
@@ -140,10 +130,8 @@ const Root = ({ store, history }: Props) => {
       <ConnectedRouter history={history}>
         <UserContext.Provider
           value={{
-            portraits,
             packs,
             refreshPacks,
-            refreshPortraits,
             user: currentUser,
             setUser: user => {
               setCurrentUser(user);

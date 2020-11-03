@@ -84,13 +84,13 @@ class Api {
   }
 
   async popNotification() {
-    logger.info('Poppingn notification');
-    return this.executor.apis.default.popNotification({since: settingsUtil.settings.lastNotificationRead});
+    logger.debug('Popping notification');
+    return this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? {since: settingsUtil.settings.lastNotificationRead} : {});
   }
 
   async checkForPackChanges() {
     const lastUpdate = await axios.get(
-      `${settingsUtil.settings.targetServer}/lastUpdate`
+      `${settingsUtil.get('targetServer')}/lastUpdate`
     );
 
     if (lastUpdate.data !== settingsUtil.settings.lastUpdate) {

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { render } from 'react-dom';
-import { remote } from 'electron';
+import electron, { remote } from 'electron';
 import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
@@ -9,6 +9,7 @@ import './app.global.css';
 import axios from 'axios';
 import logger from 'electron-log';
 import api from './api/Api';
+
 
 const _setImmediate = setImmediate;
 process.once('loaded', function() {
@@ -39,6 +40,23 @@ mainWindow.webContents.session.clearCache(function() {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
+  logger.catchErrors({
+    showDialog: true,
+    onError(error) {
+      remote.dialog.showMessageBox({
+        title: 'An error occurred',
+        message: error.message,
+        detail: error.stack,
+        type: 'error',
+        buttons: ['Continue', 'Exit'],
+      })
+        .then((result) => {
+          if(result.response === 1) {
+            remote.app.quit();
+          }
+        });
+    }
+  });
   await settingsUtil.read();
   await api.checkForPackChanges();
   await api.initialize();

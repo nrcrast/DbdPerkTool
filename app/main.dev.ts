@@ -9,7 +9,7 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import electron, { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -28,27 +28,55 @@ export default class AppUpdater {
   constructor(win) {
     const currentUpdater = this;
     log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.autoDownload = false;
-    autoUpdater.checkForUpdates();
-    autoUpdater.on('checking-for-update', () => {});
-    autoUpdater.on('update-available', info => {
-      ipcMain.on('update-available-resp', (event, doUpdate) => {
-        if (doUpdate === true) {
-          autoUpdater.downloadUpdate();
-        }
+    log.catchErrors({
+      showDialog: true,
+      onError(error, versions, submitIssue) {
+        console.log('GOT AN ERROR OMG');
+        electron.dialog.showMessageBox({
+          title: 'An error occurred',
+          message: error.message,
+          detail: error.stack,
+          type: 'error',
+          buttons: ['Ignore', 'Report', 'Exit'],
+        })
+          .then((result) => {
+            if (result.response === 1) {
+              submitIssue('https://github.com/nrcrast/DbdPerkTool/issues/new', {
+                title: `Error report for ${versions.app}`,
+                body: 'Error:\n```' + error.stack + '\n```\n' + `OS: ${versions.os}`
+              });
+              return;
+            }
+          
+            if (result.response === 2) {
+              electron.app.quit();
+            }
+          });
+      }
+    });
+    if(process.env.NODE_ENV === 'production') {
+      autoUpdater.logger = log;
+      autoUpdater.autoDownload = false;
+      autoUpdater.checkForUpdates();
+      autoUpdater.on('checking-for-update', () => {});
+      autoUpdater.on('update-available', info => {
+        ipcMain.on('update-available-resp', (event, doUpdate) => {
+          if (doUpdate === true) {
+            autoUpdater.downloadUpdate();
+          }
+        });
+        win.webContents.send('update-available', info);
       });
-      win.webContents.send('update-available', info);
-    });
-    autoUpdater.on('update-not-available', info => {});
-    autoUpdater.on('error', err => {});
-    autoUpdater.signals.progress(progressObj => {
-      log.info('Progress: ', progressObj);
-      win.webContents.send('update-progress', progressObj);
-    });
-    autoUpdater.on('update-downloaded', info => {
-      autoUpdater.quitAndInstall(false, true);
-    });
+      autoUpdater.on('update-not-available', info => {});
+      autoUpdater.on('error', err => {});
+      autoUpdater.signals.progress(progressObj => {
+        log.info('Progress: ', progressObj);
+        win.webContents.send('update-progress', progressObj);
+      });
+      autoUpdater.on('update-downloaded', info => {
+        autoUpdater.quitAndInstall(false, true);
+      });
+    }
   }
 }
 

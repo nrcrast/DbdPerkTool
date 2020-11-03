@@ -11,11 +11,10 @@ type MyState = {};
 
 export default function Perks() {
   const userContext = useContext(UserContext);
-  
+
   const fromPacksBuildCards = (packs, opts) => {
     const myPacks = packs.filter(
-      pack =>
-        pack.id !== 'Dead-By-Daylight-Default-Icons'
+      pack => pack.id !== 'Dead-By-Daylight-Default-Icons'
     );
 
     return myPacks.map(pack => {
@@ -53,12 +52,7 @@ export default function Perks() {
     });
   };
 
-    const portraitOnlyPacks = userContext.portraits.filter(
-      pack => pack.hasPerks === false
-    );
-    const combinedPacks = [...userContext.packs, ...portraitOnlyPacks];
-
-    return (
-      <PackDisplay packs={combinedPacks} cardBuilder={fromPacksBuildCards} />
-    );
+  return (
+    <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} />
+  );
 }
