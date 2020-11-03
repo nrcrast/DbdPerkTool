@@ -41,21 +41,7 @@ mainWindow.webContents.session.clearCache(function() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   logger.catchErrors({
-    showDialog: true,
-    onError(error) {
-      remote.dialog.showMessageBox({
-        title: 'An error occurred',
-        message: error.message,
-        detail: error.stack,
-        type: 'error',
-        buttons: ['Continue', 'Exit'],
-      })
-        .then((result) => {
-          if(result.response === 1) {
-            remote.app.quit();
-          }
-        });
-    }
+    showDialog: false,
   });
   await settingsUtil.read();
   await api.checkForPackChanges();

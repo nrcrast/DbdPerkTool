@@ -29,30 +29,7 @@ export default class AppUpdater {
     const currentUpdater = this;
     log.transports.file.level = 'info';
     log.catchErrors({
-      showDialog: true,
-      onError(error, versions, submitIssue) {
-        console.log('GOT AN ERROR OMG');
-        electron.dialog.showMessageBox({
-          title: 'An error occurred',
-          message: error.message,
-          detail: error.stack,
-          type: 'error',
-          buttons: ['Ignore', 'Report', 'Exit'],
-        })
-          .then((result) => {
-            if (result.response === 1) {
-              submitIssue('https://github.com/nrcrast/DbdPerkTool/issues/new', {
-                title: `Error report for ${versions.app}`,
-                body: 'Error:\n```' + error.stack + '\n```\n' + `OS: ${versions.os}`
-              });
-              return;
-            }
-          
-            if (result.response === 2) {
-              electron.app.quit();
-            }
-          });
-      }
+      showDialog: false
     });
     if(process.env.NODE_ENV === 'production') {
       autoUpdater.logger = log;
