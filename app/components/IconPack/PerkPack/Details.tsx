@@ -140,6 +140,42 @@ export default function PerkPackDetails(props: MyProps) {
     capabilities.push('actions');
   }
 
+  if(props.meta.hasArchive) {
+    capabilities.push('archive');
+  }
+
+  if(props.meta.hasBanners) {
+    capabilities.push('banners');
+  }
+
+  if(props.meta.hasDailyRituals) {
+    capabilities.push('dailyrituals');
+  }
+
+  if(props.meta.hasEmblems) {
+    capabilities.push('emblems');
+  }
+
+  if(props.meta.hasEvents) {
+    capabilities.push('events');
+  }
+
+  if(props.meta.hasHelp) {
+    capabilities.push('help');
+  }
+
+  if(props.meta.hasHelpLoading) {
+    capabilities.push('helploading');
+  }
+
+  if(props.meta.hasStoreBackgrounds) {
+    capabilities.push('storebackgrounds');
+  }
+
+  if(props.meta.hasStoreTabs) {
+    capabilities.push('storetabs');
+  }
+
   return (
     <Modal
       show={props.show}

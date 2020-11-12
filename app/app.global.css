@@ -7,6 +7,5 @@
 @import 'app.bootstrap.min.css';
 @import '~react-bootstrap-typeahead/css/Typeahead.css';
 @import '~rc-tree/assets/index.css';
-@import 'app.custom.css';
-@import 'https://dead-by-daylight-icon-toolbox.herokuapp.com/static/css/toolbox.css';
+@import 'app.custom.scss';
 

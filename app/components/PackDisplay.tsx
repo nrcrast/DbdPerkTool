@@ -106,7 +106,7 @@ export default function PackDisplay(props: MyProps) {
 
     if (userContext.user == null) {
       show = true;
-    } else if(favoritesOnly){
+    } else if (favoritesOnly) {
       show = userContext.user.favorites.find(
         favoritePack => favoritePack.id === pack.id
       );
@@ -131,11 +131,30 @@ export default function PackDisplay(props: MyProps) {
     }
 
     // Handle filter checkboxes
-    if(show) {
-      for(let i = 0; i < filters.length; i += 1) {
-        if(pack[filters[i]] !== true) {
-          show = false;
-          break;
+    if (show) {
+      for (let i = 0; i < filters.length; i += 1) {
+        if (filters[i] === 'misc') {
+          if (
+            !(
+              pack.hasArchive ||
+              pack.hasBanners ||
+              pack.hasRituals ||
+              pack.hasEmblems ||
+              pack.hasEvents ||
+              pack.hasHelp ||
+              pack.hasHelpLoading ||
+              pack.hasStoreBackgrounds ||
+              pack.hasStoreTabs
+            )
+          ) {
+            show = false;
+            break;
+          }
+        } else {
+          if (pack[filters[i]] !== true) {
+            show = false;
+            break;
+          }
         }
       }
     }
@@ -217,38 +236,41 @@ export default function PackDisplay(props: MyProps) {
     <PackDisplayContainer>
       {showHeaderBar && (
         <div>
-        <PackDisplayHeader
-          currentPage={page}
-          numPages={Math.ceil(cards.length / pageSize)}
-          initialPageSize={pageSize}
-          initialSortKey={sortKey}
-          initialViewMode={viewMode}
-          onSearchFilter={(text: string) => {
-            setPage(0);
-            setSearchFilter(text);
-          }}
-          onSortKeySet={(text: string) => {
-            setSortKey(text);
-          }}
-          initialFilterText={searchFilter}
-          onViewModeSet={(mode: string) => {
-            setViewMode(mode);
-          }}
-          onPageSizeSet={(size: number) => {
-            setPage(0);
-            setPageSize(size);
-          }}
-          onShowFavoritesSet={favoritesOnly => {
-            setFavoritesOnly(favoritesOnly);
-            setPage(0);
-          }}
-        />
-        <PackDisplayFilters initialFilters={filters} onFiltersSet={(newFilters:[string]) => {
-          setFilters(newFilters);
-        }}/>
+          <PackDisplayHeader
+            currentPage={page}
+            numPages={Math.ceil(cards.length / pageSize)}
+            initialPageSize={pageSize}
+            initialSortKey={sortKey}
+            initialViewMode={viewMode}
+            onSearchFilter={(text: string) => {
+              setPage(0);
+              setSearchFilter(text);
+            }}
+            onSortKeySet={(text: string) => {
+              setSortKey(text);
+            }}
+            initialFilterText={searchFilter}
+            onViewModeSet={(mode: string) => {
+              setViewMode(mode);
+            }}
+            onPageSizeSet={(size: number) => {
+              setPage(0);
+              setPageSize(size);
+            }}
+            onShowFavoritesSet={favoritesOnly => {
+              setFavoritesOnly(favoritesOnly);
+              setPage(0);
+            }}
+          />
+          <PackDisplayFilters
+            initialFilters={filters}
+            onFiltersSet={(newFilters: [string]) => {
+              setFilters(newFilters);
+            }}
+          />
         </div>
       )}
-      
+
       <DeckWrapper ref={deckWrapperRef}>{deck}</DeckWrapper>
       {paginate && (
         <PaginatorWrapper>

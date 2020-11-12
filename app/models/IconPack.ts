@@ -37,7 +37,7 @@ export default abstract class IconPack {
 
   private async getZipUrl(): Promise<string> {
     const url = await axios.get(
-      'https://dead-by-daylight-icon-toolbox.herokuapp.com/pack',
+      `${settingsUtil.get('targetServer')}/pack`,
       {
         params: {
           packId: this.meta.id
