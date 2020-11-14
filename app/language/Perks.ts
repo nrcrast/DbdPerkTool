@@ -168,7 +168,13 @@ const languageMap: { [key: string]: string } = {
   'perks/yemen/iconperks_dragonsgrip.png': "Killer / Dragon's Grip",
   'perks/yemen/iconperks_hexbloodfavor.png': 'Killer / Hex: Blood Favor',
   'perks/yemen/iconperks_hexundying.png': 'Killer / Hex: Undying',
-  'perks/yemen/iconperks_visionary.png': 'Survivor / Visionary'
+  'perks/yemen/iconperks_visionary.png': 'Survivor / Visionary',
+  "perks/aurora/iconperks_appraisal.png": 'Survivor / Appraisal',
+  "perks/aurora/iconperks_coupdegrace.png": 'Killer / Coup De Grace',
+  "perks/aurora/iconperks_deception.png": 'Survivor / Deception',
+  "perks/aurora/iconperks_hoarder.png": 'Killer / Hoarder',
+  "perks/aurora/iconperks_oppression.png": 'Killer / Oppression',
+  "perks/aurora/iconperks_powerstruggle.png": 'Survivor / Power Struggle'
 };
 
 export default function getLanguage(tag) {

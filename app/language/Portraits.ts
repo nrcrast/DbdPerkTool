@@ -88,5 +88,9 @@ export default function getLanguage(portrait: String) {
       return 'Killer / Blight';
     case 'charportraits/yemen/s23_charselect_portrait.png':
       return 'Survivor / Felix Richter';
+    case 'charportraits/aurora/k22_charselect_portrait.png':
+      return 'Killer / The Twins';
+    case 'charportraits/aurora/s24_charselect_portrait.png':
+      return 'Survivor / Élodie Rakoto';
   }
 }

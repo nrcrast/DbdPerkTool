@@ -33,4 +33,8 @@ echo "===== Red ====="
 mkdir -p Custom/Red
 mv "Monochrome Perks (choose the color)"/"RED perks" Custom/Red/Perks
 
+echo "===== Orange ====="
+mkdir -p Custom/Orange
+mv "Monochrome Perks (choose the color)"/"ORANGE perks" Custom/Orange/Perks
+
 popd

@@ -99,7 +99,9 @@ export default class PackDir {
       .filter(item => item.isDirectory())
       .map(dirent => dirent.name);
 
-    if (dirs.includes('Yemen')) {
+    if(dirs.includes('Aurora')) {
+      return 'Chapter XVIII: A Binding of Kin';
+    } else if (dirs.includes('Yemen')) {
       return 'Chapter XVII: Descend Beyond';
     } else if (dirs.includes('Wales')) {
       return 'Chapter XVI: Silent Hill';

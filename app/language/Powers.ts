@@ -31,7 +31,9 @@ const languageMap: { [key: string]: string } = {
   'powers/ukraine/iconpowers_uk.png': 'Deathslinger / The Redeemer',
   'powers/wales/iconpowers_wales_ritesofjudgement.png':
     'Executioner / Rites of Judgement',
-    'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption'
+    'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption',
+  'powers/aurora/iconpowers_bloodbond_littlebrother.png': 'The Twins / Blood Bond / Little Brother',
+  'powers/aurora/iconpowers_bloodbond_sister.png': 'The Twins / Blood Bond / Sister'
 };
 
 export default function getLanguage(tag) {

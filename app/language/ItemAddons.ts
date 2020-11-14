@@ -815,7 +815,27 @@ const addons: { [key: string]: string } = {
   'itemaddons/zambia/iconaddon_blightedsyringe.png':
     '2020 Halloween / Blighted Syringe',
   'itemaddons/zambia/iconaddon_brokenflashlightbulb.png':
-    '2020 Halloween / Broken Flashlight Bulb'
+    '2020 Halloween / Broken Flashlight Bulb',
+    "itemaddons/aurora/iconaddon_babyteeth.png": 'Killer / The Twins / Baby Teeth',
+    "itemaddons/aurora/iconaddon_bloodiedblackhood.png": 'Killer / The Twins / Bloodied Black Hood',
+    "itemaddons/aurora/iconaddon_catfigurine.png": 'Killer / The Twins / Cat Figurine',
+    "itemaddons/aurora/iconaddon_catseye.png": 'Killer / The Twins / Cat\'s Eye',
+    "itemaddons/aurora/iconaddon_ceremonialcandelabrum.png": 'Killer / The Twins / Ceremonial Candelabrum',
+    "itemaddons/aurora/iconaddon_dropofperfume.png": 'Killer / The Twins / Drop of Perfume',
+    "itemaddons/aurora/iconaddon_foreststew.png": 'Killer / The Twins / Forest Stew',
+    "itemaddons/aurora/iconaddon_iridescentpendant.png": 'Killer / The Twins / Iridescent Pendant',
+    "itemaddons/aurora/iconaddon_madeleinesglove.png": 'Killer / The Twins / Madeline\'s Glove',
+    "itemaddons/aurora/iconaddon_madeleinesscarf.png": 'Killer / The Twins / Madeline\'s Scarf',
+    "itemaddons/aurora/iconaddon_rustedneedle.png": 'Killer / The Twins / Rusted Needle',
+    "itemaddons/aurora/iconaddon_sewersludge.png": 'Killer / The Twins / Sewer Sludge',
+    "itemaddons/aurora/iconaddon_silencingcloth.png": 'Killer / The Twins / Silencing Cloth',
+    "itemaddons/aurora/iconaddon_souredmilk.png": 'Killer / The Twins / Soured Milk',
+    "itemaddons/aurora/iconaddon_spinningtop.png": 'Killer / The Twins / Spinning Top',
+    "itemaddons/aurora/iconaddon_stalebiscuit.png": 'Killer / The Twins / Stale Biscuit',
+    "itemaddons/aurora/iconaddon_tinyfingernail.png": 'Killer / The Twins / Tiny Fingernail',
+    "itemaddons/aurora/iconaddon_toysword.png": 'Killer / The Twins / Toy Sword',
+    "itemaddons/aurora/iconaddon_victorssoldier.png": 'Killer / The Twins / Victor\'s Soldier',
+    "itemaddons/aurora/iconaddon_weightyrattle.png": 'Killer / The Twins / Weighty Rattle',
 };
 
 export default function getLanguage(filePath: string) {
