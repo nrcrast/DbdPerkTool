@@ -77,6 +77,22 @@ class Api {
     }
   }
 
+  async determineTargetServer() {
+    const servers = ['https://dead-by-daylight-icon-toolbox.herokuapp.com', 'http://app.dbdicontoolbox.com'];
+    for(let i = 0; i < servers.length; i++) {
+      logger.info(`Attempting to communicate with server ${servers[i]}`)
+      const server = servers[i];
+      try {
+        const lastUpdate = await axios.get(`${server}/lastUpdate`)
+        logger.info(`Successfully communicated with server ${server}`)
+        return server;
+      } catch(e) {
+        logger.info(`Error communicating with server ${server}`)
+      }
+    }
+    return null;
+  }
+
   async setLoggedOut() {
     this.currentUser = null;
     delete this.executor.jwt;

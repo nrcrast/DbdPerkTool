@@ -124,7 +124,7 @@ export default function PackDisplayHeader(props: MyProps) {
           )}
         </DropdownButton>
       </DropdownButtonWrapper>
-      <DropdownButtonWrapper>
+      {/* <DropdownButtonWrapper>
         <DropdownButton
           variant="secondary"
           id="viewModeDropDown"
@@ -150,7 +150,7 @@ export default function PackDisplayHeader(props: MyProps) {
             );
           })}
         </DropdownButton>
-      </DropdownButtonWrapper>
+      </DropdownButtonWrapper> */}
       <DropdownButtonWrapper>
         <DropdownButton
           variant="secondary"

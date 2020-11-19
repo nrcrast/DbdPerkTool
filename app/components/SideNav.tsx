@@ -71,7 +71,7 @@ const LogoLabel = styled.p`
   text-align: center;
 `;
 
-const SantaWrapper = styled.div`
+const AccessoryWrapper = styled.div`
   position: relative;
   top: 0;
   left: 0;
@@ -138,10 +138,10 @@ export default function SideNav() {
   }
 
   userIcon = (
-    <SantaWrapper>
+    <AccessoryWrapper>
       {userIcon}
-      <Image src={SantaHat} className="santa-hat" />
-    </SantaWrapper>
+      <Image src="https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/resources/images/profile_accessory.png" className="profile-avatar-accessory" />
+    </AccessoryWrapper>
   );
 
   const renderTooltip = props => (

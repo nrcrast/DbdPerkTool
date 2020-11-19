@@ -7,5 +7,5 @@
 @import 'app.bootstrap.min.css';
 @import '~react-bootstrap-typeahead/css/Typeahead.css';
 @import '~rc-tree/assets/index.css';
-@import 'app.custom.scss';
-
+/* @import 'https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/resources/css/app.custom.css'; */
+@import 'app.custom.css';

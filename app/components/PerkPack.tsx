@@ -167,7 +167,7 @@ export default function PerkPack(props: MyProps) {
 
   return (
     <div>
-      <Card className={`${featured} ml-0 mr-0 text-center shadow perk-card`}>
+      <Card className={`${featured} ml-0 mr-0 text-center shadow perk-card perk-card-border`}>
         <Card.Body>
           <MainPreview
             urls={urls}
