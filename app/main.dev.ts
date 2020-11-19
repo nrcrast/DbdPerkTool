@@ -22,6 +22,8 @@ import IconPack from '../app/models/IconPack';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
+const gotTheLock = app.requestSingleInstanceLock();
+
 let mainWindow: BrowserWindow | null = null;
 
 export default class AppUpdater {
@@ -31,7 +33,7 @@ export default class AppUpdater {
     log.catchErrors({
       showDialog: false
     });
-    if(process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       autoUpdater.logger = log;
       autoUpdater.autoDownload = false;
       autoUpdater.checkForUpdates();
@@ -152,6 +154,20 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
+      mainWindow.focus();
+    }
+  });
+}
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
