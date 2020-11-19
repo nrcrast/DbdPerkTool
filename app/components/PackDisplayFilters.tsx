@@ -31,7 +31,8 @@ const FilterList = [
   { label: 'Powers', field: 'hasPowers' },
   { label: 'Offerings', field: 'hasFavors' },
   { label: 'Items', field: 'hasItems' },
-  { label: 'Add-Ons', field: 'hasItemAddOns' }
+  { label: 'Add-Ons', field: 'hasItemAddOns' },
+  { label: 'Misc (Emblems, Help, Rituals, etc...)', field: 'misc' }
 ];
 
 export default function PackDisplayFilter(props: MyProps) {

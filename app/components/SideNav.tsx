@@ -16,8 +16,8 @@ import Social from './Social';
 import ToolboxLogo from '../img/toolbox-logo.png';
 import UserImage from '../img/user.png';
 import MenuDefaultImage from '../img/menu_default.png';
-import MenuPortrait from '../img/menu_portrait.png';
 import MenuProfile from '../img/menu_profile.png';
+import SantaHat from '../img/santa_hat.png';
 import MenuAbout from '../img/menu_about.png';
 import MenuAdd from '../img/menu_add.png';
 import MenuPerk from '../img/menu_perk.png';
@@ -69,6 +69,12 @@ const BottomEntries = styled.div`
 
 const LogoLabel = styled.p`
   text-align: center;
+`;
+
+const AccessoryWrapper = styled.div`
+  position: relative;
+  top: 0;
+  left: 0;
 `;
 
 async function signIn(onJwt) {
@@ -131,6 +137,13 @@ export default function SideNav() {
     );
   }
 
+  userIcon = (
+    <AccessoryWrapper>
+      {userIcon}
+      <Image src="https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/resources/images/profile_accessory.png" className="profile-avatar-accessory" />
+    </AccessoryWrapper>
+  );
+
   const renderTooltip = props => (
     <Tooltip id="writepack-tooltip" {...props}>
       Sign in via Steam for features such as adding packs to your favorites and
@@ -156,7 +169,7 @@ export default function SideNav() {
         ).getVersion()}`}</LogoLabel>
         <Social />
       </LogoWrapper>
-      
+
       {/* <NavigationLabel>Navigation</NavigationLabel> */}
       <MenuEntry
         text="Featured Packs"

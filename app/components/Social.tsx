@@ -31,7 +31,7 @@ const Badge = styled.i`
   margin-right: 3px;
 
   &:hover {
-    color: #23a4a4;
+    color: var(--main-color);
     cursor: pointer;
   }
 `;

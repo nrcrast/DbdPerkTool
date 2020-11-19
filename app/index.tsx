@@ -44,6 +44,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     showDialog: false,
   });
   await settingsUtil.read();
+  const targetServer = await api.determineTargetServer();
+  if(targetServer === null) {
+    remote.dialog.showErrorBox("Error", "Unable to communicate with the DBD Toolbox Server!");
+  } else {
+    settingsUtil.settings.targetServer = targetServer;
+    await settingsUtil.save();
+  }
   await api.checkForPackChanges();
   await api.initialize();
 
