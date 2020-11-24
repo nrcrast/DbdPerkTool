@@ -163,7 +163,7 @@ export default function SideNav() {
   return (
     <NavContentWrapper>
       <LogoWrapper>
-        <Image src={ToolboxLogo} className="sidenav-logo" />
+        <Image src="https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/resources/images/toolbox-logo.png" className="sidenav-logo" />
         <LogoLabel>{`Dead By Daylight Icon Toolbox v${(
           electron.app || electron.remote.app
         ).getVersion()}`}</LogoLabel>
