@@ -32,8 +32,8 @@ const languageMap: { [key: string]: string } = {
   'powers/wales/iconpowers_wales_ritesofjudgement.png':
     'Executioner / Rites of Judgement',
     'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption',
-  'powers/aurora/iconpowers_bloodbond_littlebrother.png': 'The Twins / Blood Bond / Little Brother',
-  'powers/aurora/iconpowers_bloodbond_sister.png': 'The Twins / Blood Bond / Sister'
+  'powers/aurora/iconpowers_bloodbond_01.png': 'The Twins / Blood Bond 01',
+  'powers/aurora/iconpowers_bloodbond_02.png': 'The Twins / Blood Bond 02 (Bebeh)'
 };
 
 export default function getLanguage(tag) {

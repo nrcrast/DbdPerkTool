@@ -816,6 +816,7 @@ const addons: { [key: string]: string } = {
     '2020 Halloween / Blighted Syringe',
   'itemaddons/zambia/iconaddon_brokenflashlightbulb.png':
     '2020 Halloween / Broken Flashlight Bulb',
+    "itemaddons/aurora/iconaddon_artifacter.png": 'Killer / The Twins / Artifacter',
     "itemaddons/aurora/iconaddon_babyteeth.png": 'Killer / The Twins / Baby Teeth',
     "itemaddons/aurora/iconaddon_bloodiedblackhood.png": 'Killer / The Twins / Bloodied Black Hood',
     "itemaddons/aurora/iconaddon_catfigurine.png": 'Killer / The Twins / Cat Figurine',
