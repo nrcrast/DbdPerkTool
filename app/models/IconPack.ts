@@ -1,12 +1,15 @@
 import axios from 'axios';
-import { ipcRenderer } from 'electron';
+import electron from 'electron';
 import tmp from 'tmp';
 import unzipper from 'unzipper';
 import fs from 'fs-extra';
 import path from 'path';
 import log from 'electron-log';
 import settingsUtil from '../settings/Settings';
+import logger from 'electron-log';
 import { PackMeta } from './PackMeta';
+
+const {ipcRenderer} = electron;
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -53,7 +56,7 @@ export default abstract class IconPack {
    */
   private async extractZip(zipPath: string) {
     return new Promise((resolve, reject) => {
-      const tmpDir = tmp.dirSync({ keep: true });
+      const tmpDir =  {name: path.resolve((electron.app || electron.remote.app).getPath('userData'),`${this.meta.id}`)};
       fs.createReadStream(zipPath)
         .pipe(unzipper.Extract({ path: tmpDir.name }))
         .on('close', () => {
@@ -72,7 +75,7 @@ export default abstract class IconPack {
    */
   private async downloadZip(onProgress?: Function): Promise<Buffer> {
     const url = await this.getZipUrl();
-    const zip = tmp.fileSync();
+    const zip =  {name: path.resolve((electron.app || electron.remote.app).getPath('userData'),`${this.meta.id}.zip`)};
     return new Promise((resolve, reject) => {
       ipcRenderer.send('downloadFile', {
         outputLocation: zip.name,
@@ -83,7 +86,7 @@ export default abstract class IconPack {
         if (err) {
           reject(err);
         } else {
-          resolve(zip.name);
+          resolve(zip);
         }
       });
     });
@@ -98,9 +101,9 @@ export default abstract class IconPack {
     log.debug('Downloading Zip');
     const zipPath = await this.downloadZip(onProgress);
     log.debug('Extracting Zip');
-    const extractDir = await this.extractZip(zipPath);
+    const extractDir = await this.extractZip(zipPath.name);
     log.debug(`Extracted to ${extractDir.name}`);
-    return extractDir;
+    return {zipPath, extractPath: extractDir};
   }
 
   /**
@@ -125,10 +128,11 @@ export default abstract class IconPack {
       'Icons'
     );
 
-    const packDir = await this.downloadAndExtract(onProgress);
-    await this.copyFilesTo(`${packDir.name}/Pack`, dbdIconsPath, opts);
+    const paths = await this.downloadAndExtract(onProgress);
+    await this.copyFilesTo(`${paths.extractPath.name}/Pack`, dbdIconsPath, opts);
     log.debug('Files copied!');
     await this.saveInstalledPackId();
-    packDir.removeCallback();
+    await fs.remove(paths.extractPath.name);
+    await fs.remove(paths.zipPath.name);
   }
 }

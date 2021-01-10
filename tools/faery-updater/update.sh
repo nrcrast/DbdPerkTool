@@ -1,5 +1,5 @@
 #!/bin/bash
-PACK_ZIP_PATH=$1
+PACK_DIR=$1
 
 # Constants
 PERKS="- CUSTOMIZE YOUR PERKS -"
@@ -9,13 +9,7 @@ FAVORS="- CUSTOMIZE YOUR OFFERINGS -"
 POWERS="- CUSTOMIZE YOUR POWERS -"
 STATUS="- CUSTOMIZE YOUR STATUS EFFECTS -"
 
-# Unzip pack
-rm -rf ~/faery
-echo "Unzipping"
-unzip -q "$PACK_ZIP_PATH" -d ~/faery
-echo "Unzipped"
-
-pushd ~/faery
+pushd "$PACK_DIR"
 
 mkdir Custom
 
