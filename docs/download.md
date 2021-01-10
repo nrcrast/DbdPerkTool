@@ -3,41 +3,11 @@ layout: default
 title: Download
 permalink: /download/
 ---
-
-<!---
-I apologize for abusing Jekyll in this way. This makes the release data here dynamic so I don't have to change it again.
--->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script
-			  src="https://code.jquery.com/jquery-3.5.1.min.js"
-			  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-			  crossorigin="anonymous"></script>
-<script>
-	axios.get('https://api.github.com/repos/nrcrast/DbdPerkTool/releases/latest').then((resp) => {
-		$('#dbd-download-instructions')[0].innerHTML = `Download the latest release (v${resp.data.name}) <a href="https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/Dead-By-Daylight-Icon-Toolbox-Latest.msi">here</a>. If you have trouble with the .msi, you can try using the alternative .exe installer <a href="https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/Dead-By-Daylight-Icon-Toolbox-Latest.exe">here</a>.`;
-		const changes = resp.data.body.split(/\r?\n/).map((change) => {
-			let trimmedChange = change.trim();
-			if(trimmedChange.startsWith('*')) {
-				trimmedChange = trimmedChange.slice(1).trim();
-			}
-			return `<li>${trimmedChange}</li>`;
-		}).join('');
-		const changeListHtml = `<ul>${changes}</ul>`;
-		$('#dbd-download-changelog')[0].innerHTML = changeListHtml;
-	});
-</script>
-
 ## Instructions
-
-<p id="dbd-download-instructions">
-Loading...
-</p>
+Download the latest release [here](https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/Dead-By-Daylight-Icon-Toolbox-Latest.exe). If you have trouble with the .exe installer, try the .msi version [here](https://dbd-icon-toolbox.nyc3.cdn.digitaloceanspaces.com/Dead-By-Daylight-Icon-Toolbox-Latest.msi).
 
 ## Changelog
-
-<div id="dbd-download-changelog">
-Loading...
-</div>
+You can see the latest release information [here](https://github.com/nrcrast/dbdperktool/releases/latest).
 
 ## Why is Windows complaining?
 
