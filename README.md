@@ -7,7 +7,7 @@ If you've installed Dead By Daylight from the Windows Store (why?), then you wil
 ## Web Page
 Main tool web page can be found [here](https://nrcrast.github.io/DbdPerkTool/).
 
-## Icon Credits
+## Icon Credits2
 Credit for Application Icons and the icon at the top of this page goes to [HappyClown](https://steamcommunity.com/groups/HappyClownsColoredIcons) + [Yoinks](https://steamcommunity.com/profiles/76561198148794186/). Please don't hesistate to reach out if my use of your beautiful icons is an issue!
 
 ## Project Structure
