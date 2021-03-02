@@ -11,4 +11,4 @@ Main tool web page can be found [here](https://nrcrast.github.io/DbdPerkTool/).
 Credit for Application Icons and the icon at the top of this page goes to [HappyClown](https://steamcommunity.com/groups/HappyClownsColoredIcons) + [Yoinks](https://steamcommunity.com/profiles/76561198148794186/). Please don't hesistate to reach out if my use of your beautiful icons is an issue!
 
 ## Project Structure
-This project is based off of the [Electron-React boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate) project.
+This project is based off of the [Electron-React boilerplate](https://github.com/electron-react-boilerplate/electron-react-boilerplate) project.sdfsfsf
