@@ -11,6 +11,7 @@ const languageMap: { [key: string]: string } = {
   'powers/england/iconpowers_dreammaster.png': 'Nightmare / Dream Demon',
   'powers/finland/iconpowers_reversebeartrap.png': "Pig / Jigsaw's Baptism",
   'powers/guam/iconpowers_gasbomb.png': 'Clown / The Afterpiece Tonic',
+  'powers/guam/iconpowers_gasbomb2.png': 'Clown / The Afterpiece Antidote',
   'powers/haiti/iconpowers_yamaokashaunting.png': "Spirit / Yamaoka's Haunting",
   'powers/iconpowers_bell.png': 'Wraith / Wailing Bell',
   'powers/iconpowers_breath.png': "Nurse / Spencer's Last Breath",
@@ -33,7 +34,9 @@ const languageMap: { [key: string]: string } = {
     'Executioner / Rites of Judgement',
     'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption',
   'powers/aurora/iconpowers_bloodbond_01.png': 'The Twins / Blood Bond 01',
-  'powers/aurora/iconpowers_bloodbond_02.png': 'The Twins / Blood Bond 02 (Bebeh)'
+  'powers/aurora/iconpowers_bloodbond_02.png': 'The Twins / Blood Bond 02 (Bebeh)',
+  'powers/comet/iconpowers_showstopper_01.png': 'The Trickster / Showstopper 01',
+  'powers/comet/iconpowers_showstopper_02.png': 'The Trickster / Showstopper 02',
 };
 
 export default function getLanguage(tag) {

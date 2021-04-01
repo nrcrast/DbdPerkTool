@@ -92,5 +92,9 @@ export default function getLanguage(portrait: String) {
       return 'Killer / The Twins';
     case 'charportraits/aurora/s24_charselect_portrait.png':
       return 'Survivor / Élodie Rakoto';
+    case 'charportraits/comet/k23_charselect_portrait.png':
+      return 'Killer / The Trickster';
+    case 'charportraits/comet/s25_charselect_portrait.png':
+      return 'Survivor / Yun-Jin Lee';
   }
 }

@@ -174,7 +174,15 @@ const languageMap: { [key: string]: string } = {
   "perks/aurora/iconperks_deception.png": 'Survivor / Deception',
   "perks/aurora/iconperks_hoarder.png": 'Killer / Hoarder',
   "perks/aurora/iconperks_oppression.png": 'Killer / Oppression',
-  "perks/aurora/iconperks_powerstruggle.png": 'Survivor / Power Struggle'
+  "perks/aurora/iconperks_powerstruggle.png": 'Survivor / Power Struggle',
+  "perks/comet/iconperks_fasttrack.png": 'Survivor / Fast Track',
+  "perks/comet/iconperks_hexcrowdcontrol.png": "Killer / Hex: Crowd Control",
+  "perks/comet/iconperks_nowayout.png": "Killer / No Way Out",
+  "perks/comet/iconperks_self-preservation.png": "Survivor / Self Preservation",
+  "perks/comet/iconperks_smashhit.png": "Survivor / Smash Hit",
+  "perks/comet/iconperks_starstruck.png": "Killer / Star Struck"
+
+
 };
 
 export default function getLanguage(tag) {
