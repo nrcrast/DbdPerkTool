@@ -1,6 +1,4 @@
 import ImageGrid from './ImageGrid.js';
-import imagemin from 'imagemin';
-import imageminPngquant from 'imagemin-pngquant';
 
 const ICON_TYPES = {
     ACTIONS: 'actions',
@@ -81,28 +79,6 @@ export default class PackGallery {
 		});
 
 		return await Promise.all(promises);
-	}
-
-	async compressImages(images) {
-		const writePromises = images.map((image) => {
-			return new Promise((resolve, reject) => {
-				imagemin
-					.buffer(image.img, {
-						plugins: [
-							imageminPngquant({
-								quality: [0.6, 0.8],
-							}),
-						],
-					})
-					.then((buf) => {
-						resolve({ type: image.type, buf });
-					})
-					.catch((err) => {
-						reject(err);
-					});
-			});
-		});
-		return Promise.all(writePromises);
 	}
 
 	// Returns array of {type: String, buf: Buffer(png)}

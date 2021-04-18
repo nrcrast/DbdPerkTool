@@ -2,11 +2,39 @@ import { PackCapabilities } from '../models/PackMeta';
 import PerkPackArchive from '../models/PerkPackArchive'
 import PackGallery from '../utils/PackGallery';
 import logger from 'electron-log';
+import imagemin from 'imagemin';
+import imageminPngquant from 'imagemin-pngquant';
 
 export class PreviewGenerator {
     private pack: any;
     constructor(private archive: any, files: string[], basePath: string, private meta: PackCapabilities ) {
         this.pack = new PerkPackArchive(files, basePath);
+    }
+
+    static async compressImage(image: any) {
+		return new Promise((resolve, reject) => {
+			imagemin
+				.buffer(image, {
+					plugins: [
+						imageminPngquant({
+							quality: [0.6, 0.8],
+						}),
+					],
+				})
+				.then((buf) => {
+					resolve(buf);
+				})
+				.catch((err) => {
+					reject(err);
+				});
+		});
+	}
+
+    async addImageToArchive(imageData: any, imageName: string) {
+        logger.info(`Compressing image ${imageName}`);
+        const compressedData = await PreviewGenerator.compressImage(imageData);
+        logger.info(`Compressed image ${imageName}`);
+        this.archive.append(compressedData, {name: imageName});
     }
 
     async doPreviewCategory(desiredIcons: string[], getter: Function, category: string, pathPrefix?: string) {
@@ -19,7 +47,9 @@ export class PreviewGenerator {
             icons = await this.pack.getRandomIcons(category, desiredIcons.length);
         }
 
-        icons.forEach((icon: any, i: number) => this.archive.append(icon, {name: `previews/${pathPrefix || category}_${i}.png`}));
+        await Promise.all(icons.map((icon: any, i: number) => {
+            return this.addImageToArchive(icon,  `previews/${pathPrefix || category}_${i}.png`);
+        }));
     }
 
     async doPerks() {
@@ -74,8 +104,8 @@ export class PreviewGenerator {
         }
         const gallery = new PackGallery(this.pack);
         const images = await gallery.create();
-        images.forEach((image) => {
-            this.archive.append(image.data, {name: `gallery/gallery_${image.type}.png`});
-        });
+        await Promise.all(images.map(image => {
+            return this.addImageToArchive(image.data, `previews/gallery_${image.type}.png`);
+        }));
     }
 }
