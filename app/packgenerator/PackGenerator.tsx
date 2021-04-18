@@ -6,6 +6,8 @@ import { promisify } from 'util';
 import slash from 'slash';
 import fs from 'fs';
 import log from 'electron-log';
+import { PreviewGenerator } from './PreviewGenerator';
+
 
 const readdirAsync = promisify(fs.readdir);
 
@@ -117,6 +119,10 @@ export default class PackGenerator {
           archive.append(fs.createReadStream(file), { name: 'Pack/' + pathInZip });
         }
       });
+
+      // TODO build previews
+      const previewGenerator = new PreviewGenerator(archive, files, this.packDir.dir, packMeta);
+      await previewGenerator.generate();
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'

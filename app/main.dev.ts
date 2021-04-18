@@ -23,6 +23,7 @@ import IconPack from '../app/models/IconPack';
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
 const gotTheLock = app.requestSingleInstanceLock();
+app.allowRendererProcessReuse = false;
 
 let mainWindow: BrowserWindow | null = null;
 

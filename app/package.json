@@ -15,6 +15,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "keytar": "^6.0.1"
+    "canvas": "git+https://github.com/nrcrast/node-canvas.git#v2.7.0-nanfix",
+    "imagemin": "^7.0.1",
+    "imagemin-pngquant": "^9.0.2",
+    "keytar": "^6.0.1",
+    "shuffle-array": "^1.0.1",
+    "slugify": "^1.5.0"
   }
 }

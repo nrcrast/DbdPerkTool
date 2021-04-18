@@ -13,6 +13,8 @@ type metaSchema = {
   hasItems: boolean;
   hasStatusEffects: boolean;
   hasPerks: boolean;
+  hasAddons: boolean;
+  hasFavors: boolean;
 };
 export default class PackDir {
   dir: string;
@@ -27,7 +29,9 @@ export default class PackDir {
       hasPowers: false,
       hasItems: false,
       hasStatusEffects: false,
-      hasPerks: false
+      hasPerks: false,
+      hasAddons: false,
+      hasFavors: false
     };
     this.metaFilled = false;
   }
@@ -72,6 +76,8 @@ export default class PackDir {
       this.meta.hasPowers = await this.hasPowers();
       this.meta.hasItems = await this.hasItems();
       this.meta.hasStatusEffects = await this.hasStatusEffects();
+      this.meta.hasAddons = await this.hasAddons();
+      this.meta.hasFavors = await this.hasFavors();
     }
 
     if (!perksDirExists && !portraitsDirExists) {
@@ -129,8 +135,16 @@ export default class PackDir {
     return this.dirExists(path.resolve(this.dir, 'Powers'));
   }
 
+  async hasAddons() {
+    return this.dirExists(path.resolve(this.dir, 'ItemAddons'));
+  }
+
   async hasStatusEffects() {
     return this.dirExists(path.resolve(this.dir, 'StatusEffects'));
+  }
+
+  async hasFavors() {
+    return this.dirExists(path.resolve(this.dir, 'Favors'));
   }
 
   async getMeta() {
