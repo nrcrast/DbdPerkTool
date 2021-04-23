@@ -1,4 +1,5 @@
 import ImageGrid from './ImageGrid.js';
+import logger from 'electron-log';
 
 const ICON_TYPES = {
     ACTIONS: 'actions',
@@ -47,38 +48,37 @@ export default class PackGallery {
 
 	async generateImageFor(type, files) {
 		const currentGallery = this;
-		return new Promise(async (resolve) => {
-			// console.log(`Generating for Type: ${type}`);
-			const img = await ImageGrid.generate(
-				files,
-				{
-					imgHeight:
-						TYPE_WIDTH[type] ||
-						DEFAULT_WIDTH,
-					imgWidth:
-						TYPE_WIDTH[type] ||
-						DEFAULT_WIDTH,
-					padding:
-						TYPE_PADDING[type] ||
-						DEFAULT_PADDING,
-					gridWidth:
-						TYPE_GRID_WIDTH[type] ||
-						DEFAULT_GRID_WIDTH,
-				},
-			);
-			resolve({ type, data: img });
-		});
+		const img = await ImageGrid.generate(
+			files,
+			{
+				imgHeight:
+					TYPE_WIDTH[type] ||
+					DEFAULT_WIDTH,
+				imgWidth:
+					TYPE_WIDTH[type] ||
+					DEFAULT_WIDTH,
+				padding:
+					TYPE_PADDING[type] ||
+					DEFAULT_PADDING,
+				gridWidth:
+					TYPE_GRID_WIDTH[type] ||
+					DEFAULT_GRID_WIDTH,
+			},
+		);
+		return {type, data: img};
 	}
 
 	async buildUncompressedImages(types) {
 		const currentGallery = this;
-		const promises = types.map((type) => {
+		const images = [];
+		for(let i = 0; i < types.length; i += 1) {
+			logger.info(`Processing images for type ${types[i]}`);
+			const type = types[i];
 			const files = currentGallery.archive.getIconList(type);
 			// console.log(`Type: ${type}: `, files);
-			return currentGallery.generateImageFor(type, files);
-		});
-
-		return await Promise.all(promises);
+			images.push(await currentGallery.generateImageFor(type, files));
+		}
+		return images;
 	}
 
 	// Returns array of {type: String, buf: Buffer(png)}

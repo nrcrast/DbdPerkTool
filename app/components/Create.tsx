@@ -94,9 +94,9 @@ export default function Create(props: MyProps) {
       // logic
       log.debug('Output zip generated. Uploading...');
       await api.getUser();
-      // await api.uploadZip(outputZip, progress => {
-      //   setSaveProgress(progress);
-      // });
+      await api.uploadZip(outputZip, progress => {
+        setSaveProgress(progress);
+      });
       setSuccessText(
         `Your pack has been uploaded. Zip has also been generated at ${outputZip}`
       );

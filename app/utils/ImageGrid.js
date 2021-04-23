@@ -32,6 +32,7 @@ export default class ImageGrid {
 				img = await Canvas.loadImage(await fs.promises.readFile(images[i]));
 			} catch (err) {
 				logger.error(`Error loading image: ${images[i]}`, err);
+				throw(new Error(`Error loading preview image ${images[i]}: ${err}}`));
 			}
 
 			ctx.drawImage(img, currentX, currentY, imgWidth, imgHeight);

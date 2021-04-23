@@ -121,8 +121,13 @@ export default class PackGenerator {
       });
 
       // TODO build previews
-      const previewGenerator = new PreviewGenerator(archive, files, this.packDir.dir, packMeta);
-      await previewGenerator.generate();
+      try {
+        const previewGenerator = new PreviewGenerator(archive, files, this.packDir.dir, packMeta);
+        await previewGenerator.generate();
+      } catch(e) {
+        reject(e);
+      }
+
 
       archive.append(JSON.stringify(packMeta, null, 2), {
         name: 'meta.json'
