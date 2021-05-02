@@ -66,7 +66,8 @@ export default function PortraitPack(props: MyProps) {
 
       props.onInstallComplete(id);
     } catch (e) {
-      props.onError(`Error installing pack ${id}: ${e}`);
+      const errorMessage = e.message || JSON.stringify(e);
+      props.onError(`Error installing pack ${id}: ${errorMessage}`);
     }
   };
 

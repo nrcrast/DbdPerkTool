@@ -5,6 +5,7 @@ import fs from 'fs-extra';
 import shuffle from 'shuffle-array';
 import logger from 'electron-log';
 import expectedFiles from '../constants/expectedfiles.json';
+import slash from 'slash';
 
 const ICON_TYPES = {
     ACTIONS: 'actions',
@@ -144,11 +145,10 @@ export default class PerkPackArchive {
 		return this.files
 			.filter((file) => {
 				const pathOnly = file.split(this.basePath + '\\')[1];
-				const lowerPath = pathOnly.toLowerCase();
-
-				// logger.info(`Path: ${lowerPath}`);
+				const lowerPath = slash(pathOnly.toLowerCase());
 				return (
 					lowerPath.endsWith('.png') &&
+					expectedFiles.includes(lowerPath) &&
 					!currentArchive.excludedFiles.includes(lowerPath) &&
 					filterFn(lowerPath)
 				);
@@ -157,7 +157,7 @@ export default class PerkPackArchive {
 
 	getIconList(type) {
 		return this.getAllIconFileNames((file) =>
-			file.startsWith(`${type}` + '\\'),
+			file.startsWith(`${type}` + '/'),
 		);
 	}
 

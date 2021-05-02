@@ -203,7 +203,6 @@ export default function PackDisplay(props: MyProps) {
 
   const showHeaderBar = !(props.showHeaderBar === false);
   const paginate = !(props.paginate === false);
-  const errorModalTitle = 'Error';
   const errorModalText = errorText;
 
   const packs = [...props.packs];
@@ -300,7 +299,6 @@ export default function PackDisplay(props: MyProps) {
         </PaginatorWrapper>
       )}
       <ErrorModal
-        title={errorModalTitle}
         text={errorModalText}
         show={errorModalShow}
         onHide={() => setErrorModalShow(false)}

@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-type MyProps = { show: any, onHide: any, title: string, text:string };
+type MyProps = { show: any, onHide: any, title?: string, text:string };
 
 export default function ErrorModal(props: MyProps) {
 	return (
@@ -19,7 +19,7 @@ export default function ErrorModal(props: MyProps) {
 		  </Modal.Title>
 		</Modal.Header>
 		<Modal.Body>
-		  <h4>{props.title}</h4>
+		  <h4>{props?.title}</h4>
 		  <p>
 			{props.text}
 		  </p>

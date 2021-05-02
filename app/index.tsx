@@ -9,6 +9,7 @@ import './app.global.css';
 import axios from 'axios';
 import logger from 'electron-log';
 import api from './api/Api';
+import IconPack from './models/IconPack';
 
 
 const _setImmediate = setImmediate;
@@ -43,7 +44,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   logger.catchErrors({
     showDialog: false,
   });
+
   await settingsUtil.read();
+  await IconPack.cleanTemp();
   const targetServer = await api.determineTargetServer();
   if(targetServer === null) {
     remote.dialog.showErrorBox("Error", "Unable to communicate with the DBD Toolbox Server!");
