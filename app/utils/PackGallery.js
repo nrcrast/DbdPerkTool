@@ -75,8 +75,10 @@ export default class PackGallery {
 			logger.info(`Processing images for type ${types[i]}`);
 			const type = types[i];
 			const files = currentGallery.archive.getIconList(type);
-			console.log(`Type: ${type}: `, files);
-			images.push(await currentGallery.generateImageFor(type, files));
+			if(files.length > 0) {
+				console.log(`Type: ${type}: `, files);
+				images.push(await currentGallery.generateImageFor(type, files));
+			}
 		}
 		return images;
 	}

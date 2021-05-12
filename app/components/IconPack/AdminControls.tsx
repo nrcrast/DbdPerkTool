@@ -15,6 +15,9 @@ import EditPackModal from './EditPackModal';
 import UpdatePackModal from './UpdatePackModal';
 import PackDir from '../../packdir/PackDir';
 import PackGenerator from '../../packgenerator/PackGenerator';
+import settingsUtil from '../../settings/Settings';
+import { promisify } from 'util';
+import rimraf from 'rimraf';
 
 type MyProps = {
   id: string;
@@ -68,8 +71,10 @@ export default function AdminControls(props: MyProps) {
       validationStatus.skipFiles
     );
 
+    let outputZip;
+
     try {
-      const outputZip = await generator.generate();
+      outputZip = await generator.generate();
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
@@ -87,6 +92,12 @@ export default function AdminControls(props: MyProps) {
     } finally {
       setUpdateInProgress(false);
       setShowUpdatePack(false);
+
+      if(outputZip && settingsUtil.get('deleteAfterUpload') === true) {
+        const rmrf = promisify(rimraf);
+        log.info(`Removing output zip ${outputZip}`);
+        await rmrf(outputZip);
+      }
     }
   };
 

@@ -16,6 +16,7 @@ type SettingSchema = {
   writeToTxt: boolean;
   lastNotificationRead: string;
   uploadServer: any;
+  deleteAfterUpload: boolean;
 };
 
 class Settings {
@@ -30,6 +31,7 @@ class Settings {
     log.info(`Settings Path: ${this.settingsPath}`);
     this.defaultSettings = {
       lastUpdate: '',
+      deleteAfterUpload: true,
       dbdInstallPath: '',
       installedPack: '',
       installedPortraitPack: '',

@@ -24,11 +24,12 @@ const TooltipWrapper = styled.div`
   align-items: center;
 `;
 
-async function doSave(installPath, autoUpdate, showNsfw, writeToTxt) {
+async function doSave(installPath, autoUpdate, showNsfw, writeToTxt, deleteAfterUpload) {
   settingsUtil.settings.dbdInstallPath = installPath;
   settingsUtil.settings.autoUpdate = autoUpdate;
   settingsUtil.settings.showNsfw = showNsfw;
   settingsUtil.settings.writeToTxt = writeToTxt;
+  settingsUtil.settings.deleteAfterUpload = deleteAfterUpload;
   await settingsUtil.save();
 }
 
@@ -43,6 +44,7 @@ export default function Settings(props: MyProps) {
   const [showNsfw, setShowNsfw] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
   const [writePackToTxt, setWritePackToTxt] = useState(false);
+  const [deleteZipAfterUpload, setDeleteZipAfterUpload] = useState(true);
 
   const writePackTxtPath = path.resolve(
     (app || remote.app).getPath('userData'),
@@ -60,9 +62,10 @@ export default function Settings(props: MyProps) {
     await settingsUtil.read();
     const { settings } = settingsUtil;
     setInstallPath(settings.dbdInstallPath);
-    setAutoUpdate(settings.autoUpdate || true);
-    setShowNsfw(settings.showNsfw || false);
-    setWritePackToTxt(settings.writeToTxt || false);
+    setAutoUpdate(settingsUtil.get('autoUpdate'));
+    setShowNsfw(settingsUtil.get('showNsfw'));
+    setWritePackToTxt(settingsUtil.get('writeToTxt'));
+    setDeleteZipAfterUpload(settingsUtil.get('deleteAfterUpload'));
   };
 
   useEffect(() => {
@@ -75,7 +78,7 @@ export default function Settings(props: MyProps) {
       <Form
         onSubmit={async e => {
           e.preventDefault();
-          await doSave(installPath, autoUpdate, showNsfw, writePackToTxt);
+          await doSave(installPath, autoUpdate, showNsfw, writePackToTxt, deleteZipAfterUpload);
           setUnsaved(false);
         }}
         onChange={() => setUnsaved(true)}
@@ -113,6 +116,16 @@ export default function Settings(props: MyProps) {
               <i className="fas fa-question-circle ml-2"></i>
             </OverlayTrigger>
           </TooltipWrapper>
+        </Form.Group>
+        <Form.Group>
+            <Form.Check
+              type="checkbox"
+              label="Delete .zip after upload"
+              checked={deleteZipAfterUpload}
+              onChange={e => {
+                setDeleteZipAfterUpload(e.target.checked);
+              }}
+            />
         </Form.Group>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <Button variant="secondary" type="submit">

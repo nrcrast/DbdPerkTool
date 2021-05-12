@@ -18,6 +18,8 @@ import styled from 'styled-components';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
 import NoAuthorProfile from './NoAuthorProfile';
+import rimraf from 'rimraf';
+import { promisify } from 'util';
 
 axios.defaults.adapter = require('axios/lib/adapters/xhr.js');
 
@@ -86,9 +88,11 @@ export default function Create(props: MyProps) {
       validationStatus.skipFiles
     );
 
+    let outputZip;
+
     try {
       log.debug('Generating output zip');
-      const outputZip = await generator.generate();
+      outputZip = await generator.generate();
       // This is just a little hack to update the JWT if necessary before the upload
       // The upload doesn't use swagger client, and I did not want to re-write the JWT refresh
       // logic
@@ -107,6 +111,12 @@ export default function Create(props: MyProps) {
       setErrorText(`Error generating or uploading Pack: ${e}`);
       setSaving(false);
       setErrorModalShow(true);
+    } finally {
+      if(outputZip && settingsUtil.get('deleteAfterUpload') === true) {
+        const rmrf = promisify(rimraf);
+        log.info(`Removing output zip ${outputZip}`);
+        await rmrf(outputZip);
+      }
     }
   };
 
