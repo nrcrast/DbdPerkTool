@@ -14,8 +14,7 @@ export default function Featured() {
 
   const fromPacksBuildCards = (packs, opts) => {
     const myPacks = packs.filter(
-      pack =>
-        pack.id !== 'Dead-By-Daylight-Default-Icons' && pack.featured === true
+      pack => pack.id !== 'Dead-By-Daylight-Default-Icons'
     );
 
     return myPacks.map(pack => {
@@ -54,6 +53,6 @@ export default function Featured() {
   };
 
   return (
-    <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} />
+    <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} featured={true} />
   );
 }

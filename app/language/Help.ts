@@ -103,7 +103,9 @@ const languageMap: { [key: string]: string } = {
   'helploading/wales/iconhelploading_wales.png': 'Executioner',
   'helploading/aurora/iconhelploading_twins.png': 'The Twins',
   'helploading/yemen/iconhelploading_k21.png': 'Blight',
-  'helploading/comet/iconhelploading_trickster.png': 'Trickster'
+  'helploading/comet/iconhelploading_trickster.png': 'Trickster',
+  'helploading/eclipse/iconhelploading_t-virus.png': 'T-Virus',
+  'helploading/eclipse/iconhelploading_tyrantmutations.png': 'Tyrant Mutations'
 };
 
 export default function getLanguage(tag) {

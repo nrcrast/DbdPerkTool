@@ -180,8 +180,16 @@ const languageMap: { [key: string]: string } = {
   "perks/comet/iconperks_nowayout.png": "Killer / No Way Out",
   "perks/comet/iconperks_self-preservation.png": "Survivor / Self Preservation",
   "perks/comet/iconperks_smashhit.png": "Survivor / Smash Hit",
-  "perks/comet/iconperks_starstruck.png": "Killer / Star Struck"
-
+  "perks/comet/iconperks_starstruck.png": "Killer / Star Struck",
+  "perks/eclipse/iconperks_bitethebullet.png": 'Survivor / Bite the Bullet',
+  "perks/eclipse/iconperks_blastmine.png": 'Survivor / Blast Mine',
+  "perks/eclipse/iconperks_counterforce.png": 'Survivor / Counter Force',
+  "perks/eclipse/iconperks_eruption.png": 'Killer / Eruption',
+  "perks/eclipse/iconperks_flashbang.png": 'Survivor / Flashbang',
+  "perks/eclipse/iconperks_hysteria.png": 'Killer / Hysteria',
+  "perks/eclipse/iconperks_lethalpursuer.png": 'Killer / Lethal Pursuer',
+  "perks/eclipse/iconperks_resurgence.png": 'Survivor / Resurgence',
+  "perks/eclipse/iconperks_rookiespirit.png": 'Survivor / Rookie Spirit'
 
 };
 

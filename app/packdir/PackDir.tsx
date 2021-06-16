@@ -104,7 +104,9 @@ export default class PackDir {
     const dirs = contents
       .filter(item => item.isDirectory())
       .map(dirent => dirent.name);
-    if (dirs.includes('Comet')) {
+    if(dirs.includes('Eclipse')) {
+      return 'Chapter XX: Resident Evil';
+    } else if (dirs.includes('Comet')) {
       return 'Chapter XIX: All-Kill';
     } else if (dirs.includes('Aurora')) {
       return 'Chapter XVIII: A Binding of Kin';

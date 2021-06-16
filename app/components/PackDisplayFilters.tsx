@@ -32,32 +32,29 @@ const FilterList = [
   { label: 'Offerings', field: 'hasFavors' },
   { label: 'Items', field: 'hasItems' },
   { label: 'Add-Ons', field: 'hasItemAddOns' },
-  { label: 'Misc (Emblems, Help, Rituals, etc...)', field: 'misc' }
 ];
 
 export default function PackDisplayFilter(props: MyProps) {
   const [filters, setFilters] = useState([]);
 
-  const addFilter = filter => {
-    const filtersCopy = [...filters];
-    filtersCopy.push(filter);
+  const addFilters = (newFilters: Array<string>) => {
+    const filtersCopy = [...filters, ...newFilters];
     setFilters(filtersCopy);
     props.onFiltersSet(filtersCopy);
   };
 
-  const removeFilter = filter => {
-    const index = filters.indexOf(filter);
-    const filtersCopy = [...filters];
-    filtersCopy.splice(index, 1);
+  const removeFilters = (filtersToRemove: Array<string>) => {
+    const filtersCopy = filters.filter(field => !filtersToRemove.includes(field));
     setFilters(filtersCopy);
     props.onFiltersSet(filtersCopy);
   };
 
   const onCheckboxChange = (filter: string, checked: boolean) => {
+    const fieldValues = [filter];
     if (checked) {
-      addFilter(filter);
+      addFilters(fieldValues);
     } else {
-      removeFilter(filter);
+      removeFilters(fieldValues);
     }
   };
 

@@ -96,5 +96,11 @@ export default function getLanguage(portrait: String) {
       return 'Killer / The Trickster';
     case 'charportraits/comet/s25_charselect_portrait.png':
       return 'Survivor / Yun-Jin Lee';
+    case "charportraits/eclipse/k24_charselect_portrait.png":
+      return 'Killer / Nemesis';
+    case "charportraits/eclipse/s26_charselect_portrait.png":
+      return 'Survivor / Jill Valentine';
+    case "charportraits/eclipse/s27_charselect_portrait.png":
+      return 'Survivor / Leon Kennedy';
   }
 }

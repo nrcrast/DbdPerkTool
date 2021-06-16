@@ -15,6 +15,7 @@ import AuthorModal from './AuthorModal';
 import PackDisplayHeader from './PackDisplayHeader';
 import PackDisplayFilters from './PackDisplayFilters';
 import UserContext from '../context/UserContext';
+import api from '../api/Api';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
@@ -24,22 +25,7 @@ type MyProps = {
   packs: any;
   showHeaderBar?: boolean;
   paginate?: boolean;
-};
-type MyState = {
-  errorModalShow: boolean;
-  isLoading: boolean;
-  searchFilter: string;
-  currentAuthor: string;
-  showAuthorPage: boolean;
-  sortKey: string;
-  errorText: string;
-  viewMode: string;
-  packs: Array<any>;
-  page: number;
-  pageSize: number;
-  successModalShow: boolean;
-  successModalText: string;
-  favoritesOnly: boolean;
+  featured?: boolean;
 };
 
 const DeckWrapper = styled.div`
@@ -65,19 +51,13 @@ const PaginatorWrapper = styled.div`
   background: rgba(0, 0, 0, 0.5);
 `;
 
-function strcmpIgnoreCase(a, b) {
-  return a.toUpperCase().localeCompare(b.toUpperCase());
-}
-
-function getPackChapterNum(pack) {
-  const latestChapterMatch = pack.latestChapter.match(/Chapter (.*): .*/);
-  if (!latestChapterMatch || latestChapterMatch.length < 2) {
-    return 0;
-  } else {
-    const lastChapterRomanStr = latestChapterMatch[1];
-    return nomar(lastChapterRomanStr);
-  }
-}
+const SORT_KEY_MAP = {
+  'Name': {key: 'name', dir: 'ascending'},
+  'Date': {key: 'updatedAt', dir: 'descending'},
+  'Downloads': {key: 'downloads', dir: 'descending'},
+  'Chapter': {key: 'latestChapter', dir: 'ascending'},
+  'Author': {key: 'author', dir: 'ascending'},
+};
 
 export default function PackDisplay(props: MyProps) {
   const [errorModalShow, setErrorModalShow] = useState(false);
@@ -93,82 +73,45 @@ export default function PackDisplay(props: MyProps) {
   const [successModalShow, setSuccessModalShow] = useState(false);
   const [successModalText, setSuccessModalText] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [packs, setPacks] = useState([]);
   const userContext = useContext(UserContext);
   const deckWrapperRef = React.createRef();
 
-  const doSearchFilter = (text: string) => {
-    const escapedRegex = searchFilter.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    return text.search(new RegExp(escapedRegex, 'i')) >= 0;
+  const loadPacks = async () => {
+    const capabilities = filters.length > 0 ? filters.join('|') : null;
+    const params = {page: page + 1, limit: pageSize, capabilities};
+
+    if(searchFilter) {
+      params.search = searchFilter;
+    }
+
+    if(props.featured === true) {
+      params.isFeatured = true;
+    }
+
+    if(favoritesOnly) {
+      params.favorites = true;
+    }
+
+    const apiSortKey = SORT_KEY_MAP[sortKey];
+
+    if(apiSortKey) {
+      params.sort = apiSortKey.key;
+      params.sortdir = apiSortKey.dir;
+    }
+
+    const packs = await api.getPacks(params);
+    setPacks(packs);
   };
 
-  const isPackIncluded = pack => {
-    let show = false;
-
-    if (userContext.user == null) {
-      show = true;
-    } else if (favoritesOnly) {
-      show = userContext.user.favorites.find(
-        favoritePack => favoritePack.id === pack.id
-      );
-    } else {
-      show = true;
-    }
-
-    // If the pack went through the favorites filter
-    if (show) {
-      // Assume we're not showing it
-      show = false;
-      if (searchFilter === '') {
-        show = true;
-      } else if (
-        doSearchFilter(pack.name) ||
-        doSearchFilter(pack.author) ||
-        doSearchFilter(pack.description) ||
-        doSearchFilter(pack.latestChapter)
-      ) {
-        show = true;
-      }
-    }
-
-    // Handle filter checkboxes
-    if (show) {
-      for (let i = 0; i < filters.length; i += 1) {
-        if (filters[i] === 'misc') {
-          if (
-            !(
-              pack.hasArchive ||
-              pack.hasBanners ||
-              pack.hasRituals ||
-              pack.hasEmblems ||
-              pack.hasEvents ||
-              pack.hasHelp ||
-              pack.hasHelpLoading ||
-              pack.hasStoreBackgrounds ||
-              pack.hasStoreTabs
-            )
-          ) {
-            show = false;
-            break;
-          }
-        } else {
-          if (pack[filters[i]] !== true) {
-            show = false;
-            break;
-          }
-        }
-      }
-    }
-
-    return show;
-  };
+  useEffect(() => {
+    loadPacks();
+  }, [searchFilter, page, pageSize, filters, favoritesOnly, sortKey]);
 
   const fromCardsBuildDeck = cards => {
-    const startIndex = page * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, cards.length);
-    const paginatedCards = cards.slice(startIndex, endIndex);
     return (
       <Row key="pack-cards" className="justify-content-center">
-        {paginatedCards.map(card => (
+        {cards.map(card => (
           <Col key={`card-${uuidv4()}`} className="col-auto">
             {card}
           </Col>
@@ -177,46 +120,24 @@ export default function PackDisplay(props: MyProps) {
     );
   };
 
-  const packSortComparator = (a, b) => {
-    const key = sortKey;
-    // // Featured packs always take precedence
-    // if (a.featured && !b.featured) {
-    //   return -1;
-    // } else if (b.featured && !a.featured) {
-    //   return 1;
-    // }
-
-    if (key === 'Name') {
-      return strcmpIgnoreCase(a.name, b.name);
-    } else if (key === 'Author') {
-      return strcmpIgnoreCase(a.author, b.author);
-    } else if (key === 'Downloads') {
-      return a.downloads > b.downloads ? -1 : 1;
-    } else if (key === 'Chapter') {
-      return getPackChapterNum(a) > getPackChapterNum(b) ? -1 : 1;
-    }
-
-    const aDate = new Date(a.lastUpdate);
-    const bDate = new Date(b.lastUpdate);
-    return aDate > bDate ? -1 : aDate < bDate ? 1 : 0;
-  };
-
   const showHeaderBar = !(props.showHeaderBar === false);
   const paginate = !(props.paginate === false);
   const errorModalText = errorText;
 
-  const packs = [...props.packs];
-  packs.sort(packSortComparator);
+  if(!packs.data) {
+    return null;
+  }
 
-  const filteredPacks = packs.filter(pack => isPackIncluded(pack));
-  const cards = props.cardBuilder(filteredPacks, {
+  const packElements = packs.data;
+
+  const cards = props.cardBuilder(packElements, {
     viewMode: viewMode,
     onError: (msg: string) => {
       setErrorText(msg);
       setErrorModalShow(true);
     },
     onInstallComplete: (id: string) => {
-      const pack = packs.find(pack => pack.id === id);
+      const pack = packElements.find(pack => pack.id === id);
       setSuccessModalText(`Pack ${pack.name} installed!`);
       setSuccessModalShow(true);
     },
@@ -227,9 +148,12 @@ export default function PackDisplay(props: MyProps) {
     onSetFilter: (text: string) => {
       setPage(0);
       setSearchFilter(text);
+
     }
   });
   const deck = fromCardsBuildDeck(cards);
+
+  const numPages = Math.ceil(packs.meta.totalDocs / pageSize);
 
   return (
     <PackDisplayContainer>
@@ -237,7 +161,7 @@ export default function PackDisplay(props: MyProps) {
         <div>
           <PackDisplayHeader
             currentPage={page}
-            numPages={Math.ceil(cards.length / pageSize)}
+            numPages={numPages}
             initialPageSize={pageSize}
             initialSortKey={sortKey}
             initialViewMode={viewMode}
@@ -277,7 +201,7 @@ export default function PackDisplay(props: MyProps) {
             previousLabel={'Previous'}
             nextLabel={'Next'}
             breakLabel={'...'}
-            pageCount={Math.ceil(cards.length / pageSize)}
+            pageCount={numPages}
             marginPagesDisplayed={1}
             pageRangeDisplayed={15}
             forcePage={page}

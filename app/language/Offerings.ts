@@ -113,9 +113,11 @@ const languageMap: { [key: string]: string } = {
   'favors/yemen/iconfavors_tornblueprint.png': 'Torn Blueprint',
   'favors/yemen/iconfavors_vigosblueprint.png': "Vigo's Blueprint",
   'favors/yemen/iconfavors_wardsacrificial.png': 'Sacrificial Ward',
-  'favors/wales/iconfavors_marysletter.png': "Mary's Letter"
+  'favors/wales/iconfavors_marysletter.png': "Mary's Letter",
+  "favors/eclipse/iconsfavors_5thanniversary.png": "5th Anniversary",
+  'favors/eclipse/iconsfavors_rpdbadge.png': 'RPD Badge',
 };
 
-export default function getLanguage(tag) {
+export default function getLanguage(tag: string) {
   return languageMap[tag] || null;
 }

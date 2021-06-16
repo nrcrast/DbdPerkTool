@@ -32,11 +32,15 @@ const languageMap: { [key: string]: string } = {
   'powers/ukraine/iconpowers_uk.png': 'Deathslinger / The Redeemer',
   'powers/wales/iconpowers_wales_ritesofjudgement.png':
     'Executioner / Rites of Judgement',
-    'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption',
+  'powers/yemen/iconpowers_k21.png': 'Blight / Blighted Corruption',
   'powers/aurora/iconpowers_bloodbond_01.png': 'The Twins / Blood Bond 01',
   'powers/aurora/iconpowers_bloodbond_02.png': 'The Twins / Blood Bond 02 (Bebeh)',
   'powers/comet/iconpowers_showstopper_01.png': 'The Trickster / Showstopper 01',
   'powers/comet/iconpowers_showstopper_02.png': 'The Trickster / Showstopper 02',
+  "powers/eclipse/iconpowers_t-virus1.png": 'Nemesis / T-Virus 01',
+  "powers/eclipse/iconpowers_t-virus2.png": 'Nemesis / T-Virus 02',
+  "powers/eclipse/iconpowers_t-virus3.png": 'Nemesis / T-Virus 03',
+  "powers/eclipse/iconpowers_tyrantmutations.png": 'Nemesis / Tryant Mutations'
 };
 
 export default function getLanguage(tag) {

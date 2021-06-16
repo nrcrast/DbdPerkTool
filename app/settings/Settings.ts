@@ -17,6 +17,7 @@ type SettingSchema = {
   lastNotificationRead: string;
   uploadServer: any;
   deleteAfterUpload: boolean;
+  targetServerOverride: string;
 };
 
 class Settings {

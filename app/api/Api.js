@@ -77,6 +77,14 @@ class Api {
     }
   }
 
+  async getPacks(queryParams) {
+    if(this.isLoggedIn()) {
+      return this.executor.apis.default.getPacksSec(queryParams);
+    } else {
+      return this.executor.apis.default.getPacks(queryParams);
+    }
+  }
+
   async determineTargetServer() {
     const servers = ['https://dead-by-daylight-icon-toolbox.herokuapp.com', 'http://app.dbdicontoolbox.com'];
     for(let i = 0; i < servers.length; i++) {

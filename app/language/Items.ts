@@ -26,7 +26,9 @@ const languageMap: { [key: string]: string } = {
   'items/iconitems_toolboxmechanics.png': "Mechanic's Toolbox",
   'items/iconitems_toolboxwornout.png': 'Worn-Out Tools',
   'items/winterevent/iconitems_wintereventfirecracker.png': 'Winter Firecracker',
-  'items/lunarevent/iconitems_toolboxlunar.png': 'Lunar Toolbox'
+  'items/lunarevent/iconitems_toolboxlunar.png': 'Lunar Toolbox',
+  "items/limited/iconitems_flashbanggrenade.png": 'Flashbang Grenade',
+  "items/limited/iconitems_limiteditemvaccine.png": 'Vaccine'
 };
 
 export default function getLanguage(tag) {
