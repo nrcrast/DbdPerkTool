@@ -45,7 +45,6 @@ const Root = ({ store, history }: Props) => {
   const [latestVersion, setLatestVersion] = useState('');
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
-  const [packs, setCurrentPacks] = useState([]);
   const [showUpdateDbdPath, setShowUpdateDbdPath] = useState(false);
   const [detectedDbdPath, setDetectedDbdPath] = useState('');
   const [notification, setNotification] = useState({
@@ -74,14 +73,6 @@ const Root = ({ store, history }: Props) => {
     setUpdateProgress(parseInt(arg.percent));
   });
 
-  const refreshPacks = async () => {
-    const packs = await axios.get(
-      `${settingsUtil.get('targetServer')}/packs?all=true`,
-      {}
-    );
-    setCurrentPacks(packs.data);
-  };
-
   const popNotification = async () => {
     const notification = await api.popNotification();
 
@@ -100,7 +91,8 @@ const Root = ({ store, history }: Props) => {
 
     try {
       const dbdPath = await dbd.getInstallPath();
-      if (dbdPath !== settingsUtil.settings.dbdInstallPath) {
+      log.info(`Detected DBD Path: ${dbdPath}`);
+      if (dbdPath.toLowerCase() !== settingsUtil.settings.dbdInstallPath.toLowerCase()) {
         setDetectedDbdPath(dbdPath);
         setShowUpdateDbdPath(true);
       }
@@ -110,19 +102,6 @@ const Root = ({ store, history }: Props) => {
   useEffect(() => {
     checkDbdPath();
     popNotification();
-    refreshPacks();
-  }, []);
-
-  // Every 30 seconds, check for pack changes!
-  useEffect(() => {
-    const interval = setInterval(() => {
-      api.checkForPackChanges().then(newHash => {
-        if (newHash) {
-          refreshPacks();
-        }
-      });
-    }, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -130,8 +109,6 @@ const Root = ({ store, history }: Props) => {
       <ConnectedRouter history={history}>
         <UserContext.Provider
           value={{
-            packs,
-            refreshPacks,
             user: currentUser,
             setUser: user => {
               setCurrentUser(user);

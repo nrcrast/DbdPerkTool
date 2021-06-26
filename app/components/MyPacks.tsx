@@ -14,55 +14,11 @@ export default function MyPacks() {
 
   const userAuthorProfile = userContext.user.authorProfile;
 
-  const fromPacksBuildCards = (packs, opts) => {
-    const myPacks = packs
-    .filter(
-      pack =>
-        userContext.user.abilities.can('manage', subject('PerkPack', pack))
-    );
-
-    return myPacks
-      .map(pack => {
-        if(pack.hasPerks) {
-          return (
-            <PerkPack
-              viewMode={opts.viewMode}
-              onError={opts.onError}
-              onInstallComplete={opts.onInstallComplete}
-              meta={pack}
-              id={pack.id}
-              downloads={pack.downloads}
-              setFilter={opts.onSetFilter}
-              onAuthorClick={(author: string) => {
-                opts.onAuthorClick(author);
-              }}
-            />
-          );
-        } else {
-          return (
-            <PortraitPack
-              viewMode={opts.viewMode}
-              onError={opts.onError}
-              onInstallComplete={opts.onInstallComplete}
-              meta={pack}
-              id={pack.id}
-              downloads={pack.downloads}
-              setFilter={opts.onSetFilter}
-              onAuthorClick={(author: string) => {
-                opts.onAuthorClick(author);
-              }}
-            />
-          );
-        }
-
-      });
-  };
-
   if (!userAuthorProfile) {
     return <NoAuthorProfile/>
   } else {
     return (
-      <PackDisplay packs={userContext.packs} cardBuilder={fromPacksBuildCards} />
+      <PackDisplay mine={true} />
     );
   }
 }

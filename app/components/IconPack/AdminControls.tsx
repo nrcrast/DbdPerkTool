@@ -22,6 +22,7 @@ import rimraf from 'rimraf';
 type MyProps = {
   id: string;
   meta: any;
+  onModifyComplete: any;
 };
 
 const AdminControlsWrapper = styled.div`
@@ -106,7 +107,7 @@ export default function AdminControls(props: MyProps) {
     try {
       if (doDelete) {
         await api.executor.apis.default.deletePack({ id: props.id });
-        await userContext.refreshPacks();
+        props.onModifyComplete();
       }
     } catch (e) {
       setErrorText(e.message);
@@ -205,7 +206,7 @@ export default function AdminControls(props: MyProps) {
                 { id: props.id },
                 { requestBody: { name, description: desc } }
               );
-              await userContext.refreshPacks();
+              props.onModifyComplete();
             } catch (e) {
               setErrorText(e.message);
               setShowError(true);
@@ -226,8 +227,11 @@ export default function AdminControls(props: MyProps) {
         onHide={() => {
           setShowUpdatePack(false);
         }}
-        onConfirm={(packDir: string) => {
-          doPackUpload(packDir);
+        onConfirm={async (packDir: string) => {
+          await doPackUpload(packDir);
+          setTimeout(() => {
+            props.onModifyComplete();
+          }, 60000);
         }}
         name={props.meta.name}
         operationInProgress={updateInProgress}

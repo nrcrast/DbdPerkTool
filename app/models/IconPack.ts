@@ -106,9 +106,11 @@ export default abstract class IconPack {
    * @param onProgress - optional. Called with an integer percentage as the download progresses
    * @returns temporary directory
    */
-  private async downloadAndExtract(onProgress?: Function) {
+  private async downloadAndExtract(onProgress: Function = () => {}) {
+    onProgress('Downloading...');
     log.debug('Downloading Zip');
     const zipPath = await this.downloadZip(onProgress);
+    onProgress('Extracting...');
     log.debug('Extracting Zip');
     const extractDir = await this.extractZip(zipPath.name);
     log.debug(`Extracted to ${extractDir.name}`);
@@ -141,6 +143,7 @@ export default abstract class IconPack {
 
     try {
       paths = await this.downloadAndExtract(onProgress);
+      onProgress('Copying...');
       await this.copyFilesTo(`${paths.extractPath.name}/Pack`, dbdIconsPath, opts);
       await this.saveInstalledPackId();
     } finally {

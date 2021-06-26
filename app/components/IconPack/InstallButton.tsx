@@ -5,9 +5,15 @@ import Spinner from 'react-bootstrap/Spinner';
 type MyProps = {
   installInProgress: boolean;
   onClick: Function;
+  progressText?: string;
 };
 
 export default function PackInstallButton(props: MyProps) {
+  let label = 'Install';
+
+  if(props.installInProgress && props.progressText) {
+    label += ` (${props.progressText})`;
+  }
   return (
     <Button
       variant="secondary"
@@ -25,7 +31,7 @@ export default function PackInstallButton(props: MyProps) {
         className="mr-2"
         hidden={!props.installInProgress}
       />
-      Install
+      {label}
     </Button>
   );
 }

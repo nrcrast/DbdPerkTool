@@ -34,15 +34,13 @@ type MyProps = {
   onError: any;
   onInstallComplete: any;
   viewMode: string;
+  onModifyComplete: any;
 };
-type MyState = {
-  saving: boolean;
-  showInstallOpts: boolean;
-  showDetails: boolean;
-};
+
 
 export default function PerkPack(props: MyProps) {
   const [saving, setSaving] = useState(false);
+  const [installState, setInstallState] = useState('');
   const [showInstallOpts, setShowInstallOpts] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const userContext = useContext(UserContext);
@@ -73,7 +71,9 @@ export default function PerkPack(props: MyProps) {
 
   const installPack = async (opts: Array<string>) => {
     setSaving(true);
-    await doInstall(props.id, null, opts);
+    await doInstall(props.id, (state: string) => {
+      setInstallState(state);
+    }, opts);
     setSaving(false);
   };
 
@@ -163,7 +163,7 @@ export default function PerkPack(props: MyProps) {
     userContext.user &&
     userContext.user.abilities.can('manage', subject('PerkPack', props.meta))
   ) {
-    adminButtons = <AdminControls id={props.id} meta={props.meta} />;
+    adminButtons = <AdminControls id={props.id} meta={props.meta} onModifyComplete={props.onModifyComplete} />;
   }
 
   return (
@@ -186,6 +186,7 @@ export default function PerkPack(props: MyProps) {
         {cardBody}
         <InstallButton
           installInProgress={saving}
+          progressText={installState}
           onClick={() => {
             setShowInstallOpts(true);
           }}

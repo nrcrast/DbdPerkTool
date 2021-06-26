@@ -19,6 +19,7 @@ type MyProps = {
   initialPageSize: number;
   initialShowFavorites: boolean;
   onShowFavoritesSet: Function;
+  refresh: Function;
 };
 
 const Container = styled.div`
@@ -39,6 +40,8 @@ const ShowFavoritesWrapper = styled.div`
   margin-right: auto;
 `;
 
+const RefreshWrapper = ShowFavoritesWrapper;
+
 const ShowFavoritesStarWrapper = styled.span`
   color: #d4af37;
   margin-right: 4px;
@@ -48,6 +51,8 @@ const ShowFavoritesStarWrapper = styled.span`
     cursor: pointer;
   }
 `;
+
+const RefreshIconWrapper = ShowFavoritesStarWrapper;
 
 export default function PackDisplayHeader(props: MyProps) {
   const userContext = useContext(UserContext);
@@ -189,6 +194,17 @@ export default function PackDisplayHeader(props: MyProps) {
           <h5>Show Favorites</h5>
         </ShowFavoritesWrapper>
       )}
+
+      <RefreshWrapper>
+      <RefreshIconWrapper
+            onClick={() => {
+              props.refresh();
+            }}
+          >
+            <i className="fas fa-sync" />
+          </RefreshIconWrapper>
+        <h5>Refresh</h5>
+      </RefreshWrapper>
 
       <Form.Control
         style={{

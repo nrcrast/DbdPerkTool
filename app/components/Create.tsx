@@ -55,9 +55,9 @@ export default function Create(props: MyProps) {
 
   const loadPacks = async () => {
     const packs = await axios.get(
-      `${settingsUtil.get('targetServer')}/packs?all=true`
+      `${settingsUtil.get('targetServer')}/v2/packs?light=true`
     );
-    setPacks(packs.data);
+    setPacks(packs.data.data);
   };
 
   useEffect(() => {

@@ -16,16 +16,18 @@ import PackDisplayHeader from './PackDisplayHeader';
 import PackDisplayFilters from './PackDisplayFilters';
 import UserContext from '../context/UserContext';
 import api from '../api/Api';
+import PerkPack from './PerkPack';
+import PortraitPack from './PortraitPack';
 
 axios.defaults.adapter = require('axios/lib/adapters/http');
 
 type MyProps = {
-  cardBuilder: any;
   installedPackSettingsKey: string;
-  packs: any;
   showHeaderBar?: boolean;
   paginate?: boolean;
   featured?: boolean;
+  mine?: boolean;
+  defaultOnly?: boolean;
 };
 
 const DeckWrapper = styled.div`
@@ -53,11 +55,12 @@ const PaginatorWrapper = styled.div`
 
 const SORT_KEY_MAP = {
   'Name': {key: 'name', dir: 'ascending'},
-  'Date': {key: 'updatedAt', dir: 'descending'},
+  'Date': {key: 'lastUpdate', dir: 'descending'},
   'Downloads': {key: 'downloads', dir: 'descending'},
-  'Chapter': {key: 'latestChapter', dir: 'ascending'},
+  'Chapter': {key: 'latestChapter', dir: 'descending'},
   'Author': {key: 'author', dir: 'ascending'},
 };
+
 
 export default function PackDisplay(props: MyProps) {
   const [errorModalShow, setErrorModalShow] = useState(false);
@@ -74,13 +77,56 @@ export default function PackDisplay(props: MyProps) {
   const [successModalText, setSuccessModalText] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [packs, setPacks] = useState([]);
-  const userContext = useContext(UserContext);
   const deckWrapperRef = React.createRef();
 
+  const fromPacksBuildCards = (opts) => {
+    const myPacks = packs.data;
+    return myPacks.map(pack => {
+      if (pack.hasPerks) {
+        return (
+          <PerkPack
+            viewMode={opts.viewMode}
+            onError={opts.onError}
+            onInstallComplete={opts.onInstallComplete}
+            meta={pack}
+            id={pack.id}
+            downloads={pack.downloads}
+            setFilter={opts.onSetFilter}
+            onAuthorClick={(author: string) => {
+              opts.onAuthorClick(author);
+            }}
+            onModifyComplete={opts.onModifyComplete}
+          />
+        );
+      } else {
+        return (
+          <PortraitPack
+            viewMode={opts.viewMode}
+            onError={opts.onError}
+            onInstallComplete={opts.onInstallComplete}
+            meta={pack}
+            id={pack.id}
+            downloads={pack.downloads}
+            setFilter={opts.onSetFilter}
+            onAuthorClick={(author: string) => {
+              opts.onAuthorClick(author);
+            }}
+            onModifyComplete={opts.onModifyComplete}
+          />
+        );
+      }
+    });
+  };
+
   const loadPacks = async () => {
+    if(props.defaultOnly) {
+      const packs = await api.getPacks({defaultOnly: true});
+      setPacks(packs);
+      return;
+    }
     const capabilities = filters.length > 0 ? filters.join('|') : null;
     const params = {page: page + 1, limit: pageSize, capabilities};
-
+    
     if(searchFilter) {
       params.search = searchFilter;
     }
@@ -91,6 +137,10 @@ export default function PackDisplay(props: MyProps) {
 
     if(favoritesOnly) {
       params.favorites = true;
+    }
+
+    if(props.mine) {
+      params.mine = true;
     }
 
     const apiSortKey = SORT_KEY_MAP[sortKey];
@@ -125,19 +175,26 @@ export default function PackDisplay(props: MyProps) {
   const errorModalText = errorText;
 
   if(!packs.data) {
-    return null;
+    return (
+    <div className="d-flex flex-column justify-content-center align-items-center">
+      <Spinner
+        as="span"
+        animation="border"
+        role="status"
+        aria-hidden="true"
+      />
+      <h1>Loading...</h1>
+    </div>);
   }
 
-  const packElements = packs.data;
-
-  const cards = props.cardBuilder(packElements, {
+  const cards = fromPacksBuildCards({
     viewMode: viewMode,
     onError: (msg: string) => {
       setErrorText(msg);
       setErrorModalShow(true);
     },
     onInstallComplete: (id: string) => {
-      const pack = packElements.find(pack => pack.id === id);
+      const pack = packs.data.find(pack => pack.id === id);
       setSuccessModalText(`Pack ${pack.name} installed!`);
       setSuccessModalShow(true);
     },
@@ -148,7 +205,9 @@ export default function PackDisplay(props: MyProps) {
     onSetFilter: (text: string) => {
       setPage(0);
       setSearchFilter(text);
-
+    },
+    onModifyComplete: () => {
+      loadPacks();
     }
   });
   const deck = fromCardsBuildDeck(cards);
@@ -184,6 +243,7 @@ export default function PackDisplay(props: MyProps) {
               setFavoritesOnly(favoritesOnly);
               setPage(0);
             }}
+            refresh={loadPacks}
           />
           <PackDisplayFilters
             initialFilters={filters}

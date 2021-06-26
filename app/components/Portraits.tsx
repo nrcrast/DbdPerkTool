@@ -33,7 +33,7 @@ export default function Perks() {
       });
   };
 
-    return <PackDisplay packs={userContext.portraits} cardBuilder={fromPacksBuildCards} />;
+    return <PackDisplay cardBuilder={fromPacksBuildCards} />;
   
 }
 
