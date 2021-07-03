@@ -46,6 +46,8 @@ export default function AdminControls(props: MyProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [successText, setSuccessText] = useState('');
 
+  const showAuthor: boolean = userContext?.user?.abilities?.can('manage', 'all');
+
   const doPackUpload = async (packDir: string) => {
     setUpdateInProgress(true);
     const packDirModel = new PackDir(packDir);
@@ -197,13 +199,13 @@ export default function AdminControls(props: MyProps) {
         onHide={() => {
           setShowEditPack(false);
         }}
-        onConfirm={async (name: string, desc: string) => {
-          if (name !== props.meta.name || desc !== props.meta.description) {
+        onConfirm={async (name: string, author: string, desc: string) => {
+          if (name !== props.meta.name || desc !== props.meta.description || author !== props.meta.author) {
             setEditInProgress(true);
             try {
               await api.executor.apis.default.editPack(
                 { id: props.id },
-                { requestBody: { name, description: desc } }
+                { requestBody: { name, description: desc, author } }
               );
               props.onModifyComplete();
             } catch (e) {
@@ -219,6 +221,8 @@ export default function AdminControls(props: MyProps) {
           }
         }}
         packName={props.meta.name}
+        canEditAuthor={showAuthor}
+        packAuthor={props.meta.author}
         packDescription={props.meta.description}
       ></EditPackModal>
       <UpdatePackModal

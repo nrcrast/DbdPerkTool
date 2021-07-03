@@ -12,11 +12,14 @@ type MyProps = {
   packName: string;
   packDescription: string;
   operationInProgress: boolean;
+  packAuthor: string;
+  canEditAuthor: boolean;
 };
 
 export default function EditPackModal(props: MyProps) {
   const [packName, setPackName] = useState(props.packName);
   const [packDesc, setPackDesc] = useState(props.packDescription);
+  const [packAuthor, setPackAuthor] = useState(props.packAuthor);
   return (
     <Modal
       show={props.show}
@@ -42,13 +45,18 @@ export default function EditPackModal(props: MyProps) {
             value={packDesc}
             onChange={e => setPackDesc(e.target.value)}
           />
+          {props.canEditAuthor && (<PlainTextInput
+            label="Pack Author"
+            value={packAuthor}
+            onChange={e => setPackAuthor(e.target.value)}
+          />)}       
         </Form>
       </Modal.Body>
       <Modal.Footer>
         <Button
           variant="info"
           onClick={() => {
-            props.onConfirm(packName, packDesc);
+            props.onConfirm(packName, packAuthor, packDesc);
           }}
         >
           {' '}

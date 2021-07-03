@@ -8,8 +8,8 @@ import Badge from '../Badge';
 
 type MyProps = {
   onChange: Function;
-  onInputChange: Function;
-  options: any;
+  onInputChange?: Function;
+  options?: any;
   value: string;
   label: string;
   help?: any;
