@@ -107,6 +107,10 @@ class Api {
     await this.executor.deleteJwt();
   }
 
+  async getPatrons() {
+    return this.executor.apis.default.getPatrons();
+  }
+
   async popNotification() {
     logger.debug('Popping notification');
     return this.executor.apis.default.popNotification(settingsUtil.settings.lastNotificationRead ? {since: settingsUtil.settings.lastNotificationRead} : {});

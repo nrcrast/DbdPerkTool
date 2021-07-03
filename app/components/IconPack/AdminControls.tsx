@@ -68,7 +68,6 @@ export default function AdminControls(props: MyProps) {
       props.meta.name,
       props.meta.author,
       props.meta.description,
-      props.meta.isNsfw,
       validationStatus.skipFiles
     );
 

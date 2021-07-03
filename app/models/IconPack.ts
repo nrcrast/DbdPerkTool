@@ -65,7 +65,7 @@ export default abstract class IconPack {
    */
   private async extractZip(zipPath: string) {
     return new Promise((resolve, reject) => {
-      const tmpDir = { name: path.resolve(IconPack.tempDir,`${Date.now()}_${this.meta.id}`) };
+      const tmpDir = { name: path.resolve(IconPack.tempDir,`${Date.now()}_${this.replaceWindowsChars(this.meta.id)}`) };
       fs.createReadStream(zipPath)
         .pipe(unzipper.Extract({ path: tmpDir.name }))
         .on('close', () => {
@@ -77,6 +77,10 @@ export default abstract class IconPack {
     });
   }
 
+  private replaceWindowsChars(str:string) : string {
+    return str.replace(/[\/\\,+$~%.':*?<>{}]/g, '_');
+  }
+
   /**
    * Retrieve the raw zip data for the current pack
    * @param onProgress - optional. Called with an integer percentage as the download progresses
@@ -84,7 +88,7 @@ export default abstract class IconPack {
    */
   private async downloadZip(onProgress?: Function): Promise<Buffer> {
     const url = await this.getZipUrl();
-    const zip = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.meta.id}.zip`) };
+    const zip = { name: path.resolve(IconPack.tempDir, `${Date.now()}_${this.replaceWindowsChars(this.meta.id)}.zip`) };
     return new Promise((resolve, reject) => {
       ipcRenderer.send('downloadFile', {
         outputLocation: zip.name,

@@ -43,6 +43,7 @@ const MainContainer = styled.div`
 const Root = ({ store, history }: Props) => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [latestVersion, setLatestVersion] = useState('');
+  const [releaseNotes, setReleaseNotes] = useState('');
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [updateProgress, setUpdateProgress] = useState(0);
   const [showUpdateDbdPath, setShowUpdateDbdPath] = useState(false);
@@ -63,7 +64,10 @@ const Root = ({ store, history }: Props) => {
   };
 
   ipcRenderer.on('update-available', (event, arg) => {
+      log.info(`Update available: ${JSON.stringify(arg)}`);
       setShowUpdateModal(true);
+      log.info(`Release notes: ${arg.releaseNotes}`);
+      setReleaseNotes(arg.releaseNotes);
       setLatestVersion(arg.version);
   });
 
@@ -124,6 +128,7 @@ const Root = ({ store, history }: Props) => {
             </Content>
             <UpdateYesNoDialog
               version={latestVersion}
+              releaseNotes={releaseNotes}
               show={showUpdateModal}
               onClose={onUpdateModalClose}
             />

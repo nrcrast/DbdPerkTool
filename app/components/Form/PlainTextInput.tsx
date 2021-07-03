@@ -2,6 +2,9 @@ import React, { Component, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import styled from 'styled-components';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Badge from '../Badge';
 
 type MyProps = {
   onChange: Function;
@@ -9,6 +12,7 @@ type MyProps = {
   options: any;
   value: string;
   label: string;
+  help?: any;
 };
 
 const InputWrapper = styled.div`
@@ -24,6 +28,27 @@ const InputValueWrapper = styled.div`
 
 export default function PlainTextInput(props: MyProps) {
   let input;
+  let tooltip = undefined;
+
+  const helpTxt = props.help;
+
+  if(props.help) {
+    const renderTooltip = props => (
+      <Tooltip id="pti-tooltip" {...props}>
+        {helpTxt}
+      </Tooltip>
+    );
+    tooltip = (
+      <OverlayTrigger
+      placement="right"
+      delay={{ show: 250, hide: 1000 }}
+      overlay={renderTooltip}
+      trigger={['click']}
+    >
+      <Badge className="fas fa-question-circle ml-2"></Badge>
+    </OverlayTrigger>
+    )
+  }
 
   if (props.options) {
     input = (
@@ -49,6 +74,7 @@ export default function PlainTextInput(props: MyProps) {
     <Form.Group>
       <InputWrapper>
         <Form.Label className="field-label-text">{props.label}</Form.Label>
+        {tooltip}
         <InputValueWrapper>{input}</InputValueWrapper>
       </InputWrapper>
     </Form.Group>

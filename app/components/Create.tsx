@@ -32,6 +32,10 @@ const CreateButtonWrapper = styled.div`
   flex-direction: column;
 `;
 
+function replaceWindowsChars(str:string) : string {
+  return str.replace(/[\/\\,+$~%.':*?<>{}]/g, '_');
+}
+
 export default function Create(props: MyProps) {
   const [packDir, setPackDir] = useState('');
   const [errorModalShow, setErrorModalShow] = useState(false);
@@ -40,7 +44,6 @@ export default function Create(props: MyProps) {
   const [author, setAuthor] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveProgress, setSaveProgress] = useState(0);
-  const [isNsfw, setIsNsfw] = useState(false);
   const [description, setDescription] = useState('');
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
@@ -84,7 +87,6 @@ export default function Create(props: MyProps) {
       title,
       autoAuthor ? userContext.user.authorProfile.name : author,
       description,
-      isNsfw,
       validationStatus.skipFiles
     );
 
@@ -155,7 +157,6 @@ export default function Create(props: MyProps) {
                 setTitle(targetPack.name);
                 setDescription(targetPack.description);
                 setAuthor(targetPack.author);
-                setIsNsfw(targetPack.isNsfw);
               } else {
                 setTitle(targetPack.name);
               }
@@ -180,16 +181,6 @@ export default function Create(props: MyProps) {
           />
         )}
 
-        <Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="NSFW"
-            checked={isNsfw}
-            onChange={e => {
-              setIsNsfw(e.target.checked);
-            }}
-          />
-        </Form.Group>
         <Form.Group>
           <Form.Row>
             <Form.Label column sm="5" className="field-label-text">

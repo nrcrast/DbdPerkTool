@@ -57,7 +57,7 @@ export default function PerkPackDetails(props: MyProps) {
     capabilities.push('perks');
   }
 
-  const imgClass = (props.meta.isNsfw && !settingsUtil.settings.showNsfw) ? 'img-blurred' : '';
+  const imgClass = '';
 
   if (props.meta.hasPortraits) {
     capabilities.push('charportraits');

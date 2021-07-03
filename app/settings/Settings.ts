@@ -11,7 +11,6 @@ type SettingSchema = {
   installedPortraitPack: string;
   lastUpdate: string;
   autoUpdate: boolean;
-  showNsfw: boolean;
   targetServer: string;
   writeToTxt: boolean;
   lastNotificationRead: string;
@@ -37,7 +36,6 @@ class Settings {
       installedPack: '',
       installedPortraitPack: '',
       autoUpdate: false,
-      showNsfw: false,
       lastNotificationRead: '',
       writeToTxt: false,
       targetServer: 'https://dead-by-daylight-icon-toolbox.herokuapp.com',

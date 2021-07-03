@@ -115,14 +115,10 @@ async function signIn(onJwt) {
 }
 
 export default function SideNav() {
-  function openDonate(e) {
-    e.preventDefault();
-    shell.openExternal(e.target.href);
-  }
   const userContext = useContext(UserContext);
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
   const [showVote, setShowVote] = useState(false);
-  const [activeTab, setActiveTab] = useState(routes.FEATURED);
+  const [activeTab, setActiveTab] = useState(routes.PERKS);
   const [signedIn, setSignedIn] = useState(api.currentUser !== null);
   console.log('Active Tab: ' + activeTab);
 

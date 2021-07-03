@@ -18,7 +18,6 @@ export default class PackGenerator {
   packAuthor: string;
   packDescription: string;
   packZipFile: string;
-  packIsNsfw: boolean;
   outputZip: string;
   skipFiles: Array<string>;
   constructor(
@@ -27,7 +26,6 @@ export default class PackGenerator {
     packName: string,
     packAuthor: string,
     packDescription: string,
-    packIsNsfw: boolean,
     skipFiles: Array<string>
   ) {
     this.packDir = packDir;
@@ -43,7 +41,6 @@ export default class PackGenerator {
     this.packAuthor = packAuthor;
     this.packDescription = packDescription;
     this.skipFiles = skipFiles;
-    this.packIsNsfw = packIsNsfw;
   }
 
   async getFiles(files: Array<string> = [], dir: string) {
@@ -102,7 +99,7 @@ export default class PackGenerator {
           name: this.packName,
           author: this.packAuthor,
           description: this.packDescription,
-          isNsfw: this.packIsNsfw
+          isNsfw: false
         },
         await this.packDir.getMeta()
       );

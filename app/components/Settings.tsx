@@ -14,6 +14,7 @@ import settingsUtil from '../settings/Settings';
 import PlainTextInput from './Form/PlainTextInput';
 import log from 'electron-log';
 import { app, remote, shell } from 'electron';
+import Badge from './Badge';
 
 const mainWindow = remote.getCurrentWindow();
 
@@ -24,10 +25,9 @@ const TooltipWrapper = styled.div`
   align-items: center;
 `;
 
-async function doSave(installPath, autoUpdate, showNsfw, writeToTxt, deleteAfterUpload) {
+async function doSave(installPath, autoUpdate, writeToTxt, deleteAfterUpload) {
   settingsUtil.settings.dbdInstallPath = installPath;
   settingsUtil.settings.autoUpdate = autoUpdate;
-  settingsUtil.settings.showNsfw = showNsfw;
   settingsUtil.settings.writeToTxt = writeToTxt;
   settingsUtil.settings.deleteAfterUpload = deleteAfterUpload;
   await settingsUtil.save();
@@ -41,7 +41,6 @@ function openLogs() {
 export default function Settings(props: MyProps) {
   const [installPath, setInstallPath] = useState('');
   const [autoUpdate, setAutoUpdate] = useState(false);
-  const [showNsfw, setShowNsfw] = useState(false);
   const [unsaved, setUnsaved] = useState(false);
   const [writePackToTxt, setWritePackToTxt] = useState(false);
   const [deleteZipAfterUpload, setDeleteZipAfterUpload] = useState(true);
@@ -63,7 +62,6 @@ export default function Settings(props: MyProps) {
     const { settings } = settingsUtil;
     setInstallPath(settings.dbdInstallPath);
     setAutoUpdate(settingsUtil.get('autoUpdate'));
-    setShowNsfw(settingsUtil.get('showNsfw'));
     setWritePackToTxt(settingsUtil.get('writeToTxt'));
     setDeleteZipAfterUpload(settingsUtil.get('deleteAfterUpload'));
   };
@@ -72,32 +70,35 @@ export default function Settings(props: MyProps) {
     loadSettings();
   }, []);
 
+  const openLink = (e: any) => {
+    e.preventDefault();
+    let link = e.target.href;
+    shell.openExternal(link);
+  }
+
+  const installPathHelp = (<span>
+    <p>This is the path that DBD is installed in. To get this value, go to Steam, right click on DBD and go to properties. Click on Local Files and then click 'Browse...'.  This will open up Windows Explorer at the correct location. Copy the path of that location and paste into the text field here.
+    For more help. See <a href="https://discord.gg/rKFsr5syzY" onClick={openLink}>this channel</a> in the Toolbox Discord Server</p>
+    </span>
+  )
+
   const saveButtonValue = 'Save' + (unsaved ? '*' : '');
   return (
     <Col className="col-8">
       <Form
         onSubmit={async e => {
           e.preventDefault();
-          await doSave(installPath, autoUpdate, showNsfw, writePackToTxt, deleteZipAfterUpload);
+          await doSave(installPath, autoUpdate, writePackToTxt, deleteZipAfterUpload);
           setUnsaved(false);
         }}
         onChange={() => setUnsaved(true)}
       >
         <PlainTextInput
           label="Dead By Daylight Install Path"
+          help={installPathHelp}
           value={installPath}
           onChange={e => setInstallPath(e.target.value)}
         />
-        <Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="Show NSFW"
-            checked={showNsfw}
-            onChange={e => {
-              setShowNsfw(e.target.checked);
-            }}
-          />
-        </Form.Group>
         <Form.Group>
           <TooltipWrapper>
             <Form.Check
@@ -112,8 +113,9 @@ export default function Settings(props: MyProps) {
               placement="right"
               delay={{ show: 250, hide: 400 }}
               overlay={renderTooltip}
+              trigger={['click']}
             >
-              <i className="fas fa-question-circle ml-2"></i>
+              <Badge className="fas fa-question-circle ml-2"></Badge>
             </OverlayTrigger>
           </TooltipWrapper>
         </Form.Group>

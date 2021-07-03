@@ -19,7 +19,6 @@ import Author from './IconPack/Author';
 import LatestChapter from './IconPack/LatestChapter';
 import MainPreview from './IconPack/MainPreview';
 import Title from './IconPack/Title';
-import NsfwWarning from './IconPack/NsfwWarning';
 import settingsUtils from '../settings/Settings';
 import api from '../api/Api';
 import UserContext from '../context/UserContext';
@@ -174,7 +173,6 @@ export default function PortraitPack(props: MyProps) {
             id={props.id}
             baseUrl={props.meta.previewDir}
             viewMode={props.viewMode}
-            isNsfw={props.meta.isNsfw && !settingsUtils.settings.showNsfw}
           />
         </Card.Body>
         <Title

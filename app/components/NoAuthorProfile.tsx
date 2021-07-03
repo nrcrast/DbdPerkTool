@@ -24,6 +24,12 @@ export default function NoAuthorProfile() {
         <NoProfileMsgWrapper>
           <h3>You do not yet have an author profile linked to your account.</h3>
           <h4>
+            If you are a first time author (you have no packs in the tool), please post your pack in the #adding-pack-request channel in the Icon Toolbox Discord. 
+          </h4>
+          <h4>
+            Once an Admin has added your pack to the tool, you will be able to connect your Steam account to your author profile.
+          </h4>
+          <h4>
             Please contact Sup3rStabby in order to connect your user account to
             your author profile.
           </h4>

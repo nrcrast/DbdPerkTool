@@ -36,7 +36,7 @@ export default function MyProfile(props: MyProps) {
   if (!userContext.user) {
     return <Redirect to={routes.PERKS} />;
   }
-
+  
   if (!userContext.user.authorProfile) {
     return <NoAuthorProfile />;
   }

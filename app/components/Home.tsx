@@ -1,11 +1,22 @@
 import React, { Component, useState } from 'react';
 import electron from 'electron';
 import PatronList from './PatronList';
+import styled from 'styled-components';
+import { shell } from 'electron';
 
 type MyProps = {};
 type MyState = {
 
 };
+
+const HomeWrapper = styled.div`
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 export default class Home extends Component<MyProps, MyState> {
   constructor(params: {}) {
@@ -16,6 +27,7 @@ export default class Home extends Component<MyProps, MyState> {
 
   render() {
     return (
+      <HomeWrapper>
       <div className="text-center">
         <h1>
           Dead By Daylight Icon Toolbox v
@@ -24,18 +36,6 @@ export default class Home extends Component<MyProps, MyState> {
         <p>
           This is a tool designed to help you browse and install Perks and Icon
           sets with the click of a button!
-        </p>
-        <h3>Usage</h3>
-        <p>
-          Head over to the{' '}
-          <i>
-            <strong>Icon Packs</strong>
-          </i>{' '}
-          tab to check out the available Icon packs, or go to the{' '}
-          <i>
-            <strong>Portrait Packs</strong>
-          </i>{' '}
-          tab to see Portrait-Only packs!
         </p>
 
         <h3>Tutorial</h3>
@@ -57,6 +57,7 @@ export default class Home extends Component<MyProps, MyState> {
         </p>
         <PatronList />
       </div>
+      </HomeWrapper>
     );
   }
 }

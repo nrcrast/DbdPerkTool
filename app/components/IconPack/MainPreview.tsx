@@ -5,14 +5,11 @@ import Image from 'react-bootstrap/Image';
 import Carousel from 'react-bootstrap/Carousel';
 import uuid from 'react-uuid';
 import styled from 'styled-components';
-import NsfwWarning from './NsfwWarning';
-
 type MyProps = {
   urls: Array<string>;
   id: string;
   viewMode: string;
   baseUrl: string;
-  isNsfw: boolean;
 };
 
 const ImageContainer = styled.div`
@@ -42,11 +39,6 @@ function buildNormalPreview(props: MyProps, additionalImgClasses: string) {
     <Row className="flex-nowrap">
       <ImageContainer>
         {images}{' '}
-        {props.isNsfw && (
-          <TextCentered>
-            <NsfwWarning />
-          </TextCentered>
-        )}
       </ImageContainer>
     </Row>
   );
@@ -66,20 +58,13 @@ function buildCompactPreview(props: MyProps, additionalImgClasses: string) {
       <Carousel indicators={false} key={uuid()} interval={null} slide={false}>
         {images}
       </Carousel>
-
-      {props.isNsfw && (
-        <TextCentered>
-          <NsfwWarning />
-        </TextCentered>
-      )}
     </ImageContainer>
   );
 }
 
 export default function MainPreview(props: MyProps) {
   let content;
-  const additionalImgClasses =
-    props.isNsfw ? ' img-blurred' : '';
+  const additionalImgClasses = '';
 
   if (props.viewMode === 'Normal') {
     content = buildNormalPreview(props, additionalImgClasses);
