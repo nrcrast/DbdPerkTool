@@ -65,6 +65,10 @@ class Api {
     await this.getUser();
   }
 
+  async connectAuthor(steamId, authorName) {
+    await this.executor.apis.default.connectProfile({}, {requestBody: {steamId, author: authorName}});
+  }
+
   async updateFavorite(packId, newValue) {
     if (newValue) {
       await this.executor.apis.default.addFavorite({

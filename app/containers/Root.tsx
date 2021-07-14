@@ -96,9 +96,9 @@ const Root = ({ store, history }: Props) => {
     try {
       const dbdPath = await dbd.getInstallPath();
       log.info(`Detected DBD Path: ${dbdPath}`);
-      if (dbdPath.toLowerCase() !== settingsUtil.settings.dbdInstallPath.toLowerCase()) {
-        setDetectedDbdPath(dbdPath);
-        setShowUpdateDbdPath(true);
+      if (dbdPath && dbdPath.length > 0 && dbdPath.toLowerCase() !== settingsUtil.settings.dbdInstallPath.toLowerCase()) {
+        settingsUtil.settings.dbdInstallPath = detectedDbdPath;
+        await settingsUtil.save();
       }
     } catch (err) {}
   };
@@ -149,19 +149,6 @@ const Root = ({ store, history }: Props) => {
                   logger.error(err);
                 }
               }}
-            />
-            <ConfirmationModal
-              show={showUpdateDbdPath}
-              onConfirm={async () => {
-                setShowUpdateDbdPath(false);
-                settingsUtil.settings.dbdInstallPath = detectedDbdPath;
-                await settingsUtil.save();
-              }}
-              onHide={() => {
-                setShowUpdateDbdPath(false);
-              }}
-              title="Dead by Daylight Path Change Detected"
-              text={`The Toolbox has detected that your Dead by Daylight install location has changed to ${detectedDbdPath} from ${settingsUtil.settings.dbdInstallPath}. If you would like to update this setting in the toolbox now, click Yes. Otherwise, click No to ignore.`}
             />
           </MainContainer>
         </UserContext.Provider>

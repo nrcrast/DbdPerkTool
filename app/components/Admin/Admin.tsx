@@ -16,6 +16,7 @@ import api from '../../api/Api';
 import NoAuthorProfile from '../NoAuthorProfile';
 import SendNotification from './SendNotification';
 import ErrorModal from '../ErrorModal';
+import ConnectAuthor from './ConnectAuthor';
 
 type MyProps = {};
 
@@ -55,10 +56,12 @@ export default function Admin(props: MyProps) {
           try {
             await api.executor.apis.default.addNotification(
               {},
-              { requestBody: {
-				  name: title,
-				  text: fileContents
-			  } }
+              {
+                requestBody: {
+                  name: title,
+                  text: fileContents
+                }
+              }
             );
             setShowSendSuccess(true);
           } catch (err) {
@@ -69,16 +72,24 @@ export default function Admin(props: MyProps) {
           setShowSendNotif(false);
         }}
       ></SendNotification>
+      <ConnectAuthor onConfirm={async (steamId: string, author: string) => {
+        try {
+          await api.connectAuthor(steamId, author)
+          setShowSendSuccess(true);
+        } catch (e) {
+          setShowSendFail(true);
+        }
+      }}></ConnectAuthor>
       <SuccessModal
-        title="Notification Sent"
-        text="Notification sent successfully"
+        title="Success"
+        text="Nice job dude"
         show={showSendSuccess}
         onHide={() => {
           setShowSendSuccess(false);
         }}
       ></SuccessModal>
       <ErrorModal
-        title="Error sending notification"
+        title="Error"
         text="Unknown error"
         show={showSendFail}
         onHide={() => {
